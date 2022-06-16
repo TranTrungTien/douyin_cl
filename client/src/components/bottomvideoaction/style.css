@@ -1,0 +1,11 @@
+.volume-inner-custom {
+    user-select: none;
+    opacity: 0;
+    visibility: hidden;
+
+}
+.volume-custom:hover .volume-inner-custom{
+    opacity: 1;
+    user-select: all;
+    visibility: visible;
+}

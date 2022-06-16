@@ -1,0 +1,13 @@
+.cmt-input:checked +.cmt-box{
+    background: rgb(254,45,48);
+}
+.duet-input:checked+.duet-box {
+    background: rgb(254, 45, 48);
+}
+.stich-input:checked+.stich-box {
+    background: rgb(254, 45, 48);
+}
+
+.copyright-input:checked +.copyright-circle{
+    left: calc(100% - 22px);
+}
