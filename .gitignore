@@ -4,5 +4,3 @@ node_modules
 config.env
 *.txt
 *.mp4
-*.json
-*.log
