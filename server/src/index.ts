@@ -1,11 +1,14 @@
-import http from "http";
-import express, { Express, Request, Response } from "express";
-const app: Express = express();
-import dotenv from "dotenv";
-import path from "path";
 import cors from "cors";
+import dotenv from "dotenv";
+import express, { Express, Request, Response } from "express";
+import http from "http";
+import path from "path";
 import MediaRouter from "./routers/media.route";
 import RecommendationRouter from "./routers/recommendation.route";
+import { RecommendationUtils } from "./utils/recommendation";
+
+RecommendationUtils.train();
+const app: Express = express();
 // import WebSocket from "ws";
 // import NodeMediaServer from "node-media-server";
 // import ffmpegBinary from "@ffmpeg-installer/ffmpeg";

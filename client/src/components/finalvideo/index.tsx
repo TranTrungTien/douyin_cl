@@ -13,15 +13,19 @@ type Props = {
   video: {
     desc: string;
     link: string;
+    local_link: string;
+    author: string;
   };
+  fromVideoPage: boolean;
   allowedPlay: boolean;
   isPlay: boolean;
   isActive: boolean;
   onChangeVideo: (action: boolean) => void;
-  onOpenRightBar: (action: RightBarAction) => void;
+  onOpenRightBar?: (action: RightBarAction) => void;
 };
 
 const Video = ({
+  fromVideoPage,
   allowedPlay,
   video,
   isPlay,
@@ -100,7 +104,8 @@ const Video = ({
         className="max-h-full w-auto h-auto object-contain object-center rounded-md absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 hover:cursor-pointer"
         src={
           isActive
-            ? "http://localhost:3001/api/v1/media/get-video?link=" + video.link
+            ? "http://localhost:3001/api/v1/media/get-video?link=" +
+              video.local_link
             : undefined
         }
         loop={isActive && true}
@@ -126,7 +131,7 @@ const Video = ({
       )}
       {/* Action's video */}
       <BottomVideoAction
-        metaData={{ author: "", desc: video.desc }}
+        metaData={{ author: video.author, desc: video.desc }}
         ref={timeCounterRef}
         isPlay={isPlay}
         progressBar={
@@ -138,22 +143,24 @@ const Video = ({
         turnOnOffVolume={onTurnOnOffVolume}
       />
       {/* Like, share, subscribe action, ect,..., */}
-      <RightVideoAction>
-        {/* next, pre button */}
-        <NextVideoButton handleChangeVideo={onChangeVideo} />
-        <AvatarCardButton
-          image="https://ichef.bbci.co.uk/news/999/cpsprodpb/15951/production/_117310488_16.jpg"
-          borderRadius="rounded-full"
-          handleOpenRightBar={onOpenRightBar}
-          height="h-10"
-          width="w-10"
-          hint="User Cover"
-        >
-          <Plus />
-        </AvatarCardButton>
-        {/* like share, cmt,.,,, */}
-        <LikeCmtShare onOpenRightBar={onOpenRightBar} />
-      </RightVideoAction>
+      {!fromVideoPage && onOpenRightBar && (
+        <RightVideoAction>
+          {/* next, pre button */}
+          <NextVideoButton handleChangeVideo={onChangeVideo} />
+          <AvatarCardButton
+            image="https://ichef.bbci.co.uk/news/999/cpsprodpb/15951/production/_117310488_16.jpg"
+            borderRadius="rounded-full"
+            handleOpenRightBar={onOpenRightBar}
+            height="h-10"
+            width="w-10"
+            hint="User Cover"
+          >
+            <Plus />
+          </AvatarCardButton>
+          {/* like share, cmt,.,,, */}
+          <LikeCmtShare onOpenRightBar={onOpenRightBar} />
+        </RightVideoAction>
+      )}
     </>
   );
 };

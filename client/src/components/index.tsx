@@ -28,3 +28,4 @@ export { default as VideoCardFooter } from "./videocardfooter";
 export { default as VideoContainer } from "./videocontainer";
 export { default as RightVideoAction } from "./rightvideoaction";
 export { default as Loading } from "./loading";
+export { default as BackgroundVideo } from "./background-video";
