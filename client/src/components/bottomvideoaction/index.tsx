@@ -1,4 +1,5 @@
 import { forwardRef, useEffect, useRef, useState } from "react";
+import { Link } from "react-router-dom";
 import "./style.css";
 
 type Props = {
@@ -55,7 +56,9 @@ const BottomVideoAction = forwardRef<HTMLSpanElement, Props>(
         <div className="flex flex-col justify-end items-start w-full">
           {/* User name and description */}
           <div className="flex flex-col items-start w-[95%] h-auto text-white ml-4 mb-4">
-            <h3 className="font-medium leading-[26px] text-[18px]">@鹿肉</h3>
+            <h3 className="font-medium leading-[26px] text-[18px]">
+              @{metaData.author}
+            </h3>
             <p className="font-normal leading-[22px] text-sm opacity-60">
               {metaData.desc}
             </p>
@@ -205,25 +208,28 @@ const BottomVideoAction = forwardRef<HTMLSpanElement, Props>(
                     </svg> */}
                   </button>
                 </div>
-                <div className="flex justify-center items-center">
-                  {/* link to video's page */}
-                  <span className="text-xs font-normal">详情</span>
-                  <svg
-                    width="6"
-                    height="9"
-                    viewBox="0 0 6 9"
-                    fill="none"
-                    xmlns="http://www.w3.org/2000/svg"
-                  >
-                    <path
-                      opacity="0.7"
-                      fillRule="evenodd"
-                      clipRule="evenodd"
-                      d="M0.689396 8.12382C0.396503 7.83093 0.396503 7.35605 0.689396 7.06316L3.51782 4.23473L0.689396 1.40631C0.396503 1.11341 0.396503 0.63854 0.689396 0.345646C0.98229 0.0527533 1.45716 0.0527533 1.75006 0.345646L5.10881 3.7044C5.40171 3.9973 5.40171 4.47217 5.10881 4.76506L1.75006 8.12382C1.45716 8.41671 0.98229 8.41671 0.689396 8.12382Z"
-                      fill="white"
-                    ></path>
-                  </svg>
-                </div>
+
+                <Link target="_blank" to="/video/1234">
+                  <div className="flex justify-center items-center group-hover: opacity-100">
+                    {/* link to video's page */}
+                    <span className="text-xs font-normal mr-2">详情</span>
+                    <svg
+                      width="6"
+                      height="9"
+                      viewBox="0 0 6 9"
+                      fill="none"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <path
+                        opacity="0.7"
+                        fillRule="evenodd"
+                        clipRule="evenodd"
+                        d="M0.689396 8.12382C0.396503 7.83093 0.396503 7.35605 0.689396 7.06316L3.51782 4.23473L0.689396 1.40631C0.396503 1.11341 0.396503 0.63854 0.689396 0.345646C0.98229 0.0527533 1.45716 0.0527533 1.75006 0.345646L5.10881 3.7044C5.40171 3.9973 5.40171 4.47217 5.10881 4.76506L1.75006 8.12382C1.45716 8.41671 0.98229 8.41671 0.689396 8.12382Z"
+                        fill="white"
+                      ></path>
+                    </svg>
+                  </div>
+                </Link>
               </div>
             </div>
           </div>

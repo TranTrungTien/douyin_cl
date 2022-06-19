@@ -1,39 +1,67 @@
-import { useRef } from "react";
+import axios from "axios";
+import { MouseEvent, Suspense, useEffect, useState } from "react";
 import {
   AvatarCardLink,
-  BottomVideoAction,
+  BackgroundVideo,
   Button,
   Comment,
   Heart,
   LeftHeaderWrapper,
+  Loading,
   Logo,
   Nav,
-  NextVideoButton,
-  ProgressBar,
-  RightVideoAction,
   Search,
   TimeFooter,
+  Video,
   VideoCard,
   VideoCardFooter,
 } from "../../components";
-import Video from "../../components/video";
+import { dataType } from "../../constants/type";
 import {
   Header,
+  PageContainer,
   RelatedVideoContainer,
   SideContainer,
-  PageContainer,
   VideoHeaderContainer,
 } from "../../layouts";
 
 type Props = {};
 
 const VideoPage = (props: Props) => {
-  const progressBarRef = useRef<HTMLDivElement>(null);
-  const progressRef = useRef<HTMLDivElement>(null);
-  const progressContainerRef = useRef({ progressRef, progressBarRef });
-  const timeCounterRef = useRef<HTMLSpanElement>(null);
-  const onChangeVideo = (isNextAction: boolean) => {};
-  const onChangeVideoTime = (position: number) => {};
+  const [isPlay, setIsPlay] = useState(true);
+  useEffect(() => {
+    axios
+      .get(
+        "http://localhost:3001/api/v1/recommendation/related?videoId=" +
+          "./videos/video_90.mp4"
+      )
+      .then((related) => console.log(related.data))
+      .catch((err) => {
+        console.log(err);
+        alert("err");
+      });
+  }, []);
+  const onPlayOrPause = (
+    e: MouseEvent<HTMLElement> & {
+      target: {
+        dataset: { type: string };
+        closest: (selector: any) => Node;
+        tagName: string;
+      };
+    }
+  ) => {
+    if (
+      e.target.dataset.type !== dataType &&
+      !e.target.closest("[data-type='bottom_play_clickable']") &&
+      !e.target.closest("[data-type='center_play_clickable']")
+    )
+      return;
+    else {
+      console.log("click");
+
+      setIsPlay((pre) => !pre);
+    }
+  };
   return (
     <section className="w-full h-screen">
       <div
@@ -50,21 +78,28 @@ const VideoPage = (props: Props) => {
         <PageContainer styleArray="pt-6">
           <div className="2xl:max-w-[1306] 2xl:w-[1306px] flex justify-center items-start mx-auto space-x-3">
             <SideContainer width="w-[960px]" height="h-full">
-              <Video width="h-[574px]">
-                <BottomVideoAction
-                  metaData={{ author: "", desc: "" }}
-                  progressBar={
-                    <ProgressBar
-                      ref={progressContainerRef}
-                      handleChangeVideoTime={onChangeVideoTime}
-                    />
-                  }
-                  ref={timeCounterRef}
-                />
-                <RightVideoAction>
-                  <NextVideoButton handleChangeVideo={onChangeVideo} />
-                </RightVideoAction>
-              </Video>
+              <Suspense fallback={<Loading />}>
+                <section
+                  onClick={onPlayOrPause}
+                  data-type="clickable"
+                  className="w-full xl:h-[574px]  flex-1 relative grid place-content-center overflow-hidden rounded-md backdrop-blur-sm"
+                >
+                  <BackgroundVideo />
+                  <Video
+                    fromVideoPage={true}
+                    isActive={true}
+                    isPlay={isPlay ? true : false}
+                    onChangeVideo={() => {}}
+                    allowedPlay={true}
+                    video={{
+                      desc: "虎虎说它要挑战全网身材最好的小猫@胖虎圆fufu #铲屎官的乐趣 #萌宠",
+                      local_link: "./videos/video_93.mp4",
+                      link: "",
+                      author: "月半虎虎",
+                    }}
+                  />
+                </section>
+              </Suspense>
               <div className="flex flex-col justify-start items-start w-full">
                 <VideoHeaderContainer />
                 <div className="flex justify-start items-center space-x-1 mt-4 w-full">
@@ -249,3 +284,21 @@ const VideoPage = (props: Props) => {
 };
 
 export default VideoPage;
+
+{
+  /* <Video width="h-[574px]">
+                <BottomVideoAction
+                  metaData={{ author: "", desc: "" }}
+                  progressBar={
+                    <ProgressBar
+                      ref={progressContainerRef}
+                      handleChangeVideoTime={onChangeVideoTime}
+                    />
+                  }
+                  ref={timeCounterRef}
+                />
+                <RightVideoAction>
+                  <NextVideoButton handleChangeVideo={onChangeVideo} />
+                </RightVideoAction>
+              </Video> */
+}

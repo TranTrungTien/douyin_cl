@@ -1,5 +1,7 @@
 //ref https://www.sciencedirect.com/topics/computer-science/cosine-similarity#:~:text=Cosine%20similarity%20measures%20the%20similarity,document%20similarity%20in%20text%20analysis.
 //ref https://www.kaggle.com/code/yassinehamdaoui1/creating-tf-idf-model-from-scratch/notebook
+import { fork } from "child_process";
+import path from "path";
 import { HMMModel, IDF, JiebaDict, StopWords, UserDict } from "jieba-zh-tw";
 import createJieba from "js-jieba";
 
@@ -97,6 +99,8 @@ export default class Recommendation {
   constructor(data: string[]) {
     this._data = data;
     this._processData();
+    this._getTfidfMatrix();
+    this._calculateCosineMatrix();
   }
   private _processData() {
     this._data.forEach((d) => {
@@ -130,15 +134,7 @@ export default class Recommendation {
       this._tfidfMatrix.push(tfidfArray);
     });
   }
-  private _sortCosine(cosineSimMap: { id: number; value: number }[]) {
-    cosineSimMap.sort((x, y) => {
-      if (x.value > y.value) return -1;
-      else if (x.value < y.value) return 1;
-      else return 0;
-    });
-  }
-  getRecommendation() {
-    this._getTfidfMatrix();
+  private _calculateCosineMatrix() {
     this._tfidfMatrix.forEach((row) => {
       const cosineArray: number[] = [];
       this._tfidfMatrix.forEach((rowInner) => {
@@ -147,33 +143,72 @@ export default class Recommendation {
       });
       this._cosineMatrix.push(cosineArray);
     });
-    const cosineSimMap = this._cosineMatrix[1].map((value, index) => {
-      return {
-        id: index,
-        value,
-      };
-    });
-    this._sortCosine(cosineSimMap);
-    const recommendedIndexes = cosineSimMap
-      .filter((cosineS) => {
-        return cosineS.value > 0;
-      })
-      .map((value) => {
-        return value.id;
-      });
-
-    recommendedIndexes.splice(0, 1);
-    return recommendedIndexes;
+  }
+  getRecommendation(index: number) {}
+  public getCosineMatrix() {
+    return this._cosineMatrix;
   }
 }
 
-const recommendationEngine = new Recommendation(videoMetaData);
+// const recommendationEngine = new Recommendation(videoMetaData);
 
-const recommendedIndexes = recommendationEngine.getRecommendation();
-console.log(recommendedIndexes);
+// const recommendedIndexes = recommendationEngine.getRecommendation();
+// console.log(recommendedIndexes);
 
-console.log("Recommended for you :");
+// console.log("Recommended for you :");
 
-recommendedIndexes.forEach((recommendedIndex) => {
-  console.log(videoMetaData[recommendedIndex]);
-});
+// recommendedIndexes.forEach((recommendedIndex) => {
+//   console.log(videoMetaData[recommendedIndex]);
+// });
+
+export class RecommendationUtils {
+  public static index = 0;
+  public static cosineMatrix: number[][];
+  private static _sortCosine(cosineSimMap: { id: number; value: number }[]) {
+    cosineSimMap.sort((x, y) => {
+      if (x.value > y.value) return -1;
+      else if (x.value < y.value) return 1;
+      else return 0;
+    });
+  }
+  public static getRecommendedIndexes(index: number) {
+    if (this.cosineMatrix) {
+      const cosineSimMap = RecommendationUtils.cosineMatrix[index].map(
+        (value, index) => {
+          return value
+            ? {
+                id: index,
+                value,
+              }
+            : {
+                id: index,
+                value: 0,
+              };
+        }
+      );
+      this._sortCosine(cosineSimMap);
+      const recommendedIndexes = cosineSimMap
+        .filter((cosineS) => {
+          return cosineS.value > 0.1;
+        })
+        .map((value) => {
+          return value.id;
+        });
+      console.log({ recommendedIndexes });
+
+      recommendedIndexes.splice(0, 1);
+      return recommendedIndexes;
+    } else {
+      return undefined;
+    }
+  }
+  public static train() {
+    const childProcess = fork(path.join(__dirname, "train.data.ts"));
+    childProcess.on("close", (c) => {
+      console.log({ c });
+    });
+    childProcess.on("message", (data: number[][]) => {
+      if (data) this.cosineMatrix = data;
+    });
+  }
+}

@@ -10,8 +10,10 @@ import UserContainer from "../usercontainer";
 
 type Props = {
   video: {
+    author: string;
     desc: string;
     link: string;
+    local_link: string;
   };
   allowedPlay: boolean;
 };
@@ -33,10 +35,6 @@ const VideoSlide = ({ video, allowedPlay }: Props) => {
   });
 
   const { isActive, isNext, isPrev, isVisible } = swiperSlide;
-  console.log({ isActive });
-  console.log({ isNext });
-  console.log({ isPrev });
-  console.log({ isVisible });
 
   const onOpenRightBar = (action: RightBarAction) => {
     if (action.isOpen === openRightBar.isOpen) return;
@@ -95,6 +93,7 @@ const VideoSlide = ({ video, allowedPlay }: Props) => {
               }}
             ></div>
             <Video
+              fromVideoPage={false}
               allowedPlay={allowedPlay}
               video={video}
               isPlay={isPlay}
