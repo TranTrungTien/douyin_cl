@@ -52,7 +52,6 @@ const Video = ({
       videoRef.current?.pause();
     }
   }, [isPlay, isActive, allowedPlay]);
-
   useEffect(() => {
     videoRef.current &&
       (videoRef.current.volume = Number(localStorage.getItem("volume")) ?? 0);
@@ -113,7 +112,7 @@ const Video = ({
         onTimeUpdate={onTimeUpdate}
       ></video>
       {/* Pause when clicking */}
-      {!isPlay && (
+      {(!isPlay || !allowedPlay) && (
         <button
           data-type="center_play_clickable"
           className="absolute top-1/2 left-1/2 text-white opacity-70 transform -translate-x-1/2 -translate-y-1/2"
@@ -131,6 +130,7 @@ const Video = ({
       )}
       {/* Action's video */}
       <BottomVideoAction
+        allowedPlay={allowedPlay}
         video={video}
         ref={timeCounterRef}
         isPlay={isPlay}

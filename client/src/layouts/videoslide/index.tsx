@@ -13,6 +13,7 @@ type Props = {
     link: string;
     local_link: string;
   };
+  onStart: () => void;
   allowedPlay: boolean;
 };
 export interface RightBarAction {
@@ -21,7 +22,7 @@ export interface RightBarAction {
   user: boolean;
 }
 const dataType = "clickable";
-const VideoSlide = ({ video, allowedPlay }: Props) => {
+const VideoSlide = ({ onStart, video, allowedPlay }: Props) => {
   console.log("video slide rerender");
   const [isPlay, setIsPlay] = useState(true);
   const swiper = useSwiper();
@@ -69,9 +70,8 @@ const VideoSlide = ({ video, allowedPlay }: Props) => {
     )
       return;
     else {
-      console.log("click");
-
-      setIsPlay((pre) => !pre);
+      if (!allowedPlay) onStart();
+      else setIsPlay((pre) => !pre);
     }
   };
   return (
