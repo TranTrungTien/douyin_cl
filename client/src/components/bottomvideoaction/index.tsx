@@ -3,7 +3,9 @@ import { Link } from "react-router-dom";
 import "./style.css";
 
 type Props = {
-  metaData: {
+  video: {
+    link: string;
+    local_link: string;
     author: string;
     desc: string;
   };
@@ -13,10 +15,7 @@ type Props = {
 };
 
 const BottomVideoAction = forwardRef<HTMLSpanElement, Props>(
-  (
-    { metaData, isPlay, progressBar, turnOnOffVolume }: Props,
-    timeCounterRef
-  ) => {
+  ({ video, isPlay, progressBar, turnOnOffVolume }: Props, timeCounterRef) => {
     console.log("bottom action rerender");
     const volumeRef = useRef<HTMLDivElement>(null);
     const volumeBarRef = useRef<HTMLDivElement>(null);
@@ -57,10 +56,10 @@ const BottomVideoAction = forwardRef<HTMLSpanElement, Props>(
           {/* User name and description */}
           <div className="flex flex-col items-start w-[95%] h-auto text-white ml-4 mb-4">
             <h3 className="font-medium leading-[26px] text-[18px]">
-              @{metaData.author}
+              @{video.author}
             </h3>
             <p className="font-normal leading-[22px] text-sm opacity-60">
-              {metaData.desc}
+              {video.desc}
             </p>
           </div>
           <div className="flex justify-end items-start flex-col w-full">
@@ -209,7 +208,10 @@ const BottomVideoAction = forwardRef<HTMLSpanElement, Props>(
                   </button>
                 </div>
 
-                <Link target="_blank" to="/video/1234">
+                <Link
+                  target="_blank"
+                  to={`/video/${video.local_link.replace("/videos", "")}`}
+                >
                   <div className="flex justify-center items-center group-hover: opacity-100">
                     {/* link to video's page */}
                     <span className="text-xs font-normal mr-2">详情</span>

@@ -7,35 +7,42 @@ import MediaRouter from "./routers/media.route";
 import RecommendationRouter from "./routers/recommendation.route";
 import { RecommendationUtils } from "./utils/recommendation";
 
-RecommendationUtils.train();
-const app: Express = express();
-// import WebSocket from "ws";
-// import NodeMediaServer from "node-media-server";
-// import ffmpegBinary from "@ffmpeg-installer/ffmpeg";
-// import { spawn } from "child_process";
+RecommendationUtils.train()
+  .then((done) => {
+    console.log("trained : ", done);
+    const app: Express = express();
+    // import WebSocket from "ws";
+    // import NodeMediaServer from "node-media-server";
+    // import ffmpegBinary from "@ffmpeg-installer/ffmpeg";
+    // import { spawn } from "child_process";
 
-dotenv.config({ path: path.join(__dirname, "config.env") });
-const PORT = process.env.PORT || 3001;
-const server = http.createServer(app).listen(PORT, () => {
-  console.log("server is running on port", PORT);
-});
+    dotenv.config({ path: path.join(__dirname, "config.env") });
+    const PORT = process.env.PORT || 3001;
+    const server = http.createServer(app).listen(PORT, () => {
+      console.log("server is running on port", PORT);
+    });
 
-app.use(
-  cors({
-    origin: "*",
-    methods: "*",
-    credentials: true,
+    app.use(
+      cors({
+        origin: "*",
+        methods: "*",
+        credentials: true,
+      })
+    );
+
+    app.use(express.json());
+    app.use(express.urlencoded({ extended: true }));
+    app.use("/api/v1/media", MediaRouter);
+    app.use("/api/v1/recommendation", RecommendationRouter);
+
+    app.get("/", (req: Request, res: Response) => {
+      res.send("run on https ......");
+    });
   })
-);
-
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
-app.use("/api/v1/media", MediaRouter);
-app.use("/api/v1/recommendation", RecommendationRouter);
-
-app.get("/", (req: Request, res: Response) => {
-  res.send("run on https ......");
-});
+  .catch((_) => {
+    console.log("something went wrong !!!");
+    process.exit(-1);
+  });
 
 // const wss = new WebSocket.Server({ server });
 

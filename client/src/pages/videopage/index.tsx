@@ -1,25 +1,23 @@
 import axios from "axios";
 import { MouseEvent, Suspense, useEffect, useState } from "react";
+import { useParams } from "react-router-dom";
 import {
   AvatarCardLink,
   BackgroundVideo,
   Button,
   Comment,
-  Heart,
   LeftHeaderWrapper,
   Loading,
   Logo,
   Nav,
   Search,
-  TimeFooter,
   Video,
-  VideoCard,
-  VideoCardFooter,
 } from "../../components";
 import { dataType } from "../../constants/type";
 import {
   Header,
   PageContainer,
+  Related,
   RelatedVideoContainer,
   SideContainer,
   VideoHeaderContainer,
@@ -29,18 +27,36 @@ type Props = {};
 
 const VideoPage = (props: Props) => {
   const [isPlay, setIsPlay] = useState(true);
+  const [video, setVideo] = useState<null | {
+    author: string;
+    link: string;
+    local_link: string;
+    desc: string;
+  }>(null);
+  const { id } = useParams();
+  console.log(id);
   useEffect(() => {
-    axios
-      .get(
-        "http://localhost:3001/api/v1/recommendation/related?videoId=" +
-          "./videos/video_90.mp4"
-      )
-      .then((related) => console.log(related.data))
-      .catch((err) => {
-        console.log(err);
-        alert("err");
-      });
-  }, []);
+    if (id) {
+      axios
+        .get("http://localhost:3001/api/v1/media/get-video-info", {
+          headers: {
+            contentType: "application/json",
+          },
+          params: {
+            id: id,
+          },
+        })
+        .then((result) => {
+          Array.isArray(result.data)
+            ? setVideo(result.data[0])
+            : setVideo(result.data);
+        })
+        .catch((err) => {
+          console.log({ err });
+          alert("Something went wrong");
+        });
+    }
+  }, [id]);
   const onPlayOrPause = (
     e: MouseEvent<HTMLElement> & {
       target: {
@@ -85,23 +101,22 @@ const VideoPage = (props: Props) => {
                   className="w-full xl:h-[574px]  flex-1 relative grid place-content-center overflow-hidden rounded-md backdrop-blur-sm"
                 >
                   <BackgroundVideo />
-                  <Video
-                    fromVideoPage={true}
-                    isActive={true}
-                    isPlay={isPlay ? true : false}
-                    onChangeVideo={() => {}}
-                    allowedPlay={true}
-                    video={{
-                      desc: "虎虎说它要挑战全网身材最好的小猫@胖虎圆fufu #铲屎官的乐趣 #萌宠",
-                      local_link: "./videos/video_93.mp4",
-                      link: "",
-                      author: "月半虎虎",
-                    }}
-                  />
+                  {video && (
+                    <Video
+                      fromVideoPage={true}
+                      isActive={true}
+                      isPlay={isPlay ? true : false}
+                      onChangeVideo={() => {}}
+                      allowedPlay={true}
+                      video={video}
+                    />
+                  )}
                 </section>
               </Suspense>
               <div className="flex flex-col justify-start items-start w-full">
-                <VideoHeaderContainer />
+                {video && (
+                  <VideoHeaderContainer metaData={{ desc: video.desc }} />
+                )}
                 <div className="flex justify-start items-center space-x-1 mt-4 w-full">
                   <span className="text-sm font-normal leading-6 text-white opacity-50">
                     全部评论
@@ -126,7 +141,7 @@ const VideoPage = (props: Props) => {
               </div>
             </SideContainer>
             <SideContainer width="w-auto" styleArray="flex-1">
-              <RelatedVideoContainer>
+              <Related>
                 <div className="flex justify-between items-center space-x-2 w-full border-b border-darkslategray pb-5">
                   <div className="flex justify-start items-center space-x-2">
                     <AvatarCardLink
@@ -167,114 +182,9 @@ const VideoPage = (props: Props) => {
                   <h4 className="text-[18px] opacity-90 font-medium leading-[26px]">
                     推荐视频
                   </h4>
-                  <div className="flex flex-col justify-start items-start space-y-6 w-full h-full mt-6">
-                    <div className="flex justify-start items-start space-x-2 w-full h-full">
-                      <VideoCard width="w-[120px]" height="h-[90px]">
-                        <VideoCardFooter>
-                          <TimeFooter
-                            bottom="bottom-1"
-                            right="right-2"
-                            time="11:32"
-                          />
-                        </VideoCardFooter>
-                      </VideoCard>
-                      <div className="flex-1 h-[90px] flex flex-col justify-between items-start space-y-1">
-                        <h1 className="block w-full font-medium text-sm opacity-90 leading-[22px] flex-1 truncate-n-line">
-                          推荐视频推荐视 推荐视频推荐视 推荐视频推荐视
-                          推荐视频推荐视 推荐视频推荐视 推荐视频推荐视
-                          推荐视频推荐视 推荐视频推荐视
-                        </h1>
-                        <div className="flex justify-between items-center w-full">
-                          <Heart styleArray="font-medium leading-5 text-xs opacity-70" />
-                          <a href="/user">
-                            <span className="font-normal leading-5 text-xs opacity-70 truncate">
-                              猫七baby🍓
-                            </span>
-                          </a>
-                        </div>
-                      </div>
-                    </div>
-                    <div className="flex justify-start items-start space-x-2 w-full h-full">
-                      <VideoCard width="w-[120px]" height="h-[90px]">
-                        <VideoCardFooter>
-                          <TimeFooter
-                            bottom="bottom-1"
-                            right="right-2"
-                            time="11:32"
-                          />
-                        </VideoCardFooter>
-                      </VideoCard>
-                      <div className="flex-1 h-[90px] flex flex-col justify-between items-start space-y-1">
-                        <h1 className="block w-full font-medium text-sm opacity-90 leading-[22px] flex-1 truncate-n-line">
-                          推荐视频推荐视 推荐视频推荐视 推荐视频推荐视
-                          推荐视频推荐视 推荐视频推荐视 推荐视频推荐视
-                          推荐视频推荐视 推荐视频推荐视
-                        </h1>
-                        <div className="flex justify-between items-center w-full">
-                          <Heart styleArray="font-medium leading-5 text-xs opacity-70" />
-                          <a href="/user">
-                            <span className="font-normal leading-5 text-xs opacity-70 truncate">
-                              猫七baby🍓
-                            </span>
-                          </a>
-                        </div>
-                      </div>
-                    </div>
-                    <div className="flex justify-start items-start space-x-2 w-full h-full">
-                      <VideoCard width="w-[120px]" height="h-[90px]">
-                        <VideoCardFooter>
-                          <TimeFooter
-                            bottom="bottom-1"
-                            right="right-2"
-                            time="11:32"
-                          />
-                        </VideoCardFooter>
-                      </VideoCard>
-                      <div className="flex-1 h-[90px] flex flex-col justify-between items-start space-y-1">
-                        <h1 className="block w-full font-medium text-sm opacity-90 leading-[22px] flex-1 truncate-n-line">
-                          推荐视频推荐视 推荐视频推荐视 推荐视频推荐视
-                          推荐视频推荐视 推荐视频推荐视 推荐视频推荐视
-                          推荐视频推荐视 推荐视频推荐视
-                        </h1>
-                        <div className="flex justify-between items-center w-full">
-                          <Heart styleArray="font-medium leading-5 text-xs opacity-70" />
-                          <a href="/user">
-                            <span className="font-normal leading-5 text-xs opacity-70 truncate">
-                              猫七baby🍓
-                            </span>
-                          </a>
-                        </div>
-                      </div>
-                    </div>
-                    <div className="flex justify-start items-start space-x-2 w-full h-full">
-                      <VideoCard width="w-[120px]" height="h-[90px]">
-                        <VideoCardFooter>
-                          <TimeFooter
-                            bottom="bottom-1"
-                            right="right-2"
-                            time="11:32"
-                          />
-                        </VideoCardFooter>
-                      </VideoCard>
-                      <div className="flex-1 h-[90px] flex flex-col justify-between items-start space-y-1">
-                        <h1 className="block w-full font-medium text-sm opacity-90 leading-[22px] flex-1 truncate-n-line">
-                          推荐视频推荐视 推荐视频推荐视 推荐视频推荐视
-                          推荐视频推荐视 推荐视频推荐视 推荐视频推荐视
-                          推荐视频推荐视 推荐视频推荐视
-                        </h1>
-                        <div className="flex justify-between items-center w-full">
-                          <Heart styleArray="font-medium leading-5 text-xs opacity-70" />
-                          <a href="/user">
-                            <span className="font-normal leading-5 text-xs opacity-70 truncate">
-                              猫七baby🍓
-                            </span>
-                          </a>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
+                  {id && <RelatedVideoContainer id={id} />}
                 </div>
-              </RelatedVideoContainer>
+              </Related>
             </SideContainer>
           </div>
         </PageContainer>
@@ -284,21 +194,3 @@ const VideoPage = (props: Props) => {
 };
 
 export default VideoPage;
-
-{
-  /* <Video width="h-[574px]">
-                <BottomVideoAction
-                  metaData={{ author: "", desc: "" }}
-                  progressBar={
-                    <ProgressBar
-                      ref={progressContainerRef}
-                      handleChangeVideoTime={onChangeVideoTime}
-                    />
-                  }
-                  ref={timeCounterRef}
-                />
-                <RightVideoAction>
-                  <NextVideoButton handleChangeVideo={onChangeVideo} />
-                </RightVideoAction>
-              </Video> */
-}
