@@ -202,13 +202,22 @@ export class RecommendationUtils {
       return undefined;
     }
   }
-  public static train() {
-    const childProcess = fork(path.join(__dirname, "train.data.ts"));
-    childProcess.on("close", (c) => {
-      console.log({ c });
-    });
-    childProcess.on("message", (data: number[][]) => {
-      if (data) this.cosineMatrix = data;
+  public static train(): Promise<boolean> {
+    console.log("training ...");
+
+    return new Promise((resolve, reject) => {
+      const childProcess = fork(path.join(__dirname, "train.data.ts"));
+      childProcess.on("close", (c) => {
+        console.log({ c });
+      });
+      childProcess.on("message", (data: number[][]) => {
+        if (data) {
+          this.cosineMatrix = data;
+          resolve(true);
+        } else {
+          reject(false);
+        }
+      });
     });
   }
 }

@@ -1,9 +1,7 @@
 // @flow
 import { memo, MouseEvent, Suspense, useState } from "react";
 import { useSwiper, useSwiperSlide } from "swiper/react";
-import { Node } from "typescript";
-import { Loading } from "../../components";
-import Video from "../../components/finalvideo";
+import { Loading, Video } from "../../components";
 import CommentContainer from "../commentcontainer";
 import RightContainer from "../rightcontainer";
 import UserContainer from "../usercontainer";
@@ -34,7 +32,7 @@ const VideoSlide = ({ video, allowedPlay }: Props) => {
     user: false,
   });
 
-  const { isActive, isNext, isPrev, isVisible } = swiperSlide;
+  const { isActive, isVisible } = swiperSlide;
 
   const onOpenRightBar = (action: RightBarAction) => {
     if (action.isOpen === openRightBar.isOpen) return;
