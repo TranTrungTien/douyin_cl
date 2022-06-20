@@ -10,12 +10,16 @@ type Props = {
     desc: string;
   };
   isPlay?: boolean;
+  allowedPlay?: boolean;
   progressBar: JSX.Element;
   turnOnOffVolume?: (action: boolean) => void;
 };
 
 const BottomVideoAction = forwardRef<HTMLSpanElement, Props>(
-  ({ video, isPlay, progressBar, turnOnOffVolume }: Props, timeCounterRef) => {
+  (
+    { allowedPlay, video, isPlay, progressBar, turnOnOffVolume }: Props,
+    timeCounterRef
+  ) => {
     console.log("bottom action rerender");
     const volumeRef = useRef<HTMLDivElement>(null);
     const volumeBarRef = useRef<HTMLDivElement>(null);
@@ -75,7 +79,17 @@ const BottomVideoAction = forwardRef<HTMLSpanElement, Props>(
                     aria-label="play and pause"
                     className="mr-2 mt-1"
                   >
-                    {isPlay ? (
+                    {!isPlay || !allowedPlay ? (
+                      <svg
+                        width="32"
+                        height="32"
+                        className="fill-current"
+                        xmlns="http://www.w3.org/2000/svg"
+                        viewBox="0 0 39 39"
+                      >
+                        <path d="M10 10.693c0-1.7 0-2.549.354-3.013A1.729 1.729 0 0111.64 7c.582-.03 1.284.45 2.687 1.409l9.697 6.63c1.097.75 1.646 1.126 1.843 1.598.172.414.177.878.014 1.296-.187.476-.727.863-1.808 1.638l-9.697 6.945c-1.413 1.013-2.12 1.52-2.71 1.498a1.728 1.728 0 01-1.305-.67C10 26.877 10 26.007 10 24.268V10.693z"></path>
+                      </svg>
+                    ) : (
                       <svg
                         width="32"
                         height="32"
@@ -88,16 +102,6 @@ const BottomVideoAction = forwardRef<HTMLSpanElement, Props>(
                           clipRule="evenodd"
                           d="M11 10.282C11 9.574 11.514 9 12.149 9h1.596c.634 0 1.149.574 1.149 1.282v15.436c0 .708-.515 1.282-1.15 1.282H12.15C11.514 27 11 26.426 11 25.718V10.282zm11 0C22 9.574 22.514 9 23.149 9h1.596c.634 0 1.149.574 1.149 1.282v15.436c0 .708-.515 1.282-1.15 1.282H23.15C22.514 27 22 26.426 22 25.718V10.282z"
                         ></path>
-                      </svg>
-                    ) : (
-                      <svg
-                        width="32"
-                        height="32"
-                        className="fill-current"
-                        xmlns="http://www.w3.org/2000/svg"
-                        viewBox="0 0 39 39"
-                      >
-                        <path d="M10 10.693c0-1.7 0-2.549.354-3.013A1.729 1.729 0 0111.64 7c.582-.03 1.284.45 2.687 1.409l9.697 6.63c1.097.75 1.646 1.126 1.843 1.598.172.414.177.878.014 1.296-.187.476-.727.863-1.808 1.638l-9.697 6.945c-1.413 1.013-2.12 1.52-2.71 1.498a1.728 1.728 0 01-1.305-.67C10 26.877 10 26.007 10 24.268V10.693z"></path>
                       </svg>
                     )}
                   </button>
