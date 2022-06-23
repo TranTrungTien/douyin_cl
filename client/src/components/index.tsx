@@ -30,3 +30,4 @@ export { default as RightVideoAction } from "./rightvideoaction";
 export { default as Loading } from "./loading";
 export { default as BackgroundVideo } from "./background-video";
 export { default as RelatedVideo } from "./related-video";
+export { default as Login } from "./login";

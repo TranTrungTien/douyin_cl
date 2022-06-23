@@ -8,6 +8,7 @@
 
 .loading-container__circle:before,
 .loading-container__circle:after {
+    z-index: 99999;
     content: " ";
     width: var(--circle-diameter);
     height: var(--circle-diameter);
@@ -39,7 +40,7 @@
     }
 
     50% {
-        left: var(--circle-diameter);
+        left:calc(var(--circle-diameter) + 5px);
     }
 
     75% {
