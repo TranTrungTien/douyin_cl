@@ -1,9 +1,18 @@
+import { useState } from "react";
 import { Link } from "react-router-dom";
+import BasicInfo from "../basic-info";
 import Button from "../button";
+import Login from "../login";
+import Modal from "../modal";
 
 type Props = {};
 
 const Nav = (props: Props) => {
+  const [signIn, setSignIn] = useState(false);
+  const [emailVerified, setEmailVerified] = useState("");
+  const onVerifyEmail = (emailVerified: string) => {
+    emailVerified && setEmailVerified(emailVerified);
+  };
   return (
     <ul className="flex justify-between items-center">
       <li className="opacity-80 hover:opacity-100 cursor-pointer ">
@@ -24,7 +33,9 @@ const Nav = (props: Props) => {
       </li>
       <li className="ml-8">
         <Button
-          onClick={() => {}}
+          onClick={() => {
+            setSignIn(true);
+          }}
           text="登录"
           backgroundColor="bg-fresh_red"
           borderRadius="rounded-[5px]"
@@ -34,6 +45,18 @@ const Nav = (props: Props) => {
           styleArray="font-medium leading-[23px] border border-fresh_red flex justify-center items-center text-white"
         />
       </li>
+      {signIn && (
+        <Modal>
+          {emailVerified ? (
+            <BasicInfo emailVerified={emailVerified} />
+          ) : (
+            <Login
+              onVerifyEmail={onVerifyEmail}
+              onCloseLogin={() => setSignIn(false)}
+            />
+          )}
+        </Modal>
+      )}
     </ul>
   );
 };
