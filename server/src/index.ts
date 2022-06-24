@@ -8,6 +8,10 @@ import RecommendationRouter from "./routers/recommendation.route";
 import UserRouter from "./routers/user.route";
 import { DBConnect } from "./utils/mongoose";
 import { RecommendationUtils } from "./utils/recommendation";
+// import WebSocket from "ws";
+// import NodeMediaServer from "node-media-server";
+// import ffmpegBinary from "@ffmpeg-installer/ffmpeg";
+// import { spawn } from "child_process";
 
 DBConnect()
   .then((_) => {
@@ -15,11 +19,6 @@ DBConnect()
       .then((done) => {
         console.log("trained : ", done);
         const app: Express = express();
-        // import WebSocket from "ws";
-        // import NodeMediaServer from "node-media-server";
-        // import ffmpegBinary from "@ffmpeg-installer/ffmpeg";
-        // import { spawn } from "child_process";
-
         dotenv.config({ path: path.join(__dirname, "config.env") });
         const PORT = process.env.PORT || 3001;
         const server = http.createServer(app).listen(PORT, () => {

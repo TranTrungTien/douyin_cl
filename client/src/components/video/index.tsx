@@ -48,11 +48,13 @@ const Video = ({
   );
 
   useEffect(() => {
+    let videoRefCl: HTMLVideoElement | null = null;
     if (videoBlob && videoRef.current && !videoRef.current.src) {
+      videoRefCl = videoRef.current;
       videoRef.current.src = window.URL.createObjectURL(videoBlob);
     }
     return () => {
-      videoRef.current && window.URL.revokeObjectURL(videoRef.current.src);
+      videoRefCl && window.URL.revokeObjectURL(videoRefCl.src);
     };
   }, [videoBlob]);
   useEffect(() => {

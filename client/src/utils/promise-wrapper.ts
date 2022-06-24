@@ -1,6 +1,6 @@
 export function promiseWrapper<T>(promise: Promise<T>) {
   let status = "pending";
-  let result: T;
+  let result: T | undefined;
   let suspender = promise.then(
     (r) => {
       status = "success";
