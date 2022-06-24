@@ -22,7 +22,6 @@ const SwiperWrapper = () => {
     "http://localhost:3001/api/v1/recommendation/new",
     metaDataHeader
   );
-
   const onStart = () => {
     if (!start) setStart(true);
   };

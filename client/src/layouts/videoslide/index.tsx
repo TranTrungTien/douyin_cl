@@ -2,6 +2,8 @@
 import { memo, MouseEvent, Suspense, useState } from "react";
 import { useSwiper, useSwiperSlide } from "swiper/react";
 import { BackgroundVideo, Loading, Video } from "../../components";
+import Modal from "../../components/modal";
+import ErrorBoundary from "../../utils/error-boundaries";
 import CommentContainer from "../commentcontainer";
 import RightContainer from "../rightcontainer";
 import UserContainer from "../usercontainer";
@@ -84,15 +86,25 @@ const VideoSlide = ({ onStart, video, allowedPlay }: Props) => {
         >
           <BackgroundVideo />
           <Suspense fallback={<Loading />}>
-            <Video
-              fromVideoPage={false}
-              allowedPlay={allowedPlay}
-              video={video}
-              isPlay={isPlay}
-              isActive={isActive}
-              onChangeVideo={onChangeVideo}
-              onOpenRightBar={onOpenRightBar}
-            />
+            <ErrorBoundary
+              fallback={
+                <Modal>
+                  <div className="w-96 h-96 rounded bg-white text-center text-black">
+                    <h1>Opps we ran into some problems</h1>
+                  </div>
+                </Modal>
+              }
+            >
+              <Video
+                fromVideoPage={false}
+                allowedPlay={allowedPlay}
+                video={video}
+                isPlay={isPlay}
+                isActive={isActive}
+                onChangeVideo={onChangeVideo}
+                onOpenRightBar={onOpenRightBar}
+              />
+            </ErrorBoundary>
           </Suspense>
         </section>
       )}

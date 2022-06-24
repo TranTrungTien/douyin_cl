@@ -1,8 +1,10 @@
 import { lazy, Suspense } from "react";
 import { Loading } from "../../components";
+import Modal from "../../components/modal";
 import Nav from "../../components/nav";
 import Search from "../../components/search";
 import { Header, Sidebar } from "../../layouts";
+import ErrorBoundary from "../../utils/error-boundaries";
 
 const VideoSlideContainerWrapper = lazy(
   () => import("../../layouts/videoslidecontainer")
@@ -19,7 +21,17 @@ const HomePage = (props: Props) => {
         </Header>
         <div className="w-full h-[calc(100vh-63px)] flex justify-center items-center">
           <Suspense fallback={<Loading />}>
-            <VideoSlideContainerWrapper />
+            <ErrorBoundary
+              fallback={
+                <Modal>
+                  <div className="w-96 h-96 rounded bg-white text-center text-black">
+                    <h1>Opps we ran into some problems</h1>
+                  </div>
+                </Modal>
+              }
+            >
+              <VideoSlideContainerWrapper />
+            </ErrorBoundary>
           </Suspense>
         </div>
       </div>
