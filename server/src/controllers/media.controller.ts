@@ -5,12 +5,14 @@ import { v4 } from "uuid";
 import * as fs from "fs";
 import path from "path";
 import https from "https";
+import { drive_v3 } from "googleapis";
+import { GaxiosPromise } from "googleapis/build/src/apis/abusiveexperiencereport";
 
 function upload(req: Request, res: Response) {
   const busboy = Busboy({ headers: req.headers });
   busboy.on("file", async (fileName, fileStream, fileInfo) => {
     try {
-      const response = await drive.files.create({
+      const response: any = await drive.files.create({
         requestBody: {
           name: v4() + "-" + fileName,
           mimeType: fileInfo.mimeType,

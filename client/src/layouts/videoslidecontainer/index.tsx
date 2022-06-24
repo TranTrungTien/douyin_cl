@@ -1,10 +1,6 @@
 import { Suspense } from "react";
 import { Loading } from "../../components";
-import { lazy } from "react";
-import Test from "../test";
-
-const SwiperWrapper = lazy(() => import("../../components/swiper-wrapper"));
-
+import SwiperWrapper from "../../components/swiper-wrapper";
 type Props = {};
 const VideoSlideContainer = (props: Props) => {
   console.log("video slide container re render");

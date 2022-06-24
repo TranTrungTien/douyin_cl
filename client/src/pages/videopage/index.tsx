@@ -94,13 +94,13 @@ const VideoPage = (props: Props) => {
         <PageContainer styleArray="pt-6">
           <div className="2xl:max-w-[1306] 2xl:w-[1306px] flex justify-center items-start mx-auto space-x-3">
             <SideContainer width="w-[960px]" height="h-full">
-              <Suspense fallback={<Loading />}>
-                <section
-                  onClick={onPlayOrPause}
-                  data-type="clickable"
-                  className="w-full xl:h-[574px]  flex-1 relative grid place-content-center overflow-hidden rounded-md backdrop-blur-sm"
-                >
-                  <BackgroundVideo />
+              <section
+                onClick={onPlayOrPause}
+                data-type="clickable"
+                className="w-full xl:h-[574px]  flex-1 relative grid place-content-center overflow-hidden rounded-md backdrop-blur-sm"
+              >
+                <BackgroundVideo />
+                <Suspense fallback={<Loading />}>
                   {video && (
                     <Video
                       fromVideoPage={true}
@@ -111,8 +111,9 @@ const VideoPage = (props: Props) => {
                       video={video}
                     />
                   )}
-                </section>
-              </Suspense>
+                </Suspense>
+              </section>
+
               <div className="flex flex-col justify-start items-start w-full">
                 {video && (
                   <VideoHeaderContainer metaData={{ desc: video.desc }} />

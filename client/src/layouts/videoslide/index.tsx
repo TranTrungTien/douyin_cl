@@ -1,7 +1,7 @@
 // @flow
 import { memo, MouseEvent, Suspense, useState } from "react";
 import { useSwiper, useSwiperSlide } from "swiper/react";
-import { Loading, Video } from "../../components";
+import { BackgroundVideo, Loading, Video } from "../../components";
 import CommentContainer from "../commentcontainer";
 import RightContainer from "../rightcontainer";
 import UserContainer from "../usercontainer";
@@ -77,19 +77,13 @@ const VideoSlide = ({ onStart, video, allowedPlay }: Props) => {
   return (
     <div className="flex justify-between items-center w-full h-full rounded-md">
       {isVisible && (
-        <Suspense fallback={<Loading />}>
-          <section
-            onClick={onPlayOrPause}
-            data-type="clickable"
-            className="w-full h-full flex-1 relative grid place-content-center overflow-hidden rounded-md"
-          >
-            <div
-              className="z-[-1] absolute top-0 left-0 w-full h-full bg-center bg-no-repeat bg-cover bg-gradient-to-r from-darkslategray2 to-darkslategray3 blur-xl rounded-md"
-              style={{
-                backgroundImage:
-                  "url(https://i2-prod.cheshire-live.co.uk/incoming/article19274328.ece/ALTERNATES/s1227b/0_Ryan-Mottrams-picture-of-Middlewich.jpg)",
-              }}
-            ></div>
+        <section
+          onClick={onPlayOrPause}
+          data-type="clickable"
+          className="w-full h-full flex-1 relative grid place-content-center overflow-hidden rounded-md"
+        >
+          <BackgroundVideo />
+          <Suspense fallback={<Loading />}>
             <Video
               fromVideoPage={false}
               allowedPlay={allowedPlay}
@@ -99,17 +93,17 @@ const VideoSlide = ({ onStart, video, allowedPlay }: Props) => {
               onChangeVideo={onChangeVideo}
               onOpenRightBar={onOpenRightBar}
             />
-          </section>
-          {openRightBar.isOpen && (
-            <RightContainer>
-              {openRightBar.user ? (
-                <UserContainer handleCloseUserBox={onOpenRightBar} />
-              ) : (
-                <CommentContainer handleCloseComment={onOpenRightBar} />
-              )}
-            </RightContainer>
+          </Suspense>
+        </section>
+      )}
+      {openRightBar.isOpen && (
+        <RightContainer>
+          {openRightBar.user ? (
+            <UserContainer handleCloseUserBox={onOpenRightBar} />
+          ) : (
+            <CommentContainer handleCloseComment={onOpenRightBar} />
           )}
-        </Suspense>
+        </RightContainer>
       )}
     </div>
   );

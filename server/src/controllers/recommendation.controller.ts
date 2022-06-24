@@ -15,7 +15,7 @@ function getRecommendationDef(req: Request, res: Response) {
 
   console.log(RecommendationUtils.cosineMatrix?.[0]);
 
-  res.status(200).send({ list });
+  res.status(200).send(list);
 }
 
 function getRecommendationFromVideo(req: Request, res: Response) {

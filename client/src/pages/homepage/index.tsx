@@ -1,7 +1,12 @@
-import { Suspense } from "react";
+import { lazy, Suspense } from "react";
+import { Loading } from "../../components";
 import Nav from "../../components/nav";
 import Search from "../../components/search";
-import { Header, Sidebar, VideoSlideContainer } from "../../layouts";
+import { Header, Sidebar } from "../../layouts";
+
+const VideoSlideContainerWrapper = lazy(
+  () => import("../../layouts/videoslidecontainer")
+);
 type Props = {};
 const HomePage = (props: Props) => {
   return (
@@ -13,8 +18,8 @@ const HomePage = (props: Props) => {
           <Nav />
         </Header>
         <div className="w-full h-[calc(100vh-63px)] flex justify-center items-center">
-          <Suspense fallback={<div>Loading ...</div>}>
-            <VideoSlideContainer />
+          <Suspense fallback={<Loading />}>
+            <VideoSlideContainerWrapper />
           </Suspense>
         </div>
       </div>
