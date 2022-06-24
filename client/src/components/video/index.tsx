@@ -1,4 +1,6 @@
 import { useEffect, useRef } from "react";
+import { mediaHeader } from "../../config/axios-config";
+import { useFetch } from "../../hooks/useFetch";
 import { RightBarAction } from "../../layouts/videoslide";
 import { timeFormat } from "../../utils/timeFormat";
 import AvatarCardButton from "../avatarcardbutton";
@@ -35,19 +37,39 @@ const Video = ({
 }: Props) => {
   const videoRef = useRef<HTMLVideoElement>(null);
   console.log("video rerender");
-
   const progressBarRef = useRef<HTMLDivElement>(null);
   const progressRef = useRef<HTMLDivElement>(null);
   const timeCounterRef = useRef<HTMLSpanElement>(null);
   const progressContainerRef = useRef({ progressRef, progressBarRef });
+  const videoBlob = useFetch<Blob>(
+    "http://localhost:3001/api/v1/media/get-video-stream?link=" +
+      video.local_link,
+    mediaHeader
+  );
+
   useEffect(() => {
-    if (isPlay && isActive && allowedPlay && videoRef.current?.paused) {
+    if (videoBlob && videoRef.current && !videoRef.current.src) {
+      videoRef.current.src = window.URL.createObjectURL(videoBlob);
+    }
+    return () => {
+      videoRef.current && window.URL.revokeObjectURL(videoRef.current.src);
+    };
+  }, [videoBlob]);
+  useEffect(() => {
+    if (
+      isPlay &&
+      isActive &&
+      allowedPlay &&
+      videoRef.current &&
+      videoRef.current.paused
+    ) {
       videoRef.current.play();
     } else if (
       !isPlay &&
       isActive &&
       allowedPlay &&
-      !videoRef.current?.paused
+      videoRef.current &&
+      !videoRef.current.paused
     ) {
       videoRef.current?.pause();
     }
@@ -101,12 +123,6 @@ const Video = ({
         data-type="clickable"
         playsInline
         className="max-h-full w-auto h-auto object-contain object-center rounded-md absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 hover:cursor-pointer"
-        src={
-          isActive
-            ? "http://localhost:3001/api/v1/media/get-video-stream?link=" +
-              video.local_link
-            : undefined
-        }
         loop={isActive && true}
         autoPlay={isActive && allowedPlay}
         onTimeUpdate={onTimeUpdate}

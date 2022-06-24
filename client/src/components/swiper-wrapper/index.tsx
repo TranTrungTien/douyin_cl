@@ -1,31 +1,28 @@
-import axios from "axios";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import SwiperCore, { Virtual } from "swiper";
 import "swiper/css";
 import "swiper/css/bundle";
 import "swiper/css/virtual";
 import { Swiper, SwiperSlide } from "swiper/react";
+import { metaDataHeader } from "../../config/axios-config";
+import { useFetch } from "../../hooks/useFetch";
 import { VideoSlide } from "../../layouts";
 SwiperCore.use([Virtual]);
 
+interface IVideo {
+  author: string;
+  desc: string;
+  link: string;
+  local_link: string;
+}
+
 const SwiperWrapper = () => {
-  const [videos, setVideos] = useState([]);
   const [start, setStart] = useState(false);
-  useEffect(() => {
-    axios
-      .get("http://localhost:3001/api/v1/recommendation/new", {
-        headers: {
-          "content-type": "application/json",
-        },
-      })
-      .then((result) => {
-        setVideos(result.data.list);
-      })
-      .catch((err) => {
-        console.log({ err });
-        alert("err");
-      });
-  }, []);
+  const videos = useFetch<IVideo[]>(
+    "http://localhost:3001/api/v1/recommendation/new",
+    metaDataHeader
+  );
+
   const onStart = () => {
     if (!start) setStart(true);
   };
@@ -38,7 +35,7 @@ const SwiperWrapper = () => {
       className="w-full h-full relative"
       virtual
     >
-      {videos.length > 0 &&
+      {Array.isArray(videos) &&
         videos.map((video, index) => (
           <SwiperSlide
             className="w-full h-full rounded-md"
