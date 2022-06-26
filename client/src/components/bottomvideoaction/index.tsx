@@ -9,6 +9,7 @@ type Props = {
     author: string;
     desc: string;
   };
+  fromVideoPage: boolean;
   isPlay?: boolean;
   allowedPlay?: boolean;
   progressBar: JSX.Element;
@@ -17,7 +18,14 @@ type Props = {
 
 const BottomVideoAction = forwardRef<HTMLSpanElement, Props>(
   (
-    { allowedPlay, video, isPlay, progressBar, turnOnOffVolume }: Props,
+    {
+      fromVideoPage,
+      allowedPlay,
+      video,
+      isPlay,
+      progressBar,
+      turnOnOffVolume,
+    }: Props,
     timeCounterRef
   ) => {
     console.log("bottom action rerender");
@@ -212,30 +220,32 @@ const BottomVideoAction = forwardRef<HTMLSpanElement, Props>(
                   </button>
                 </div>
 
-                <Link
-                  target="_blank"
-                  to={`/video/${video.local_link.replace("/videos", "")}`}
-                >
-                  <div className="flex justify-center items-center group-hover: opacity-100">
-                    {/* link to video's page */}
-                    <span className="text-xs font-normal mr-2">详情</span>
-                    <svg
-                      width="6"
-                      height="9"
-                      viewBox="0 0 6 9"
-                      fill="none"
-                      xmlns="http://www.w3.org/2000/svg"
-                    >
-                      <path
-                        opacity="0.7"
-                        fillRule="evenodd"
-                        clipRule="evenodd"
-                        d="M0.689396 8.12382C0.396503 7.83093 0.396503 7.35605 0.689396 7.06316L3.51782 4.23473L0.689396 1.40631C0.396503 1.11341 0.396503 0.63854 0.689396 0.345646C0.98229 0.0527533 1.45716 0.0527533 1.75006 0.345646L5.10881 3.7044C5.40171 3.9973 5.40171 4.47217 5.10881 4.76506L1.75006 8.12382C1.45716 8.41671 0.98229 8.41671 0.689396 8.12382Z"
-                        fill="white"
-                      ></path>
-                    </svg>
-                  </div>
-                </Link>
+                {!fromVideoPage && (
+                  <Link
+                    target="_blank"
+                    to={`/video/${video.local_link.replace("/videos", "")}`}
+                  >
+                    <div className="flex justify-center items-center group-hover: opacity-100">
+                      {/* link to video's page */}
+                      <span className="text-xs font-normal mr-2">详情</span>
+                      <svg
+                        width="6"
+                        height="9"
+                        viewBox="0 0 6 9"
+                        fill="none"
+                        xmlns="http://www.w3.org/2000/svg"
+                      >
+                        <path
+                          opacity="0.7"
+                          fillRule="evenodd"
+                          clipRule="evenodd"
+                          d="M0.689396 8.12382C0.396503 7.83093 0.396503 7.35605 0.689396 7.06316L3.51782 4.23473L0.689396 1.40631C0.396503 1.11341 0.396503 0.63854 0.689396 0.345646C0.98229 0.0527533 1.45716 0.0527533 1.75006 0.345646L5.10881 3.7044C5.40171 3.9973 5.40171 4.47217 5.10881 4.76506L1.75006 8.12382C1.45716 8.41671 0.98229 8.41671 0.689396 8.12382Z"
+                          fill="white"
+                        ></path>
+                      </svg>
+                    </div>
+                  </Link>
+                )}
               </div>
             </div>
           </div>

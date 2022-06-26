@@ -9,7 +9,6 @@ export function useFetch<T>(url: string, opts: AxiosRequestConfig) {
   } | null>(null);
   useEffect(() => {
     console.log("useEffect running");
-
     const _resource = promiseWrapper<T>(fetchData<T>(url, opts));
     setResource(_resource);
   }, [url, opts]);

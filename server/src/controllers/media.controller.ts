@@ -67,7 +67,7 @@ function getVideoInfo(req: Request, res: Response) {
       link: string;
       desc: string;
     }[];
-    const info = data.filter((video) => video.local_link.includes(videoId));
+    const info = data.find((video) => video.local_link.includes(videoId));
     console.log({ info });
 
     return res.status(200).send(info);

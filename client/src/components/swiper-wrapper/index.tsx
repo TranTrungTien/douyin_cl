@@ -1,10 +1,10 @@
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import SwiperCore, { Virtual } from "swiper";
 import "swiper/css";
 import "swiper/css/bundle";
 import "swiper/css/virtual";
 import { Swiper, SwiperSlide } from "swiper/react";
-import { metaDataHeader } from "../../config/axios-config";
+import { axiosConfigHeaders } from "../../config/axios-config";
 import { useFetch } from "../../hooks/useFetch";
 import { VideoSlide } from "../../layouts";
 SwiperCore.use([Virtual]);
@@ -18,10 +18,15 @@ interface IVideo {
 
 const SwiperWrapper = () => {
   const [start, setStart] = useState(false);
-  const videos = useFetch<IVideo[]>(
-    "http://localhost:3001/api/v1/recommendation/new",
-    metaDataHeader
-  );
+  const metaHeader = useMemo(() => {
+    return axiosConfigHeaders(
+      "json",
+      "application/json",
+      "application/json",
+      null
+    );
+  }, []);
+  const videos = useFetch<IVideo[]>("recommendation/new", metaHeader);
   const onStart = () => {
     if (!start) setStart(true);
   };

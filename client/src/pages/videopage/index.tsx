@@ -1,5 +1,4 @@
-import axios from "axios";
-import { MouseEvent, Suspense, useEffect, useState } from "react";
+import { MouseEvent, Suspense, useMemo, useState } from "react";
 import { useParams } from "react-router-dom";
 import {
   AvatarCardLink,
@@ -13,6 +12,7 @@ import {
   Search,
   Video,
 } from "../../components";
+import Modal from "../../components/modal";
 import { dataType } from "../../constants/type";
 import {
   Header,
@@ -22,41 +22,28 @@ import {
   SideContainer,
   VideoHeaderContainer,
 } from "../../layouts";
+import ErrorBoundary from "../../utils/error-boundaries";
+
+import { axiosConfigHeaders } from "../../config/axios-config";
+import { useFetch } from "../../hooks/useFetch";
 
 type Props = {};
 
 const VideoPage = (props: Props) => {
   const [isPlay, setIsPlay] = useState(true);
-  const [video, setVideo] = useState<null | {
+  const { id } = useParams();
+  console.log(id);
+  const mediaHeader = useMemo(() => {
+    return axiosConfigHeaders("json", "application/json", "application/json", {
+      id: id,
+    });
+  }, [id]);
+  const video = useFetch<{
     author: string;
     link: string;
     local_link: string;
     desc: string;
-  }>(null);
-  const { id } = useParams();
-  console.log(id);
-  useEffect(() => {
-    if (id) {
-      axios
-        .get("http://localhost:3001/api/v1/media/get-video-info", {
-          headers: {
-            contentType: "application/json",
-          },
-          params: {
-            id: id,
-          },
-        })
-        .then((result) => {
-          Array.isArray(result.data)
-            ? setVideo(result.data[0])
-            : setVideo(result.data);
-        })
-        .catch((err) => {
-          console.log({ err });
-          alert("Something went wrong");
-        });
-    }
-  }, [id]);
+  }>("media/get-video-info", mediaHeader);
   const onPlayOrPause = (
     e: MouseEvent<HTMLElement> & {
       target: {
@@ -101,16 +88,26 @@ const VideoPage = (props: Props) => {
               >
                 <BackgroundVideo />
                 <Suspense fallback={<Loading />}>
-                  {video && (
-                    <Video
-                      fromVideoPage={true}
-                      isActive={true}
-                      isPlay={isPlay ? true : false}
-                      onChangeVideo={() => {}}
-                      allowedPlay={true}
-                      video={video}
-                    />
-                  )}
+                  <ErrorBoundary
+                    fallback={
+                      <Modal>
+                        <div className="w-96 h-96 rounded bg-white text-center text-black">
+                          <h1>Opps we ran into some problems</h1>
+                        </div>
+                      </Modal>
+                    }
+                  >
+                    {video && (
+                      <Video
+                        fromVideoPage={true}
+                        isActive={true}
+                        isPlay={isPlay ? true : false}
+                        onChangeVideo={() => {}}
+                        allowedPlay={true}
+                        video={video}
+                      />
+                    )}
+                  </ErrorBoundary>
                 </Suspense>
               </section>
 
