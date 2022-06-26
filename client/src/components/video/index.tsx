@@ -1,5 +1,5 @@
-import { useEffect, useRef } from "react";
-import { mediaHeader } from "../../config/axios-config";
+import { useEffect, useMemo, useRef } from "react";
+import { axiosConfigHeaders } from "../../config/axios-config";
 import { useFetch } from "../../hooks/useFetch";
 import { RightBarAction } from "../../layouts/videoslide";
 import { timeFormat } from "../../utils/timeFormat";
@@ -10,6 +10,15 @@ import NextVideoButton from "../nextvideobutton";
 import Plus from "../plus";
 import ProgressBar from "../progressbar";
 import RightVideoAction from "../rightvideoaction";
+
+//  useMemo(() => {
+//    return axiosConfigHeaders(
+//      "blob",
+//      "application/json",
+//      "application/json",
+//      null
+//    );
+//  }, []);
 
 type Props = {
   video: {
@@ -41,9 +50,16 @@ const Video = ({
   const progressRef = useRef<HTMLDivElement>(null);
   const timeCounterRef = useRef<HTMLSpanElement>(null);
   const progressContainerRef = useRef({ progressRef, progressBarRef });
+  const mediaHeader = useMemo(() => {
+    return axiosConfigHeaders(
+      "blob",
+      "application/json",
+      "application/json",
+      null
+    );
+  }, []);
   const videoBlob = useFetch<Blob>(
-    "http://localhost:3001/api/v1/media/get-video-stream?link=" +
-      video.local_link,
+    "media/get-video-stream?link=" + video.local_link,
     mediaHeader
   );
 
@@ -148,6 +164,7 @@ const Video = ({
       )}
       {/* Action's video */}
       <BottomVideoAction
+        fromVideoPage={fromVideoPage}
         allowedPlay={allowedPlay}
         video={video}
         ref={timeCounterRef}

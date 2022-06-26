@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
+import AvatarCardButton from "../avatarcardbutton";
 import BasicInfo from "../basic-info";
 import Button from "../button";
 import Login from "../login";
