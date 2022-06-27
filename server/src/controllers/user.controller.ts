@@ -6,6 +6,11 @@ import { v4 } from "uuid";
 import jwt from "jsonwebtoken";
 import NodeMailer from "nodemailer";
 let code: string = "";
+const isExisted = {
+  isExisted: false,
+  email: "",
+};
+let codeVerified = "";
 
 function createUser(req: Request, res: Response) {
   const { password, ...user } = req.body.user as IUser;
@@ -36,8 +41,8 @@ function updateUser(req: Request, res: Response) {
   });
 }
 function getUser(req: Request, res: Response) {
-  const uid = req.params.uid;
-  UserModel.findOne({ uid: uid }, null, null, (err, doc) => {
+  const uid = req.body.uid;
+  UserModel.findOne({ uid: uid }, { password: 0 }, null, (err, doc) => {
     if (err) res.status(404).send(err);
     else res.status(200).send(doc);
   });
@@ -52,6 +57,9 @@ function deleteUser(req: Request, res: Response) {
 function login(req: Request, res: Response) {
   const email = req.body.email as string;
   const password = req.body.password as string;
+  if (!password && !email) {
+    return res.status(400).send({ message: "Invalid email or password" });
+  }
   UserModel.findOne({ email, password }, null, null, (err, doc) => {
     if (err) return res.status(500).send(err);
     else {
@@ -72,9 +80,33 @@ function login(req: Request, res: Response) {
     }
   });
 }
+
+function loginWithoutPassword(req: Request, res: Response) {
+  const email = req.body.email as string;
+  const secretCode = req.body.secretCode as string;
+  if (secretCode !== codeVerified) {
+    return res.status(400).send({ message: "Invalid email or secret code" });
+  }
+  UserModel.findOne({ email }, { password: 0 }, null, (err, doc) => {
+    if (err) return res.status(500).send(err);
+    else {
+      if (!doc) return res.status(404).send(doc);
+      else {
+        const token = jwt.sign(doc.uid, process.env.JWT_SECRET ?? "") as string;
+        return res
+          .status(200)
+          .cookie("token", token, {
+            expires: new Date(Date.now() + 3600000),
+            httpOnly: true,
+          })
+          .send(doc);
+      }
+    }
+  });
+}
 async function mailSender(req: Request, res: Response) {
   const email = req.body.email as string;
-  console.log(email);
+  const user = await UserModel.findOne({ email: email });
   code = v4();
   const transporter = NodeMailer.createTransport({
     service: "gmail",
@@ -83,27 +115,43 @@ async function mailSender(req: Request, res: Response) {
       pass: process.env.EMAIL_PASSWORD,
     },
   });
-  transporter.sendMail(
-    {
-      from: `"Tran Trung Tien 👻" <${process.env.EMAIL_USERNAME}>`,
-      to: email,
-      subject: "Douyin Code", // Subject line
-      text: "YourCode : " + code, // plain text body
-    },
-    (err, _) => {
-      if (err) {
-        return res.status(500).send(err);
-      } else {
-        return res.status(200).send(email);
-      }
-    }
-  );
+  isExisted.email = user ? email : "";
+  isExisted.isExisted = user ? true : false;
+  console.log({ code });
+
+  // transporter.sendMail(
+  //   {
+  //     from: `"Tran Trung Tien 👻" <${process.env.EMAIL_USERNAME}>`,
+  //     to: email,
+  //     subject: "Douyin Code", // Subject line
+  //     text: "YourCode : " + code, // plain text body
+  //   },
+  //   (err, _) => {
+  //     if (err) {
+  //       return res.status(500).send(err);
+  //     } else {
+  //       return res.status(200).send(email);
+  //     }
+  //   }
+  // );
+  return res.status(200).send(email);
 }
 
 function verifyCode(req: Request, res: Response) {
   const clientCode = req.body.code as string;
-  if (code === clientCode) return res.status(200).send(true);
-  else return res.status(400).send(false);
+  const existedEmail = req.body.existedEmail as string;
+  if (code === clientCode) {
+    const secretCode = v4() + v4() + v4() + v4();
+    codeVerified = secretCode;
+    return res.status(200).send({
+      userExisted: existedEmail === isExisted.email && isExisted.isExisted,
+      userEmail: existedEmail,
+      secretCode:
+        existedEmail === isExisted.email && isExisted.isExisted
+          ? secretCode
+          : null,
+    });
+  } else return res.status(400).send(false);
 }
 
 const UserController = {
@@ -114,6 +162,7 @@ const UserController = {
   login,
   mailSender,
   verifyCode,
+  loginWithoutPassword,
 };
 
 export default UserController;

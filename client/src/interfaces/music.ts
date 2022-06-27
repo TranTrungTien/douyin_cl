@@ -1,8 +1,8 @@
-import { user } from "./user";
+import { IUser } from "./user.interface";
 import { video } from "./video";
 export interface music {
   _id: string;
   title: string;
-  author: user;
+  author: IUser;
   videos: video[];
 }

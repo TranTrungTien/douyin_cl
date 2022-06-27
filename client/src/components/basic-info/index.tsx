@@ -1,10 +1,13 @@
-import axios from "axios";
+import axios, { AxiosResponse } from "axios";
 import { SyntheticEvent } from "react";
+import { IUser } from "../../interfaces/user.interface";
 
 type Props = {
   emailVerified: string;
 };
 const BasicInfo = ({ emailVerified }: Props) => {
+  console.log(emailVerified);
+
   const onSubmit = (e: SyntheticEvent) => {
     e.preventDefault();
     const target = e.target as typeof e.target & {
@@ -19,14 +22,24 @@ const BasicInfo = ({ emailVerified }: Props) => {
     else {
       const user = { nickname: nickname, email: email, password: password };
       axios
-        .post(
-          "http://localhost:3001/api/v1/user/save",
+        .post<any, AxiosResponse<IUser>>(
+          "user/save",
           { user },
           {
             headers: { "Content-Type": "application/json" },
           }
         )
-        .then(console.log)
+        .then((user) => {
+          const email = user.data.email;
+          const password = user.data.password;
+          axios
+            .post(
+              "user/login",
+              { email, password },
+              { headers: { "Content-Type": "application/json" } }
+            )
+            .then((userLogin) => console.log(userLogin.data));
+        })
         .catch(console.error);
     }
   };
