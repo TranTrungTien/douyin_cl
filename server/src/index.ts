@@ -27,7 +27,7 @@ DBConnect()
 
         app.use(
           cors({
-            origin: "*",
+            origin: true,
             methods: "*",
             credentials: true,
           })
@@ -132,3 +132,24 @@ DBConnect()
 
 // const nms = new NodeMediaServer(config);
 // nms.run();
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+// @ts-ignore
+// import * as Recommender from "likely";
+
+// const matrix = [
+//   [1, 1, 1, 1, 0, 1],
+//   [1, 0, 1, 1, 0, 0],
+//   [1, 0, 0, 0, 0, 1],
+//   [0, 1, 1, 1, 0, 0],
+//   [1, 1, 1, 1, 0, 1],
+//   [1, 0, 0, 0, 1, 1],
+// ];
+
+// const rowLabels = ["John", "Sue", "Joe", "Smith", "Doe", "Hanna"];
+// const colLabels = ["Red", "Blue", "Green", "Purple", "Yellow", "YellowGreen"];
+
+// const model = Recommender.buildModel(matrix, rowLabels, colLabels);
+
+// console.log(
+//   model.recommendations(rowLabels[2]).sort((x: any[], y: any[]) => y[1] - x[1])
+// );

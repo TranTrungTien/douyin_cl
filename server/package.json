@@ -23,6 +23,7 @@
     "jieba-zh-tw": "^1.0.12",
     "js-jieba": "^1.0.12",
     "jsonwebtoken": "^8.5.1",
+    "likely": "^0.2.0",
     "mongoose": "^6.2.3",
     "natural": "^5.2.2",
     "node-media-server": "^2.3.12",

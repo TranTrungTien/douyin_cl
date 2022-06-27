@@ -31,6 +31,8 @@ const AvatarCardButton = ({
       className={`${width} ${height} ${borderRadius} ${styleArray} relative`}
     >
       <button
+        type="button"
+        title="User"
         className={`${width} ${height} ${borderRadius}`}
         onClick={onOpenRightBar}
       >

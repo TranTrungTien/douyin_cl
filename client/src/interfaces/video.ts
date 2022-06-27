@@ -1,10 +1,10 @@
 import { comment } from "./comment";
-import { user } from "./user";
+import { IUser } from "./user.interface";
 
 export interface video {
   _id: string;
   title: string;
-  author: user;
+  author: IUser;
   description: string;
   imageCover: string;
   url: string;
