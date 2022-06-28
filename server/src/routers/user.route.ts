@@ -1,9 +1,10 @@
 import express from "express";
 import UserController from "../controllers/user.controller";
+import { verifyToken } from "../middlewares/verifytoken";
 
 const router = express.Router();
 
-router.get("/", UserController.getUser);
+router.get("/", verifyToken, UserController.getUser);
 router.post("/save", UserController.createUser);
 router.put("/update", UserController.updateUser);
 router.delete("/delete", UserController.deleteUser);

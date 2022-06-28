@@ -25,7 +25,7 @@ const Nav = (props: Props) => {
       <li className="opacity-80 hover:opacity-100 cursor-pointer ml-8">
         <span>创作者服务</span>
       </li>
-      {user && (
+      {user.data && (
         <li className="opacity-80 hover:opacity-100 cursor-pointer ml-8">
           <AvatarCardButton image="https://thumbs.dreamstime.com/z/astronaut-outer-space-porthole-background-earth-elements-image-furnished-nasa-astronaut-outer-131582688.jpg" />
         </li>
@@ -40,7 +40,7 @@ const Nav = (props: Props) => {
           {/* <div className="absolute top-0 z-[-1] -right-px w-[3px] h-full bg-fresh_red"></div> */}
         </Link>
       </li>
-      {!user && (
+      {!user.data && (
         <li className="ml-8">
           <Button
             onClick={() => {
@@ -56,7 +56,7 @@ const Nav = (props: Props) => {
           />
         </li>
       )}
-      {signIn && !user && (
+      {signIn && !user.data && (
         <Modal>
           {emailVerified ? (
             <BasicInfo emailVerified={emailVerified} />

@@ -6,8 +6,6 @@ type Props = {
   onCloseLogin: () => void;
 };
 const Login = ({ onCloseLogin, onVerifyEmail }: Props) => {
-  const [actionType, setActionType] = useState(0);
-
   return (
     <div className="xl:w-[360px] h-[360px] box-border">
       <div
