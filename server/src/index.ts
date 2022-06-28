@@ -8,6 +8,7 @@ import RecommendationRouter from "./routers/recommendation.route";
 import UserRouter from "./routers/user.route";
 import { DBConnect } from "./utils/mongoose";
 import { RecommendationUtils } from "./utils/recommendation";
+import cookieParser from "cookie-parser";
 // import WebSocket from "ws";
 // import NodeMediaServer from "node-media-server";
 // import ffmpegBinary from "@ffmpeg-installer/ffmpeg";
@@ -32,7 +33,7 @@ DBConnect()
             credentials: true,
           })
         );
-
+        app.use(cookieParser());
         app.use(express.json());
         app.use(express.urlencoded({ extended: true }));
         app.use("/api/v1/media", MediaRouter);

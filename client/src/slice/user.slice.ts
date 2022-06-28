@@ -18,19 +18,22 @@ const initialState: IInitialState = {
   data: null,
   error: null,
 };
-const fetchUser = createAsyncThunk<IUser>("fetchUser/user", async () => {
-  try {
-    const userData = await axios.get("user/", {
-      headers: {
-        "Content-Type": "application/json",
-      },
-      withCredentials: true,
-    });
-    return userData.data;
-  } catch (error) {
-    throw error;
+export const fetchUserAsync = createAsyncThunk<IUser>(
+  "fetchUserAsync/user",
+  async () => {
+    try {
+      const userData = await axios.get("user/", {
+        headers: {
+          "Content-Type": "application/json",
+        },
+        withCredentials: true,
+      });
+      return userData.data;
+    } catch (error) {
+      throw error;
+    }
   }
-});
+);
 
 const userSlice = createSlice({
   name: "user",
@@ -45,14 +48,14 @@ const userSlice = createSlice({
     },
   },
   extraReducers: (builder) => {
-    builder.addCase(fetchUser.pending, (state) => {
+    builder.addCase(fetchUserAsync.pending, (state) => {
       return {
         ...state,
         status: "pending",
       };
     });
     builder.addCase(
-      fetchUser.fulfilled,
+      fetchUserAsync.fulfilled,
       (_, { payload }: PayloadAction<IUser>) => {
         return {
           status: "done",
@@ -61,7 +64,7 @@ const userSlice = createSlice({
         };
       }
     );
-    builder.addCase(fetchUser.rejected, (_, action) => {
+    builder.addCase(fetchUserAsync.rejected, (_, action) => {
       return {
         status: "error",
         error: action.error,
