@@ -51,15 +51,10 @@ const Video = ({
   const timeCounterRef = useRef<HTMLSpanElement>(null);
   const progressContainerRef = useRef({ progressRef, progressBarRef });
   const mediaHeader = useMemo(() => {
-    return axiosConfigHeaders(
-      "blob",
-      "application/json",
-      "application/json",
-      null
-    );
+    return axiosConfigHeaders("blob", "video/mp4", "video/mp4", null);
   }, []);
   const videoBlob = useFetch<Blob>(
-    "media/get-video-stream?link=" + video.local_link,
+    "http://localhost:3001/api/v1/media/get-stream-video2?video_id=1Mt0YYExYfomz5Qx2DKIYaprq1QYvECOa&mimeType=video/mp4&size=2799774",
     mediaHeader
   );
 

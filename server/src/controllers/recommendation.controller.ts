@@ -12,10 +12,7 @@ function getRecommendationDef(req: Request, res: Response) {
     }
   );
   const list = JSON.parse(rawData);
-
-  console.log(RecommendationUtils.cosineMatrix?.[0]);
-
-  res.status(200).send(list);
+  res.status(200).send(list.reverse());
 }
 
 function getRecommendationFromVideo(req: Request, res: Response) {

@@ -1,4 +1,3 @@
-import { useState } from "react";
 import SubRegisterOrLogin from "../sub-login";
 
 type Props = {

@@ -1,5 +1,3 @@
-import { IUser } from "./user.interface";
-
 export interface IVideo {
   desc: string;
   music: {
@@ -23,8 +21,14 @@ export interface IVideo {
     share_count: number;
   };
   video_id: string;
-  author: IUser;
+  author: {
+    uid: string;
+  };
   video: {
+    width: number;
+    height: number;
+    mimeType: string;
+    size: number;
     duration: number;
     origin_cover: {
       url_list: string[];
