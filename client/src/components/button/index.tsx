@@ -12,8 +12,9 @@ type Props = {
   py?: string;
   border?: string;
   borderColor?: string;
+  type?: "button" | "submit" | "reset" | undefined;
   styleArray?: string;
-  onClick: (e: MouseEvent<HTMLButtonElement>) => void;
+  onClick?: (e: MouseEvent<HTMLButtonElement>) => void;
 };
 
 const Button = ({
@@ -27,12 +28,13 @@ const Button = ({
   px = "px-0",
   py = "py-0",
   styleArray = "text-white",
+  type = "button",
   onClick,
 }: Props) => {
   return (
     <button
       onClick={onClick}
-      type="button"
+      type={type}
       className={`${backgroundColor} ${height} ${width} ${fontSize} ${lineHeight} ${py} ${px} ${borderRadius} ${styleArray}`}
     >
       {text}

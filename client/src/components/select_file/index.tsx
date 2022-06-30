@@ -1,15 +1,24 @@
-import React from "react";
+import React, { FormEvent } from "react";
 import Button from "../button";
 
-const SelectFile = () => {
+type Props = {
+  fileName?: string;
+  onChangeFile: (file: File | undefined) => void;
+};
+const SelectFile = ({ fileName, onChangeFile }: Props) => {
+  const onFileChange = (e: FormEvent<HTMLInputElement>) => {
+    const file = e.currentTarget.files?.[0];
+    onChangeFile(file);
+  };
   return (
-    <section className="w-[260px] h-[458px] rounded-lg border-[2px] border-dashed flex justify-center items-center border-[rgba(22,24,35,0.2)]">
-      <div className="flex justify-center items-center px-[35px]">
+    <section className="w-[260px] h-[458px] rounded-lg border-[2px] border-dashed flex jöustify-center items-center border-[rgba(22,24,35,0.2)]">
+      <div className="flex justify-center flex-col items-center px-[35px]">
         <label
           htmlFor="file_upload"
           className="flex flex-col justify-center items-center"
         >
           <input
+            onChange={onFileChange}
             type="file"
             className="hidden"
             id="file_upload"
@@ -43,6 +52,7 @@ const SelectFile = () => {
             styleArray="font-semibold mt-[32px] text-white"
           />
         </label>
+        {fileName && <p>{fileName}</p>}
       </div>
     </section>
   );
