@@ -183,7 +183,21 @@ const VideoPage = (props: Props) => {
                   <h4 className="text-[18px] opacity-90 font-medium leading-[26px]">
                     推荐视频
                   </h4>
-                  {video_id && <RelatedVideoContainer id={video_id} />}
+                  {video_id && (
+                    <Suspense fallback={<Loading />}>
+                      <ErrorBoundary
+                        fallback={
+                          <Modal>
+                            <div className="w-96 h-96 rounded bg-white text-center text-black">
+                              <h1>Opps we ran into some problems</h1>
+                            </div>
+                          </Modal>
+                        }
+                      >
+                        <RelatedVideoContainer id={video_id} />
+                      </ErrorBoundary>
+                    </Suspense>
+                  )}
                 </div>
               </Related>
             </SideContainer>

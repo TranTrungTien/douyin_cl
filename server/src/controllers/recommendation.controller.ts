@@ -1,11 +1,8 @@
-import { fork } from "child_process";
 import { Request, Response } from "express";
 import * as fs from "fs";
-import path from "path";
-import { RecommendationUtils } from "../utils/recommendation";
-import VideoModel from "../models/video.model";
-import { IVideo } from "../interface/video.interface";
 import { metaPath } from "../const/path";
+import VideoModel from "../models/video.model";
+import { RecommendationUtils } from "../utils/recommendation";
 function getRecommendationDef(req: Request, res: Response) {
   VideoModel.find({}, null, null)
     .populate("author")
@@ -22,19 +19,31 @@ function getRecommendationFromVideo(req: Request, res: Response) {
   const videoId = req.query.videoId as string;
   const data = JSON.parse(
     fs.readFileSync(metaPath + "/destination_metadata.json", "utf8")
-  ) as IVideo[];
-  let id = 0;
-  data.forEach((value, idx) => {
-    if (value.video_id === videoId) id = idx;
-  });
-  const indexes = RecommendationUtils.getRecommendedIndexes(id);
+  ) as {
+    video_id: string;
+    desc: string;
+  }[];
+  let index = 0;
+  for (let i = 0; i < data.length; i++) {
+    if (data[i].video_id === videoId) {
+      index = i;
+      break;
+    }
+  }
 
-  const list = indexes?.map((value) => {
-    return data[value];
+  const indexes = RecommendationUtils.getRecommendedIndexes(index);
+  const videoIdList = indexes?.map((idx, _) => {
+    return data[idx].video_id;
   });
-  list
-    ? res.status(200).send({ message: "Successfully", list })
-    : res.status(500).send({ message: "Error" });
+  VideoModel.find({ video_id: { $in: videoIdList } }, { __v: 0, _id: 0 }, null)
+    .populate("author")
+    .exec((err, doc) => {
+      if (err) return res.status(500).send(err);
+      else {
+        if (!doc) return res.status(404).send({ message: "Video not found" });
+        else return res.status(200).send({ message: "Successfully", doc });
+      }
+    });
 }
 
 const RecommendationController = {

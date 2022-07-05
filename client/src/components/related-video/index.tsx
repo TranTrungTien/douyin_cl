@@ -12,7 +12,11 @@ type Props = {
 const RelatedVideo = ({ video }: Props) => {
   return (
     <div className="flex justify-start items-start space-x-2 w-full h-full">
-      <VideoCard width="w-[120px]" height="h-[90px]">
+      <VideoCard
+        cover_image={video.video.origin_cover.url_list[0]}
+        width="w-[120px]"
+        height="h-[90px]"
+      >
         <VideoCardFooter>
           <TimeFooter bottom="bottom-1" right="right-2" time="11:32" />
         </VideoCardFooter>
@@ -25,7 +29,7 @@ const RelatedVideo = ({ video }: Props) => {
           <Heart styleArray="font-medium leading-5 text-xs opacity-70" />
           <Link to="/user">
             <span className="font-normal leading-5 text-xs opacity-70 truncate">
-              {"Author"}
+              {video.author.nickname}
             </span>
           </Link>
         </div>
