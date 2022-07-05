@@ -1,4 +1,4 @@
-import * as mongoose from "mongoose";
+import mongoose from "mongoose";
 import { ConnectOptions } from "mongoose";
 import dotenv from "dotenv";
 import path from "path";
