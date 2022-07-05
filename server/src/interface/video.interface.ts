@@ -1,3 +1,5 @@
+import { Types } from "mongoose";
+
 export interface IVideo {
   desc: string;
   music: {
@@ -21,9 +23,7 @@ export interface IVideo {
     share_count: number;
   };
   video_id: string;
-  author: {
-    uid: string;
-  };
+  author: Types.ObjectId;
   video: {
     width: number;
     height: number;

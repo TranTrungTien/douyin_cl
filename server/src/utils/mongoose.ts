@@ -1,4 +1,5 @@
-import mongoose, { ConnectOptions } from "mongoose";
+import * as mongoose from "mongoose";
+import { ConnectOptions } from "mongoose";
 import dotenv from "dotenv";
 import path from "path";
 dotenv.config({ path: path.join(__dirname, "..", "..", "config.env") });

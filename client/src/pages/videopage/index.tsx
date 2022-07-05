@@ -26,24 +26,23 @@ import ErrorBoundary from "../../utils/error-boundaries";
 
 import { axiosConfigHeaders } from "../../config/axios-config";
 import { useFetch } from "../../hooks/useFetch";
+import { IVideo } from "../../interfaces/video.interface";
 
 type Props = {};
 
 const VideoPage = (props: Props) => {
   const [isPlay, setIsPlay] = useState(true);
-  const { id } = useParams();
-  console.log(id);
+  const { video_id } = useParams();
   const mediaHeader = useMemo(() => {
     return axiosConfigHeaders("json", "application/json", "application/json", {
-      id: id,
+      video_id,
     });
-  }, [id]);
-  const video = useFetch<{
-    author: string;
-    link: string;
-    local_link: string;
-    desc: string;
-  }>("media/get-video-info", mediaHeader);
+  }, [video_id]);
+  console.log(video_id);
+  const video = useFetch<{ message: string; doc: IVideo }>(
+    "media/get-video-info",
+    mediaHeader
+  );
   const onPlayOrPause = (
     e: MouseEvent<HTMLElement> & {
       target: {
@@ -86,7 +85,11 @@ const VideoPage = (props: Props) => {
                 data-type="clickable"
                 className="w-full xl:h-[574px]  flex-1 relative grid place-content-center overflow-hidden rounded-md backdrop-blur-sm"
               >
-                <BackgroundVideo />
+                {video && (
+                  <BackgroundVideo
+                    cover_url={video.doc.video.origin_cover.url_list[0]}
+                  />
+                )}
                 <Suspense fallback={<Loading />}>
                   <ErrorBoundary
                     fallback={
@@ -104,7 +107,7 @@ const VideoPage = (props: Props) => {
                         isPlay={isPlay ? true : false}
                         onChangeVideo={() => {}}
                         allowedPlay={true}
-                        video={video}
+                        video={video.doc}
                       />
                     )}
                   </ErrorBoundary>
@@ -113,7 +116,7 @@ const VideoPage = (props: Props) => {
 
               <div className="flex flex-col justify-start items-start w-full">
                 {video && (
-                  <VideoHeaderContainer metaData={{ desc: video.desc }} />
+                  <VideoHeaderContainer metaData={{ desc: video.doc.desc }} />
                 )}
                 <div className="flex justify-start items-center space-x-1 mt-4 w-full">
                   <span className="text-sm font-normal leading-6 text-white opacity-50">
@@ -180,7 +183,7 @@ const VideoPage = (props: Props) => {
                   <h4 className="text-[18px] opacity-90 font-medium leading-[26px]">
                     推荐视频
                   </h4>
-                  {id && <RelatedVideoContainer id={id} />}
+                  {video_id && <RelatedVideoContainer id={video_id} />}
                 </div>
               </Related>
             </SideContainer>

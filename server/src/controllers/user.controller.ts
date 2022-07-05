@@ -27,31 +27,42 @@ function createUser(req: Request, res: Response) {
         .save()
         .then((doc) => {
           console.log({ doc });
-          res.status(201).send(doc);
+          res.status(201).send({ message: "Successfully", doc });
         })
-        .catch((err) => res.status(500).send(err));
+        .catch((err) => {
+          throw err;
+        });
     })
-    .catch((err) => console.log({ err }));
+    .catch((err) => res.status(500).send({ message: "Error", err }));
 }
 function updateUser(req: Request, res: Response) {
   const user = req.body.user as IUser;
   UserModel.findOneAndUpdate({ uid: user.uid }, user, null, (err, doc) => {
-    if (err) res.status(404).send(err);
-    else res.status(200).send(doc);
+    if (err) res.status(500).send({ message: "Error", err });
+    else {
+      if (!doc) return res.status(404).send({ message: "Not found" });
+      res.status(200).send({ message: "Successfully", doc });
+    }
   });
 }
 function getUser(req: Request, res: Response) {
   const uid = req.body.uid;
   UserModel.findOne({ uid: uid }, { password: 0 }, null, (err, doc) => {
-    if (err) res.status(404).send(err);
-    else res.status(200).send(doc);
+    if (err) res.status(500).send({ message: "Error", err });
+    else {
+      if (!doc) return res.status(404).send({ message: "Not found" });
+      res.status(200).send({ message: "Successfully", doc });
+    }
   });
 }
 function deleteUser(req: Request, res: Response) {
   const uid = req.params.uid;
   UserModel.findOneAndDelete({ uid: uid }, null, (err, doc) => {
-    if (err) res.status(404).send(err);
-    else res.status(200).send(doc);
+    if (err) res.status(500).send({ message: "Error", err });
+    else {
+      if (!doc) return res.status(404).send({ message: "Not found" });
+      res.status(200).send({ message: "Successfully", doc });
+    }
   });
 }
 function login(req: Request, res: Response) {
@@ -65,7 +76,10 @@ function login(req: Request, res: Response) {
     else {
       if (!doc) return res.status(404).send(doc);
       else {
-        const token = jwt.sign(doc.uid, process.env.JWT_SECRET ?? "");
+        const token = jwt.sign(
+          { uid: doc.uid, _id: doc._id },
+          process.env.JWT_SECRET ?? ""
+        );
         const date = new Date();
         return res
           .status(200)
@@ -75,7 +89,7 @@ function login(req: Request, res: Response) {
             sameSite: "none",
             secure: false,
           })
-          .send(doc);
+          .send({ message: "Successfully", doc });
       }
     }
   });
@@ -92,14 +106,17 @@ function loginWithoutPassword(req: Request, res: Response) {
     else {
       if (!doc) return res.status(404).send(doc);
       else {
-        const token = jwt.sign(doc.uid, process.env.JWT_SECRET ?? "") as string;
+        const token = jwt.sign(
+          { uid: doc.uid, _id: doc._id },
+          process.env.JWT_SECRET ?? ""
+        ) as string;
         return res
           .status(200)
           .cookie("token", token, {
             expires: new Date(Date.now() + 3600000),
             httpOnly: true,
           })
-          .send(doc);
+          .send({ message: "Successfully", doc });
       }
     }
   });
@@ -128,13 +145,13 @@ async function mailSender(req: Request, res: Response) {
   //   },
   //   (err, _) => {
   //     if (err) {
-  //       return res.status(500).send(err);
+  //       return res.status(500).send({ message: "Error", err });
   //     } else {
-  //       return res.status(200).send(email);
+  //       return res.status(200).send({ message: "Successfully", email });
   //     }
   //   }
   // );
-  return res.status(200).send(email);
+  return res.status(200).send({ message: "Successfully", email });
 }
 
 function verifyCode(req: Request, res: Response) {
@@ -144,6 +161,7 @@ function verifyCode(req: Request, res: Response) {
     const secretCode = v4() + v4() + v4() + v4();
     codeVerified = secretCode;
     return res.status(200).send({
+      message: "Successfully",
       userExisted: existedEmail === isExisted.email && isExisted.isExisted,
       userEmail: existedEmail,
       secretCode:
@@ -151,7 +169,8 @@ function verifyCode(req: Request, res: Response) {
           ? secretCode
           : null,
     });
-  } else return res.status(400).send(false);
+  } else
+    return res.status(400).send({ message: "Error Code", isVerify: false });
 }
 
 const UserController = {

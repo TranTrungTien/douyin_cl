@@ -151,6 +151,7 @@ const UploadContainer = () => {
           )
           .then((data) => {
             console.log(data.data);
+            alert("Upload Successfully");
           })
           .catch(console.log);
       })

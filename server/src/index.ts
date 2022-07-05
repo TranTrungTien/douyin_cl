@@ -1,18 +1,14 @@
 import cors from "cors";
-import dotenv from "dotenv";
-import express, { Express, Request, Response } from "express";
-import http from "http";
-import path from "path";
-import MediaRouter from "./routers/media.route";
-import RecommendationRouter from "./routers/recommendation.route";
-import UserRouter from "./routers/user.route";
 import { DBConnect } from "./utils/mongoose";
 import { RecommendationUtils } from "./utils/recommendation";
+import express, { Express, Request, Response } from "express";
+import path from "path";
+import dotenv from "dotenv";
+import http from "http";
 import cookieParser from "cookie-parser";
-// import WebSocket from "ws";
-// import NodeMediaServer from "node-media-server";
-// import ffmpegBinary from "@ffmpeg-installer/ffmpeg";
-// import { spawn } from "child_process";
+import RecommendationRouter from "./routers/recommendation.route";
+import UserRouter from "./routers/user.route";
+import MediaRouter from "./routers/media.route";
 
 DBConnect()
   .then((_) => {
