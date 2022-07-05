@@ -1,4 +1,5 @@
-import mongoose from "mongoose";
+import * as mongoose from "mongoose";
+import { Schema } from "mongoose";
 import { IVideo } from "../interface/video.interface";
 
 const videoSchema = new mongoose.Schema<IVideo>(
@@ -42,10 +43,8 @@ const videoSchema = new mongoose.Schema<IVideo>(
       },
     },
     author: {
-      uid: {
-        type: String,
-        required: true,
-      },
+      type: Schema.Types.ObjectId,
+      ref: "User",
     },
     desc: {
       type: String,

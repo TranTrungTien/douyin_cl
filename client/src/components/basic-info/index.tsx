@@ -22,7 +22,7 @@ const BasicInfo = ({ emailVerified }: Props) => {
     else {
       const user = { nickname: nickname, email: email, password: password };
       axios
-        .post<any, AxiosResponse<IUser>>(
+        .post<any, AxiosResponse<{ message: string; doc: IUser }>>(
           "user/save",
           { user },
           {
@@ -30,13 +30,16 @@ const BasicInfo = ({ emailVerified }: Props) => {
           }
         )
         .then((user) => {
-          const email = user.data.email;
-          const password = user.data.password;
+          const email = user.data.doc.email;
+          const password = user.data.doc.password;
           axios
             .post(
               "user/login",
               { email, password },
-              { headers: { "Content-Type": "application/json" } }
+              {
+                headers: { "Content-Type": "application/json" },
+                withCredentials: true,
+              }
             )
             .then((userLogin) => console.log(userLogin.data));
         })

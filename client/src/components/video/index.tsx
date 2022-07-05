@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useRef } from "react";
 import { axiosConfigHeaders } from "../../config/axios-config";
 import { useFetch } from "../../hooks/useFetch";
+import { IVideo } from "../../interfaces/video.interface";
 import { RightBarAction } from "../../layouts/videoslide";
 import { timeFormat } from "../../utils/timeFormat";
 import AvatarCardButton from "../avatarcardbutton";
@@ -21,12 +22,7 @@ import RightVideoAction from "../rightvideoaction";
 //  }, []);
 
 type Props = {
-  video: {
-    desc: string;
-    link: string;
-    local_link: string;
-    author: string;
-  };
+  video: IVideo;
   fromVideoPage: boolean;
   allowedPlay: boolean;
   isPlay: boolean;
@@ -53,8 +49,9 @@ const Video = ({
   const mediaHeader = useMemo(() => {
     return axiosConfigHeaders("blob", "video/mp4", "video/mp4", null);
   }, []);
+  console.log({ video });
   const videoBlob = useFetch<Blob>(
-    "http://localhost:3001/api/v1/media/get-stream-video2?video_id=1Mt0YYExYfomz5Qx2DKIYaprq1QYvECOa&mimeType=video/mp4&size=2799774",
+    video.video.play_addr.url_list[0],
     mediaHeader
   );
 

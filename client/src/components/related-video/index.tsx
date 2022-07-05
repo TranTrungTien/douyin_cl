@@ -1,17 +1,13 @@
 import React from "react";
 import { Link } from "react-router-dom";
+import { IVideo } from "../../interfaces/video.interface";
 import Heart from "../heart";
 import TimeFooter from "../timefooter";
 import VideoCard from "../videocard";
 import VideoCardFooter from "../videocardfooter";
 
 type Props = {
-  video: {
-    desc: string;
-    link: string;
-    local_link: string;
-    author: string;
-  };
+  video: IVideo;
 };
 const RelatedVideo = ({ video }: Props) => {
   return (
@@ -29,7 +25,7 @@ const RelatedVideo = ({ video }: Props) => {
           <Heart styleArray="font-medium leading-5 text-xs opacity-70" />
           <Link to="/user">
             <span className="font-normal leading-5 text-xs opacity-70 truncate">
-              {video.author}
+              {"Author"}
             </span>
           </Link>
         </div>

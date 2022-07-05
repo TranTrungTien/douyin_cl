@@ -1,14 +1,10 @@
 import { forwardRef, useEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";
+import { IVideo } from "../../interfaces/video.interface";
 import "./style.css";
 
 type Props = {
-  video: {
-    link: string;
-    local_link: string;
-    author: string;
-    desc: string;
-  };
+  video: IVideo;
   fromVideoPage: boolean;
   isPlay?: boolean;
   allowedPlay?: boolean;
@@ -68,7 +64,7 @@ const BottomVideoAction = forwardRef<HTMLSpanElement, Props>(
           {/* User name and description */}
           <div className="flex flex-col items-start w-[95%] h-auto text-white ml-4 mb-4">
             <h3 className="font-medium leading-[26px] text-[18px]">
-              @{video.author}
+              @{video.author.nickname}
             </h3>
             <p className="font-normal leading-[22px] text-sm opacity-60">
               {video.desc}
@@ -221,10 +217,7 @@ const BottomVideoAction = forwardRef<HTMLSpanElement, Props>(
                 </div>
 
                 {!fromVideoPage && (
-                  <Link
-                    target="_blank"
-                    to={`/video/${video.local_link.replace("/videos", "")}`}
-                  >
+                  <Link target="_blank" to={`/video/${video.video_id}`}>
                     <div className="flex justify-center items-center group-hover: opacity-100">
                       {/* link to video's page */}
                       <span className="text-xs font-normal mr-2">详情</span>

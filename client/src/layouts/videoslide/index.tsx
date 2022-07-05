@@ -3,18 +3,14 @@ import { memo, MouseEvent, Suspense, useState } from "react";
 import { useSwiper, useSwiperSlide } from "swiper/react";
 import { BackgroundVideo, Loading, Video } from "../../components";
 import Modal from "../../components/modal";
+import { IVideo } from "../../interfaces/video.interface";
 import ErrorBoundary from "../../utils/error-boundaries";
 import CommentContainer from "../commentcontainer";
 import RightContainer from "../rightcontainer";
 import UserContainer from "../usercontainer";
 
 type Props = {
-  video: {
-    author: string;
-    desc: string;
-    link: string;
-    local_link: string;
-  };
+  video: IVideo;
   onStart: () => void;
   allowedPlay: boolean;
 };
@@ -84,7 +80,7 @@ const VideoSlide = ({ onStart, video, allowedPlay }: Props) => {
           data-type="clickable"
           className="w-full h-full flex-1 relative grid place-content-center overflow-hidden rounded-md"
         >
-          <BackgroundVideo />
+          <BackgroundVideo cover_url={video.video.origin_cover.url_list[0]} />
           <Suspense fallback={<Loading />}>
             <ErrorBoundary
               fallback={

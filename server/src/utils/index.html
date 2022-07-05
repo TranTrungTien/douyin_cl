@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+    <input type="file" name="fileInput" id="fileInput" multiple>
+    <script src="js.js"></script>
+</body>
+<script>
+    const data = [];
+    const input = document.querySelector("input[type=file]");
+    input.addEventListener("change", (e) => {
+        const list = e.target.files;
+        const length = (Object.keys(list).length);
+        for (file of list) {
+            if (file.type === "video/mp4") {
+                const video = document.createElement("video");
+                video.style.display = "none";
+                document.body.appendChild(video);
+                const videoObj = window.URL.createObjectURL(file);
+                video.src = videoObj
+                video.dataset.name = file.name;
+                video.dataset.size = file.size;
+                video.load();
+                video.onloadeddata = () => {
+                    const metaData = {
+                        name: video.dataset.name,
+                        duration: video.duration,
+                        size: video.dataset.size,
+                        width: video.videoWidth,
+                        height: video.videoHeight,
+                    }
+                    data.push(metaData);
+                    console.log(data.length)
+                    if (data.length === 297) {
+                        const a = document.createElement("a");
+                        const file = new Blob([JSON.stringify(data)], { type: "application/json" });
+                        a.href = URL.createObjectURL(file);
+                        a.download = "info.json";
+                        a.click();
+                    }
+                    window.URL.revokeObjectURL(videoObj);
+                    video.remove();
+                }
+
+            }
+        }
+    })
+</script>
+
+</html>

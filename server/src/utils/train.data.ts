@@ -3,15 +3,14 @@ import path from "path";
 import Recommendation, { RecommendationUtils } from "./recommendation";
 
 const rawData = fs.readFileSync(
-  path.join(__dirname, "..", "controllers", "videos", "meta_data.json"),
+  path.join(__dirname, "..", "assets", "meta", "destination_metadata.json"),
   {
     encoding: "utf8",
   }
 );
 const data = JSON.parse(rawData) as {
   desc: string;
-  link: string;
-  author: string;
+  video_id: string;
 }[];
 const metaData = data.map((value, idx) => {
   return value.desc;

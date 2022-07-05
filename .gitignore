@@ -4,4 +4,6 @@ node_modules
 config.env
 *.txt
 *.mp4
+assets
+*.png
 video

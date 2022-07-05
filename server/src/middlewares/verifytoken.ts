@@ -14,10 +14,12 @@ export const verifyToken = (
     res.status(401).send({ error: "Access Denied, Token needed" });
   } else {
     const user = jwt.verify(token, process.env.JWT_SECRET as string) as {
+      _id: string;
       uid: string;
     };
     if (user) {
       req.body.uid = user;
+      req.body._id = user._id;
       return next();
     } else {
       return res.status(401).send({ error: "Access Denied, Token expired" });

@@ -37,6 +37,7 @@ const SubRegisterOrLogin = ({ onVerifyEmail }: Props) => {
           any,
           AxiosResponse<
             {
+              message: string;
               userEmail: string;
               secretCode: string | null;
               userExisted: boolean;
@@ -59,10 +60,8 @@ const SubRegisterOrLogin = ({ onVerifyEmail }: Props) => {
           if (userEmail && !userExisted && !secretCode)
             onVerifyEmail(userEmail);
           else if (userEmail && userExisted && secretCode) {
-            console.log("login .....");
-
             axios
-              .post<any, AxiosResponse<IUser, any>>(
+              .post<any, AxiosResponse<{ message: string; doc: IUser }, any>>(
                 "user/login-without-password",
                 { email: userEmail, secretCode },
                 {
@@ -73,7 +72,7 @@ const SubRegisterOrLogin = ({ onVerifyEmail }: Props) => {
                 }
               )
               .then((data) => {
-                dispatch(saveUser(data.data));
+                dispatch(saveUser(data.data.doc));
               });
           }
         })

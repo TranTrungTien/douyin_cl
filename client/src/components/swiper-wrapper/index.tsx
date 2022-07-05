@@ -6,15 +6,9 @@ import "swiper/css/virtual";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { axiosConfigHeaders } from "../../config/axios-config";
 import { useFetch } from "../../hooks/useFetch";
+import { IVideo } from "../../interfaces/video.interface";
 import { VideoSlide } from "../../layouts";
 SwiperCore.use([Virtual]);
-
-interface IVideo {
-  author: string;
-  desc: string;
-  link: string;
-  local_link: string;
-}
 
 const SwiperWrapper = () => {
   const [start, setStart] = useState(false);
@@ -26,7 +20,10 @@ const SwiperWrapper = () => {
       null
     );
   }, []);
-  const videos = useFetch<IVideo[]>("recommendation/new", metaHeader);
+  const videos = useFetch<{ message: string; list: IVideo[] }>(
+    "recommendation/new",
+    metaHeader
+  );
   const onStart = () => {
     if (!start) setStart(true);
   };
@@ -39,8 +36,9 @@ const SwiperWrapper = () => {
       className="w-full h-full relative"
       virtual
     >
-      {Array.isArray(videos) &&
-        videos.map((video, index) => (
+      {videos &&
+        Array.isArray(videos.list) &&
+        videos.list.map((video, index) => (
           <SwiperSlide
             className="w-full h-full rounded-md"
             key={index}
