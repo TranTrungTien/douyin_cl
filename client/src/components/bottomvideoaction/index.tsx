@@ -1,4 +1,4 @@
-import { forwardRef, useEffect, useRef, useState } from "react";
+import { forwardRef, MouseEvent, useEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import { IVideo } from "../../interfaces/video.interface";
 import { timeFormat } from "../../utils/timeFormat";
@@ -11,6 +11,7 @@ type Props = {
   allowedPlay?: boolean;
   progressBar: JSX.Element;
   turnOnOffVolume?: (action: boolean) => void;
+  handleChangeVolume: (volume: number) => void;
 };
 
 const BottomVideoAction = forwardRef<HTMLSpanElement, Props>(
@@ -22,6 +23,7 @@ const BottomVideoAction = forwardRef<HTMLSpanElement, Props>(
       isPlay,
       progressBar,
       turnOnOffVolume,
+      handleChangeVolume,
     }: Props,
     timeCounterRef
   ) => {
@@ -43,7 +45,13 @@ const BottomVideoAction = forwardRef<HTMLSpanElement, Props>(
     }, []);
 
     // set turn on or off volume
-    const onTurnOnOffVolume = () => {
+    const onTurnOnOffVolume = (
+      e: MouseEvent<HTMLButtonElement> & { target: HTMLElement }
+    ) => {
+      if (e.target.dataset.canChangeVolume === "unavailable") return;
+
+      console.log(localStorage.getItem("volume"));
+
       if (!isTurnOffVolume && volumeRef.current) {
         volumeRef.current.style.height = "0px";
       } else if (isTurnOffVolume && volumeRef.current) {
@@ -56,6 +64,21 @@ const BottomVideoAction = forwardRef<HTMLSpanElement, Props>(
       }
       turnOnOffVolume && turnOnOffVolume(!isTurnOffVolume);
       setIsTurnOffVolume(!isTurnOffVolume);
+    };
+
+    const onChangeVolume = (
+      e: MouseEvent<HTMLDivElement> & { currentTarget: HTMLElement }
+    ) => {
+      e.stopPropagation();
+      if (volumeRef.current && volumeBarRef.current) {
+        const bounding = e.currentTarget.getBoundingClientRect();
+        const position = e.clientY - bounding.y;
+        const volume = (position / bounding.height) * 1;
+        volumeRef.current.style.height =
+          (volumeBarRef.current.clientHeight / 100) * ((1 - volume) * 100) +
+            "px" ?? "0px";
+        handleChangeVolume(1 - volume);
+      }
     };
 
     const onChangeMode = () => setDarkMode(!darkMode);
@@ -154,14 +177,18 @@ const BottomVideoAction = forwardRef<HTMLSpanElement, Props>(
                     type="button"
                     className="mt-[2px] relative volume-custom"
                   >
-                    <div className="volume-inner-custom  absolute bottom-full left-0 w-10 h-40 bg-[#323442] py-[10px] px-4 rounded-[4px] flex justify-center items-center">
+                    <div
+                      data-can-change-volume="unavailable"
+                      className="volume-inner-custom  cursor-default absolute bottom-full left-0 w-10 h-40 bg-[#323442] py-[10px] px-4 rounded-[4px] flex justify-center items-center"
+                    >
                       <div
+                        onClick={onChangeVolume}
                         ref={volumeBarRef}
-                        className="w-1 h-full rounded-full bg-[hsla(0,0%,100%,.3)] flex justify-center items-end"
+                        className="w-1 h-full rounded-full bg-[hsla(0,0%,100%,.3)] cursor-pointer flex justify-center items-end"
                       >
                         <div
                           ref={volumeRef}
-                          className="w-1 relative h-0 rounded-full bg-[#fa1f41]"
+                          className="w-1 relative h-0 rounded-full bg-[#fa1f41] "
                         >
                           <div className="absolute -top-2 -translate-x-1/2 left-px w-3 h-3 rounded-full bg-white"></div>
                         </div>
