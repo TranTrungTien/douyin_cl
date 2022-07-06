@@ -1,6 +1,7 @@
 import { forwardRef, useEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import { IVideo } from "../../interfaces/video.interface";
+import { timeFormat } from "../../utils/timeFormat";
 import "./style.css";
 
 type Props = {
@@ -62,14 +63,16 @@ const BottomVideoAction = forwardRef<HTMLSpanElement, Props>(
       <div className="progress_bar absolute bottom-0 left-0 w-full">
         <div className="flex flex-col justify-end items-start w-full">
           {/* User name and description */}
-          <div className="flex flex-col items-start w-[95%] h-auto text-white ml-4 mb-4">
-            <h3 className="font-medium leading-[26px] text-[18px]">
-              @{video.author.nickname}
-            </h3>
-            <p className="font-normal leading-[22px] text-sm opacity-60">
-              {video.desc}
-            </p>
-          </div>
+          {!fromVideoPage && (
+            <div className="flex flex-col items-start w-[95%] h-auto text-white ml-4 mb-4">
+              <h3 className="font-medium leading-[26px] text-[18px]">
+                @{video.author.nickname}
+              </h3>
+              <p className="font-normal leading-[22px] text-sm opacity-60">
+                {video.desc}
+              </p>
+            </div>
+          )}
           <div className="flex justify-end items-start flex-col w-full">
             {/* Progressbar */}
             {progressBar}
@@ -112,7 +115,9 @@ const BottomVideoAction = forwardRef<HTMLSpanElement, Props>(
                   <div className="text-sm">
                     <span ref={timeCounterRef}>00:00</span>
                     <span className="mx-1">/</span>
-                    <span className="group-hover:opacity-75">00:31</span>
+                    <span className="group-hover:opacity-75">
+                      {timeFormat(video.video.duration)}
+                    </span>
                   </div>
                 </div>
               </div>
