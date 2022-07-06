@@ -110,7 +110,6 @@ const Video = ({
     } else {
       if (turnOff) {
         videoRef.current.muted = true;
-        localStorage.setItem("volume", "0");
         videoRef.current.volume = 0.0;
       } else {
         videoRef.current.muted = false;
@@ -125,6 +124,11 @@ const Video = ({
       const changedTime = (progressBarPercentage / 100) * video.video.duration;
       videoRef.current.currentTime = changedTime;
     }
+  };
+  const onChangeVolume = (volume: number) => {
+    console.log(volume);
+    videoRef.current && (videoRef.current.volume = volume);
+    localStorage.setItem("volume", JSON.stringify(volume));
   };
   return (
     <>
@@ -157,6 +161,7 @@ const Video = ({
       )}
       {/* Action's video */}
       <BottomVideoAction
+        handleChangeVolume={onChangeVolume}
         fromVideoPage={fromVideoPage}
         allowedPlay={allowedPlay}
         video={video}

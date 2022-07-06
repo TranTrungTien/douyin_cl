@@ -20,6 +20,7 @@ const ProgressBar = forwardRef(
         >
           <div
             ref={progressRef}
+            data-volume="unavailable"
             className="transition-all w-0 h-full bg-white relative"
           >
             <div className="absolute -right-[5px] -top-1 w-3 h-3 rounded-full bg-white hidden group-hover:block"></div>
