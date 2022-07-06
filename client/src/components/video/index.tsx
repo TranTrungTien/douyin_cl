@@ -90,7 +90,8 @@ const Video = ({
   }, []);
   const onTimeUpdate = () => {
     if (videoRef.current && progressBarRef.current && progressRef.current) {
-      const currentTimePercent = (videoRef.current.currentTime / 31) * 100;
+      const currentTimePercent =
+        (videoRef.current.currentTime / video.video.duration) * 100;
       const width =
         (progressBarRef.current.clientWidth / 100) * currentTimePercent;
       if (width > progressBarRef.current.clientWidth) {
@@ -121,7 +122,7 @@ const Video = ({
     if (progressBarRef.current && videoRef.current) {
       const progressBarPercentage =
         (position / progressBarRef.current.clientWidth) * 100;
-      const changedTime = (progressBarPercentage / 100) * 31;
+      const changedTime = (progressBarPercentage / 100) * video.video.duration;
       videoRef.current.currentTime = changedTime;
     }
   };
