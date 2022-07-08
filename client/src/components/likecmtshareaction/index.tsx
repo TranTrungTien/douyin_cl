@@ -1,3 +1,4 @@
+import axios from "axios";
 import { useState } from "react";
 import { RightBarAction } from "../../layouts/videoslide";
 
@@ -7,8 +8,10 @@ type Props = {
   styleArray?: string;
   widthSvg?: string;
   heightSvg?: string;
+  video_id: string;
 };
 const LikeCmtShare = ({
+  video_id,
   onOpenRightBar,
   styleArrayInner,
   styleArray = "flex flex-col justify-center items-center space-y-2",
@@ -16,11 +19,24 @@ const LikeCmtShare = ({
   heightSvg = "36",
 }: Props) => {
   const [like, setLike] = useState(false);
+  const onLikeVideo = () => {
+    axios.patch(
+      "statistics/update/like-videos",
+      { video_id: video_id },
+      {
+        headers: {
+          "Content-Type": "application/json",
+        },
+        withCredentials: true,
+      }
+    );
+    setLike(!like);
+  };
   return (
     <div className={`${styleArray}`}>
       {/* heart icon */}
       <button
-        onClick={() => setLike(!like)}
+        onClick={onLikeVideo}
         title="喜欢"
         className={`${styleArrayInner} text-white opacity-80 hover:opacity-100`}
       >

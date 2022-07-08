@@ -115,9 +115,7 @@ const VideoPage = (props: Props) => {
               </section>
 
               <div className="flex flex-col justify-start items-start w-full">
-                {video && (
-                  <VideoHeaderContainer metaData={{ desc: video.doc.desc }} />
-                )}
+                {video && <VideoHeaderContainer video={video.doc} />}
                 <div className="flex justify-start items-center space-x-1 mt-4 w-full">
                   <span className="text-sm font-normal leading-6 text-white opacity-50">
                     全部评论

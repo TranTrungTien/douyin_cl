@@ -8,11 +8,74 @@
     <title>Document</title>
 </head>
 
-<body>
-    <input type="file" name="fileInput" id="fileInput" multiple>
-    <script src="js.js"></script>
+<body style="padding: 0; margin: 0; box-sizing: border-box;">
+
+    <div style="width: 50%; margin: 0 auto; overflow: hidden; cursor: grab;">
+        <div id="draggable" style="user-select: none; white-space: nowrap; display: flex; align-items: center;">
+            <div style="flex-shrink:0; width:auto; height:auto; font-size: 20px; color: white; text-align: center;">
+                <img src="https://picsum.photos/seed/picsum/200/300" alt="">
+                --------------------
+            </div>
+            <div style="flex-shrink:0; width:auto; height:auto; font-size: 20px; color: white; text-align: center;">
+                <img src="https://picsum.photos/seed/picsum/200/300" alt="">
+                --------------------
+            </div>
+            <div style="flex-shrink:0; width:auto; height:auto; font-size: 20px; color: white; text-align: center;">
+                <img src="https://picsum.photos/seed/picsum/200/300" alt="">
+                --------------------
+            </div>
+            <div style="flex-shrink:0; width:auto; height:auto; font-size: 20px; color: white; text-align: center;">
+                <img src="https://picsum.photos/seed/picsum/200/300" alt="">
+                --------------------
+            </div>
+            <div style="flex-shrink:0; width:auto; height:auto; font-size: 20px; color: white; text-align: center;">
+                <img src="https://picsum.photos/seed/picsum/200/300" alt="">
+                --------------------
+            </div>
+            <div style="flex-shrink:0; width:auto; height:auto; font-size: 20px; color: white; text-align: center;">
+                <img src="https://picsum.photos/seed/picsum/200/300" alt="">
+                --------------------
+            </div>
+            <div style="flex-shrink:0; width:auto; height:auto; font-size: 20px; color: white; text-align: center;">
+                <img src="https://picsum.photos/seed/picsum/200/300" alt="">
+                --------------------
+            </div>
+            <div style="flex-shrink:0; width:auto; height:auto; font-size: 20px; color: white; text-align: center;">
+                <img src="https://picsum.photos/seed/picsum/200/300" alt="">
+                --------------------
+            </div>
+            <div style="flex-shrink:0; width:auto; height:auto; font-size: 20px; color: white; text-align: center;">
+                <img src="https://picsum.photos/seed/picsum/200/300" alt="">
+                --------------------
+            </div>
+            <div style="flex-shrink:0; width:auto; height:auto; font-size: 20px; color: white; text-align: center;">
+                <img src="https://picsum.photos/seed/picsum/200/300" alt="">
+                --------------------
+            </div>
+        </div>
+    </div>
+    <!-- <input type="file" name="fileInput" id="fileInput" multiple>
+    <script src="js.js"></script> -->
 </body>
 <script>
+    const draggable = document.querySelector("#draggable")
+    draggable.onpointerdown = (clickEvent) => {
+        console.log(clickEvent);
+        let previousPosition = clickEvent.clientX;
+        let translated = 0;
+        window.onpointermove = (moveEvent) => {
+            //console.log("move", moveEvent);
+            const currentPosition = moveEvent.clientX - previousPosition;
+            console.log(currentPosition);
+            translated += currentPosition;
+            previousPosition = moveEvent.clientX;
+            console.log("translated", translated);
+            draggable.style.setProperty("transform", `translate(${translated}px)`);
+        }
+    }
+    draggable.onpointerup = () => window.onpointermove = null;
+</script>
+<!-- <script>
     const data = [];
     const input = document.querySelector("input[type=file]");
     input.addEventListener("change", (e) => {
@@ -52,6 +115,6 @@
             }
         }
     })
-</script>
+</script> -->
 
 </html>

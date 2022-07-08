@@ -31,7 +31,7 @@ const BottomVideoAction = forwardRef<HTMLSpanElement, Props>(
     const volumeRef = useRef<HTMLDivElement>(null);
     const volumeBarRef = useRef<HTMLDivElement>(null);
     const [isTurnOffVolume, setIsTurnOffVolume] = useState(false);
-    const [darkMode, setDarkMode] = useState(false);
+    const [autoNext, setAutoNext] = useState(false);
     // set volume of video for the time
     useEffect(() => {
       if (volumeRef.current) {
@@ -49,9 +49,6 @@ const BottomVideoAction = forwardRef<HTMLSpanElement, Props>(
       e: MouseEvent<HTMLButtonElement> & { target: HTMLElement }
     ) => {
       if (e.target.dataset.canChangeVolume === "unavailable") return;
-
-      console.log(localStorage.getItem("volume"));
-
       if (!isTurnOffVolume && volumeRef.current) {
         volumeRef.current.style.height = "0px";
       } else if (isTurnOffVolume && volumeRef.current) {
@@ -81,7 +78,7 @@ const BottomVideoAction = forwardRef<HTMLSpanElement, Props>(
       }
     };
 
-    const onChangeMode = () => setDarkMode(!darkMode);
+    const onChangeMode = () => setAutoNext(!autoNext);
     return (
       <div className="progress_bar absolute bottom-0 left-0 w-full">
         <div className="flex flex-col justify-end items-start w-full">
@@ -153,14 +150,14 @@ const BottomVideoAction = forwardRef<HTMLSpanElement, Props>(
                     </span>
                     <button
                       className={`w-10 h-5 rounded-full ${
-                        darkMode ? "bg-white" : "bg-dimgray"
+                        autoNext ? "bg-white" : "bg-dimgray"
                       } relative`}
                       type="button"
                       onClick={onChangeMode}
                     >
                       <div
                         className={`absolute h-4 w-4 rounded-full top-1/2 transform -translate-y-1/2 left-px transition-all ${
-                          darkMode
+                          autoNext
                             ? "left-[calc(100%-17px)] bg-black"
                             : "left-px bg-white"
                         }`}

@@ -9,6 +9,7 @@ import cookieParser from "cookie-parser";
 import RecommendationRouter from "./routers/recommendation.route";
 import UserRouter from "./routers/user.route";
 import MediaRouter from "./routers/media.route";
+import StatisticsRouter from "./routers/statistics.route";
 
 DBConnect()
   .then((_) => {
@@ -35,6 +36,7 @@ DBConnect()
         app.use("/api/v1/media", MediaRouter);
         app.use("/api/v1/user", UserRouter);
         app.use("/api/v1/recommendation", RecommendationRouter);
+        app.use("/api/v1/statistics", StatisticsRouter);
 
         app.get("/", (req: Request, res: Response) => {
           res.send("run on https ......");

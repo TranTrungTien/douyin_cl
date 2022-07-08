@@ -191,7 +191,10 @@ const Video = ({
             <Plus />
           </AvatarCardButton>
           {/* like share, cmt,.,,, */}
-          <LikeCmtShare onOpenRightBar={onOpenRightBar} />
+          <LikeCmtShare
+            video_id={video.video_id}
+            onOpenRightBar={onOpenRightBar}
+          />
         </RightVideoAction>
       )}
     </>
