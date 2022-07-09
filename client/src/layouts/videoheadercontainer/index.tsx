@@ -1,20 +1,20 @@
 import LikeCmtShare from "../../components/likecmtshareaction";
+import { IVideo } from "../../interfaces/video.interface";
 
 type Props = {
-  metaData: {
-    desc: string;
-  };
+  video: IVideo;
 };
 
-const VideoHeaderContainer = ({ metaData }: Props) => {
+const VideoHeaderContainer = ({ video }: Props) => {
   return (
     <header className="w-full h-auto pt-2 text-white mt-2">
       <div className="flex flex-col justify-start items-start space-y-px">
         <h1 className="leading-[26px] font-medium opacity-90 text-lg truncate">
-          {metaData.desc}
+          {video.desc}
         </h1>
         <div className="flex justify-between items-center w-full">
           <LikeCmtShare
+            video_id={video.video_id}
             styleArray="flex justify-start items-center space-x-6"
             styleArrayInner="flex justify-center items-center space-x-2"
             widthSvg="32"

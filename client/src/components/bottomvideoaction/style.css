@@ -6,6 +6,6 @@
 }
 .volume-custom:hover .volume-inner-custom{
     opacity: 1;
-    user-select: all;
+    user-select: auto;
     visibility: visible;
 }
