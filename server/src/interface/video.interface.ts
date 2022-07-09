@@ -3,8 +3,6 @@ import { Types } from "mongoose";
 export interface IVideo {
   id: string;
   desc: string;
-  music_id: Types.ObjectId;
-  statistics_id: Types.ObjectId;
   author_id: Types.ObjectId;
   width: number;
   height: number;
@@ -17,6 +15,7 @@ export interface IVideo {
   play_addr: {
     url_list: string[];
   };
+  music_id: Types.ObjectId;
 }
 
 const data = {

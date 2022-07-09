@@ -3,7 +3,7 @@ import path from "path";
 import Recommendation, { RecommendationUtils } from "./recommendation";
 
 const rawData = fs.readFileSync(
-  path.join(__dirname, "..", "assets", "meta", "destination_metadata.json"),
+  path.join(__dirname, "..", "assets", "meta", "video_id_desc.json"),
   {
     encoding: "utf8",
   }

@@ -18,7 +18,7 @@ function getRecommendationDef(req: Request, res: Response) {
 function getRecommendationFromVideo(req: Request, res: Response) {
   const videoId = req.query.videoId as string;
   const data = JSON.parse(
-    fs.readFileSync(metaPath + "/destination_metadata.json", "utf8")
+    fs.readFileSync(metaPath + "/video_id_desc.json", "utf8")
   ) as {
     video_id: string;
     desc: string;

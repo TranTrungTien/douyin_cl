@@ -82,9 +82,9 @@ function uploadMetaData(req: Request, res: Response) {
 }
 
 function getVideoStream(req: Request, res: Response) {
-  const video_id = req.query.video_id as string;
+  const video_id_f = req.query.video_id_f as string;
   try {
-    const filePath = `${videoPath}/${video_id}.mp4`;
+    const filePath = `${videoPath}/${video_id_f}.mp4`;
     if (fs.existsSync(filePath)) {
       fs.createReadStream(filePath).pipe(res);
     } else return res.status(404).send({ message: "Not Found" });
@@ -94,9 +94,9 @@ function getVideoStream(req: Request, res: Response) {
 }
 
 function getVideoCover(req: Request, res: Response) {
-  const cover_id = req.query.cover_id as string;
+  const cover_id_f = req.query.cover_id_f as string;
   try {
-    const coverP = `${coverPath}/${cover_id}_cover.png`;
+    const coverP = `${coverPath}/${cover_id_f}_cover.png`;
     if (fs.existsSync(coverP)) {
       fs.createReadStream(coverP).pipe(res);
     }

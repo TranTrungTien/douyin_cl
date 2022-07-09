@@ -40,17 +40,13 @@ const videoSchema = new mongoose.Schema<IVideo>(
         default: [],
       },
     },
-    author_id: {
-      type: Schema.Types.ObjectId,
-      ref: "User",
-    },
     desc: {
       type: String,
       default: "",
     },
-    statistics_id: {
+    author_id: {
       type: Schema.Types.ObjectId,
-      ref: "Statistic",
+      ref: "User",
     },
     music_id: {
       types: Schema.Types.ObjectId,

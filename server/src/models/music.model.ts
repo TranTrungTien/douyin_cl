@@ -1,4 +1,5 @@
-import mongoose, { Schema } from "mongoose";
+import * as mongoose from "mongoose";
+import { Schema } from "mongoose";
 import { IYourVideoLiked } from "../interface/liked.interface";
 import { IMusic } from "../interface/music.inteface";
 
@@ -18,7 +19,7 @@ const musicSchema = new mongoose.Schema<IMusic>(
         default: [],
       },
     },
-    play_url: {
+    play_addr: {
       url_list: {
         type: [String],
         default: [],
@@ -36,11 +37,7 @@ const musicSchema = new mongoose.Schema<IMusic>(
     },
     isDelete: {
       type: Boolean,
-      required: false,
-    },
-    origin_video_id: {
-      type: Schema.Types.ObjectId,
-      ref: "Video",
+      default: false,
     },
     title: {
       type: String,
@@ -49,5 +46,5 @@ const musicSchema = new mongoose.Schema<IMusic>(
   },
   { timestamps: true, validateBeforeSave: true }
 );
-
-export default mongoose.model("Music", musicSchema);
+const MusicModel = mongoose.model("Music", musicSchema);
+export default MusicModel;

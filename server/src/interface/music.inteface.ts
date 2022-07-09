@@ -3,7 +3,6 @@ import { Types } from "mongoose";
 export interface IMusic {
   id: string;
   author_id: Types.ObjectId;
-  origin_video_id: Types.ObjectId;
   isDelete: boolean;
   duration: number;
   cover_large: {
@@ -12,7 +11,7 @@ export interface IMusic {
   cover_thumb: {
     url_list: string[];
   };
-  play_url: {
+  play_addr: {
     url_list: string[];
   };
   title: string;

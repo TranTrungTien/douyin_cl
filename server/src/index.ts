@@ -10,6 +10,10 @@ import RecommendationRouter from "./routers/recommendation.route";
 import UserRouter from "./routers/user.route";
 import MediaRouter from "./routers/media.route";
 import StatisticsRouter from "./routers/statistics.route";
+import MusicRouter from "./routers/music.route";
+import LikeRouter from "./routers/liked.route";
+import ShareRouter from "./routers/shared.route";
+import CoverRouter from "./routers/cover.route";
 
 DBConnect()
   .then((_) => {
@@ -37,6 +41,10 @@ DBConnect()
         app.use("/api/v1/user", UserRouter);
         app.use("/api/v1/recommendation", RecommendationRouter);
         app.use("/api/v1/statistics", StatisticsRouter);
+        app.use("/api/v1/music", MusicRouter);
+        app.use("/api/v1/user-actions", LikeRouter);
+        app.use("/api/v1/user-actions", ShareRouter);
+        app.use("/api/v1/image", CoverRouter);
 
         app.get("/", (req: Request, res: Response) => {
           res.send("run on https ......");
