@@ -4,7 +4,6 @@ import MusicModel from "../models/music.model";
 
 function createMusic(req: Request, res: Response) {
   const music = new MusicModel({
-    id: v4(),
     title: "",
     author_id: "",
     duration: 1,

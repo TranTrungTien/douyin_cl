@@ -5,7 +5,7 @@ import { IMusic } from "../interface/music.inteface";
 
 const musicSchema = new mongoose.Schema<IMusic>(
   {
-    id: {
+    id_f: {
       type: String,
       required: true,
     },

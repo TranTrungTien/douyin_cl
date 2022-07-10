@@ -80,7 +80,7 @@ const VideoSlide = ({ onStart, video, allowedPlay }: Props) => {
           data-type="clickable"
           className="w-full h-full flex-1 relative grid place-content-center overflow-hidden rounded-md"
         >
-          <BackgroundVideo cover_url={video.video.origin_cover.url_list[0]} />
+          <BackgroundVideo cover_url={video.origin_cover.url_list[0]} />
           <Suspense fallback={<Loading />}>
             <ErrorBoundary
               fallback={

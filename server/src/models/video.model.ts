@@ -4,7 +4,7 @@ import { IVideo } from "../interface/video.interface";
 
 const videoSchema = new mongoose.Schema<IVideo>(
   {
-    id: {
+    id_f: {
       type: String,
       required: true,
     },
@@ -49,7 +49,7 @@ const videoSchema = new mongoose.Schema<IVideo>(
       ref: "User",
     },
     music_id: {
-      types: Schema.Types.ObjectId,
+      type: Schema.Types.ObjectId,
       ref: "Music",
     },
   },

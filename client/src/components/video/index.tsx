@@ -50,10 +50,7 @@ const Video = ({
     return axiosConfigHeaders("blob", "video/mp4", "video/mp4", null);
   }, []);
   console.log({ video });
-  const videoBlob = useFetch<Blob>(
-    video.video.play_addr.url_list[0],
-    mediaHeader
-  );
+  const videoBlob = useFetch<Blob>(video.play_addr.url_list[0], mediaHeader);
 
   useEffect(() => {
     let videoRefCl: HTMLVideoElement | null = null;
@@ -91,7 +88,7 @@ const Video = ({
   const onTimeUpdate = () => {
     if (videoRef.current && progressBarRef.current && progressRef.current) {
       const currentTimePercent =
-        (videoRef.current.currentTime / video.video.duration) * 100;
+        (videoRef.current.currentTime / video.duration) * 100;
       const width =
         (progressBarRef.current.clientWidth / 100) * currentTimePercent;
       if (width > progressBarRef.current.clientWidth) {
@@ -121,7 +118,7 @@ const Video = ({
     if (progressBarRef.current && videoRef.current) {
       const progressBarPercentage =
         (position / progressBarRef.current.clientWidth) * 100;
-      const changedTime = (progressBarPercentage / 100) * video.video.duration;
+      const changedTime = (progressBarPercentage / 100) * video.duration;
       videoRef.current.currentTime = changedTime;
     }
   };
@@ -191,10 +188,7 @@ const Video = ({
             <Plus />
           </AvatarCardButton>
           {/* like share, cmt,.,,, */}
-          <LikeCmtShare
-            video_id={video.video_id}
-            onOpenRightBar={onOpenRightBar}
-          />
+          <LikeCmtShare video_id={video._id} onOpenRightBar={onOpenRightBar} />
         </RightVideoAction>
       )}
     </>

@@ -1,7 +1,7 @@
 import { Types } from "mongoose";
 
 export interface IMusic {
-  id: string;
+  id_f: string;
   author_id: Types.ObjectId;
   isDelete: boolean;
   duration: number;

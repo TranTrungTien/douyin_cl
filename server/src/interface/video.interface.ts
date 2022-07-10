@@ -1,7 +1,7 @@
 import { Types } from "mongoose";
 
 export interface IVideo {
-  id: string;
+  id_f: string;
   desc: string;
   author_id: Types.ObjectId;
   width: number;

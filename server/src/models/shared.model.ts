@@ -3,10 +3,6 @@ import { IYourVideoShared } from "../interface/shared.interface";
 
 const sharedSchema = new mongoose.Schema<IYourVideoShared>(
   {
-    id: {
-      type: String,
-      required: true,
-    },
     author_id: {
       type: Schema.Types.ObjectId,
       ref: "User",

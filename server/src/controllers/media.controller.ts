@@ -96,7 +96,7 @@ function getVideoStream(req: Request, res: Response) {
 function getVideoCover(req: Request, res: Response) {
   const cover_id_f = req.query.cover_id_f as string;
   try {
-    const coverP = `${coverPath}/${cover_id_f}_cover.png`;
+    const coverP = `${coverPath}/${cover_id_f}.png`;
     if (fs.existsSync(coverP)) {
       fs.createReadStream(coverP).pipe(res);
     }
@@ -110,8 +110,8 @@ function getVideoInfo(req: Request, res: Response) {
   if (!video_id) {
     return res.status(400).send("Video id is needed");
   } else {
-    VideoModel.findOne({ video_id: video_id }, null, null)
-      .populate("author")
+    VideoModel.findById(video_id, null, null)
+      .populate("author_id")
       .exec((err, doc) => {
         if (err) return res.status(500).send({ err });
         else {

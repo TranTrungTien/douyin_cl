@@ -6,7 +6,6 @@ function createFollowing(req: Request, res: Response) {
   const author_id = req.body.author_id as string;
   const followed_by = req.body.followed_by as string;
   const follower = new FollowingModel({
-    id: v4(),
     author_id: author_id,
     followed_by: followed_by,
   });

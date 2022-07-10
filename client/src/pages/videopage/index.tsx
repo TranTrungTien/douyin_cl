@@ -32,7 +32,7 @@ type Props = {};
 
 const VideoPage = (props: Props) => {
   const [isPlay, setIsPlay] = useState(true);
-  const { video_id } = useParams();
+  const { video_id, video_idf } = useParams();
   const mediaHeader = useMemo(() => {
     return axiosConfigHeaders("json", "application/json", "application/json", {
       video_id,
@@ -40,7 +40,7 @@ const VideoPage = (props: Props) => {
   }, [video_id]);
   console.log(video_id);
   const video = useFetch<{ message: string; doc: IVideo }>(
-    "media/get-video-info",
+    "media/get-meta-data",
     mediaHeader
   );
   const onPlayOrPause = (
@@ -87,7 +87,7 @@ const VideoPage = (props: Props) => {
               >
                 {video && (
                   <BackgroundVideo
-                    cover_url={video.doc.video.origin_cover.url_list[0]}
+                    cover_url={video.doc.origin_cover.url_list[0]}
                   />
                 )}
                 <Suspense fallback={<Loading />}>
@@ -192,7 +192,7 @@ const VideoPage = (props: Props) => {
                           </Modal>
                         }
                       >
-                        <RelatedVideoContainer id={video_id} />
+                        {video_idf && <RelatedVideoContainer id={video_idf} />}
                       </ErrorBoundary>
                     </Suspense>
                   )}

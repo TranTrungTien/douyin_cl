@@ -3,10 +3,6 @@ import { IYourVideoLiked } from "../interface/liked.interface";
 
 const likedSchema = new mongoose.Schema<IYourVideoLiked>(
   {
-    id: {
-      type: String,
-      required: true,
-    },
     author_id: {
       type: Schema.Types.ObjectId,
       ref: "User",
