@@ -13,7 +13,7 @@ const RelatedVideo = ({ video }: Props) => {
   return (
     <div className="flex justify-start items-start space-x-2 w-full h-full">
       <VideoCard
-        cover_image={video.video.origin_cover.url_list[0]}
+        cover_image={video.origin_cover.url_list[0]}
         width="w-[120px]"
         height="h-[90px]"
       >
@@ -29,7 +29,7 @@ const RelatedVideo = ({ video }: Props) => {
           <Heart styleArray="font-medium leading-5 text-xs opacity-70" />
           <Link to="/user">
             <span className="font-normal leading-5 text-xs opacity-70 truncate">
-              {video.author.nickname}
+              {video.author_id.nickname}
             </span>
           </Link>
         </div>

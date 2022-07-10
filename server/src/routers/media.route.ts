@@ -6,6 +6,6 @@ const router = express.Router();
 
 router.post("/upload-file", verifyToken, MediaController.uploadFile);
 router.post("/upload-meta-data", verifyToken, MediaController.uploadMetaData);
-router.get("/get-meta-data", verifyToken, MediaController.getVideoInfo);
+router.get("/get-meta-data", MediaController.getVideoInfo);
 router.get("/play", MediaController.getVideoStream);
 export default router;

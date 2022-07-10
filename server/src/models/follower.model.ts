@@ -3,10 +3,6 @@ import { IFollower } from "../interface/follower.interface";
 
 const followerSchema = new mongoose.Schema<IFollower>(
   {
-    id: {
-      type: String,
-      required: true,
-    },
     author_id: {
       type: Schema.Types.ObjectId,
       ref: "User",

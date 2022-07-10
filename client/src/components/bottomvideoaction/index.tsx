@@ -86,7 +86,7 @@ const BottomVideoAction = forwardRef<HTMLSpanElement, Props>(
           {!fromVideoPage && (
             <div className="flex flex-col items-start w-[95%] h-auto text-white ml-4 mb-4">
               <h3 className="font-medium leading-[26px] text-[18px]">
-                @{video.author.nickname}
+                @{video.author_id.nickname}
               </h3>
               <p className="font-normal leading-[22px] text-sm opacity-60">
                 {video.desc}
@@ -136,7 +136,7 @@ const BottomVideoAction = forwardRef<HTMLSpanElement, Props>(
                     <span ref={timeCounterRef}>00:00</span>
                     <span className="mx-1">/</span>
                     <span className="group-hover:opacity-75">
-                      {timeFormat(video.video.duration)}
+                      {timeFormat(video.duration)}
                     </span>
                   </div>
                 </div>
@@ -246,7 +246,10 @@ const BottomVideoAction = forwardRef<HTMLSpanElement, Props>(
                 </div>
 
                 {!fromVideoPage && (
-                  <Link target="_blank" to={`/video/${video.video_id}`}>
+                  <Link
+                    target="_blank"
+                    to={`/video/${video._id}/${video.id_f}`}
+                  >
                     <div className="flex justify-center items-center group-hover: opacity-100">
                       {/* link to video's page */}
                       <span className="text-xs font-normal mr-2">详情</span>

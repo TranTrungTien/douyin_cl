@@ -14,7 +14,7 @@ const VideoHeaderContainer = ({ video }: Props) => {
         </h1>
         <div className="flex justify-between items-center w-full">
           <LikeCmtShare
-            video_id={video.video_id}
+            video_id={video._id}
             styleArray="flex justify-start items-center space-x-6"
             styleArrayInner="flex justify-center items-center space-x-2"
             widthSvg="32"

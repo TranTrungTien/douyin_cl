@@ -6,7 +6,6 @@ function createLiked(req: Request, res: Response) {
   const author_id = req.body.author_id as string;
   const video_id = req.body.video_id as string;
   const likeVideo = new LikedModel({
-    id: v4(),
     author_id: author_id,
     video_id: video_id,
   });

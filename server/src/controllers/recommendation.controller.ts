@@ -5,7 +5,7 @@ import VideoModel from "../models/video.model";
 import { RecommendationUtils } from "../utils/recommendation";
 function getRecommendationDef(req: Request, res: Response) {
   VideoModel.find({}, null, null)
-    .populate("author")
+    .populate("author_id")
     .exec((err, list) => {
       if (err) res.status(500).send({ message: "Error", err });
       else {
@@ -35,8 +35,8 @@ function getRecommendationFromVideo(req: Request, res: Response) {
   const videoIdList = indexes?.map((idx, _) => {
     return data[idx].video_id;
   });
-  VideoModel.find({ video_id: { $in: videoIdList } }, { __v: 0, _id: 0 }, null)
-    .populate("author")
+  VideoModel.find({ id_f: { $in: videoIdList } }, { __v: 0, _id: 0 }, null)
+    .populate("author_id")
     .exec((err, doc) => {
       if (err) return res.status(500).send(err);
       else {
