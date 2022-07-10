@@ -15,4 +15,4 @@ const sharedSchema = new mongoose.Schema<IYourVideoShared>(
   { timestamps: true, validateBeforeSave: true }
 );
 
-export default mongoose.model("YourVideoShared", sharedSchema);
+export default mongoose.model("Shared", sharedSchema);
