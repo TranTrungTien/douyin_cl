@@ -20,16 +20,28 @@ const LikeCmtShare = ({
 }: Props) => {
   const [like, setLike] = useState(false);
   const onLikeVideo = () => {
-    axios.patch(
-      "statistics/update/like-videos",
-      { video_id: video_id },
-      {
-        headers: {
-          "Content-Type": "application/json",
-        },
-        withCredentials: true,
-      }
-    );
+    let option = {
+      headers: {
+        "Content-Type": "application/json",
+      },
+      withCredentials: true,
+    };
+    if (!like) {
+      axios
+        .post("user-actions/create-liked", { video_id: video_id }, option)
+        .catch(console.error);
+    } else {
+      axios
+        .delete("user-actions/delete-liked", {
+          headers: {
+            "Content-Type": "application/json",
+          },
+          params: {
+            video_id: video_id,
+          },
+        })
+        .catch(console.error);
+    }
     setLike(!like);
   };
   return (

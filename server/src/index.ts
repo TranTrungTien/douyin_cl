@@ -43,7 +43,6 @@ DBConnect()
         app.use("/api/v1/statistics", StatisticsRouter);
         app.use("/api/v1/music", MusicRouter);
         app.use("/api/v1/user-actions", LikeRouter);
-        app.use("/api/v1/user-actions", ShareRouter);
         app.use("/api/v1/image", CoverRouter);
 
         app.get("/", (req: Request, res: Response) => {

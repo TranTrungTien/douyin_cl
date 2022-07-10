@@ -10,6 +10,8 @@ export const verifyToken = (
   next: NextFunction
 ) => {
   const token = req.cookies.token as string;
+  console.log({ token });
+
   if (!token) {
     res.status(401).send({ error: "Access Denied, Token needed" });
   } else {
@@ -18,7 +20,7 @@ export const verifyToken = (
       uid: string;
     };
     if (user) {
-      req.body.uid = user;
+      req.body.uid = user.uid;
       req.body._id = user._id;
       return next();
     } else {

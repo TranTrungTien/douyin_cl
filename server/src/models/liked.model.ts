@@ -15,4 +15,4 @@ const likedSchema = new mongoose.Schema<IYourVideoLiked>(
   { timestamps: true, validateBeforeSave: true }
 );
 
-export default mongoose.model("YourVideoLiked", likedSchema);
+export default mongoose.model("Liked", likedSchema);
