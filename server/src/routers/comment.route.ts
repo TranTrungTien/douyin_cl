@@ -1,0 +1,8 @@
+import express from "express";
+import commentController from "../controllers/comment.controller";
+import { verifyToken } from "../middlewares/verifytoken";
+const router = express.Router();
+
+router.post("/create-comment", verifyToken, commentController.createComment);
+router.delete("delete-comment", commentController.deleteComment);
+export default router;

@@ -1,10 +1,13 @@
+import { useState } from "react";
 import Heart from "../heart";
+import Input from "../input";
 
 type Props = {
   styleArray?: string;
 };
 
 const Comment = ({ styleArray }: Props) => {
+  const [isReply, setIsReply] = useState(false);
   return (
     <div className={`w-full h-auto text-white ${styleArray}`}>
       <div className="w-full flex justify-start items-start space-x-2 border-b border-darkslategray py-3">
@@ -17,7 +20,7 @@ const Comment = ({ styleArray }: Props) => {
           />
         </div>
         {/* Content */}
-        <div className="flex flex-col justify-start items-start space-y-2">
+        <div className="flex-1 flex-col justify-start items-start space-y-2">
           <div className="flex justify-start items-center space-x-2">
             <h4 className="text-inherit font-normal text-[13px] leading-5 opacity-70">
               ღ᭄余生ꦿ࿐
@@ -48,9 +51,10 @@ const Comment = ({ styleArray }: Props) => {
                   fillOpacity="0.9"
                 ></path>
               </svg>
-              <span>回复</span>
+              <button onClick={() => setIsReply(!isReply)}>回复</button>
             </button>
           </div>
+          {isReply && <Input onSubmit={() => {}} />}
           {/* View more reply */}
           <button className="flex justify-start items-center space-x-1 text-inherit font-normal opacity-50 text-xs leading-5">
             <div>
