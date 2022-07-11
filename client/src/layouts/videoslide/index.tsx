@@ -109,7 +109,10 @@ const VideoSlide = ({ onStart, video, allowedPlay }: Props) => {
           {openRightBar.user ? (
             <UserContainer handleCloseUserBox={onOpenRightBar} />
           ) : (
-            <CommentContainer handleCloseComment={onOpenRightBar} />
+            <CommentContainer
+              video_id={video._id}
+              handleCloseComment={onOpenRightBar}
+            />
           )}
         </RightContainer>
       )}

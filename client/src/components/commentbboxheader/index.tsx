@@ -9,7 +9,7 @@ const CommentBoxHeader = ({ handleCloseComment }: Props) => {
     handleCloseComment({ comment: false, isOpen: false, user: false });
   };
   return (
-    <header className="sticky top-0 left-0 p-3 flex justify-between items-center w-full h-auto">
+    <header className="sticky top-0 left-0 py-3 flex justify-between items-center w-full h-auto">
       <div>
         <span className="leading-6 text-base text-white opacity-90 font-medium">
           全部评论

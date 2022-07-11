@@ -14,6 +14,7 @@ import MusicRouter from "./routers/music.route";
 import LikeRouter from "./routers/liked.route";
 import ShareRouter from "./routers/shared.route";
 import CoverRouter from "./routers/cover.route";
+import CommentRouter from "./routers/comment.route";
 
 DBConnect()
   .then((_) => {
@@ -44,6 +45,8 @@ DBConnect()
         app.use("/api/v1/music", MusicRouter);
         app.use("/api/v1/user-actions", LikeRouter);
         app.use("/api/v1/image", CoverRouter);
+        app.use("/api/v1/user-actions", ShareRouter);
+        app.use("/api/v1/comment", CommentRouter);
 
         app.get("/", (req: Request, res: Response) => {
           res.send("run on https ......");
