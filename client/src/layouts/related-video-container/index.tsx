@@ -1,5 +1,4 @@
-import axios from "axios";
-import React, { useEffect, useMemo, useState } from "react";
+import { useMemo } from "react";
 import { RelatedVideo } from "../../components";
 import { axiosConfigHeaders } from "../../config/axios-config";
 import { useFetch } from "../../hooks/useFetch";

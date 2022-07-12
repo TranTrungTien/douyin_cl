@@ -8,4 +8,6 @@ router.post("/upload-file", verifyToken, MediaController.uploadFile);
 router.post("/upload-meta-data", verifyToken, MediaController.uploadMetaData);
 router.get("/get-meta-data", MediaController.getVideoInfo);
 router.get("/play", MediaController.getVideoStream);
+router.get("/get-video-by-user", MediaController.getAllVideoByUser);
+router.get("/get-count", MediaController.getTotalDocuments);
 export default router;

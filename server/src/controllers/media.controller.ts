@@ -4,6 +4,7 @@ import * as fs from "fs";
 import path from "path";
 import { v4 } from "uuid";
 import { coverPath, videoPath } from "../const/path";
+import LikedModel from "../models/liked.model";
 import VideoModel from "../models/video.model";
 
 function uploadFile(req: Request, res: Response) {
@@ -122,12 +123,62 @@ function getVideoInfo(req: Request, res: Response) {
   }
 }
 
+function getAllVideoByUser(req: Request, res: Response) {
+  const author_id = req.query.author_id as string;
+  const cursor = req.query.cursor as string;
+  VideoModel.find(
+    { author_id: author_id },
+    null,
+    { skip: Number(cursor) * 10, limit: 10 },
+    (err, list) => {
+      if (err)
+        return res.status(500).send({ err, message: "Something went wrong" });
+      else {
+        if (list.length <= 0)
+          return res.status(404).send({ err, message: "No videos found" });
+        else return res.status(200).send({ message: "Found", list });
+      }
+    }
+  );
+}
+
+function getTotalDocuments(req: Request, res: Response) {
+  const author_id = req.query.author_id as string;
+  VideoModel.countDocuments(
+    { author_id: author_id },
+    undefined,
+    (err, ownVideoTotal) => {
+      if (err)
+        return res.status(500).send({ err, message: "Error getting videos" });
+      else {
+        LikedModel.countDocuments(
+          { author_id: author_id },
+          undefined,
+          (err, likedVideoTotal) => {
+            if (err)
+              return res
+                .status(500)
+                .send({ err, message: "Error getting videos" });
+            else {
+              return res
+                .status(200)
+                .send({ message: "Success", ownVideoTotal, likedVideoTotal });
+            }
+          }
+        );
+      }
+    }
+  );
+}
+
 const MediaController = {
+  getAllVideoByUser,
   getVideoCover,
   getVideoStream,
   uploadFile,
   uploadMetaData,
   getVideoInfo,
+  getTotalDocuments,
 };
 
 export default MediaController;
