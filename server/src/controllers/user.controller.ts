@@ -45,7 +45,7 @@ function updateUser(req: Request, res: Response) {
     }
   });
 }
-function getUser(req: Request, res: Response) {
+function getOwnInfo(req: Request, res: Response) {
   const uid = req.body.uid;
   UserModel.findOne({ uid: uid }, { password: 0 }, null, (err, doc) => {
     if (err) res.status(500).send({ message: "Error", err });
@@ -55,6 +55,18 @@ function getUser(req: Request, res: Response) {
     }
   });
 }
+
+function getUserInfo(req: Request, res: Response) {
+  const uid = req.query.uid;
+  UserModel.findOne({ uid: uid }, { password: 0 }, null, (err, doc) => {
+    if (err) res.status(500).send({ message: "Error", err });
+    else {
+      if (!doc) return res.status(404).send({ message: "Not found" });
+      res.status(200).send({ message: "Successfully", doc });
+    }
+  });
+}
+
 function deleteUser(req: Request, res: Response) {
   const uid = req.params.uid;
   UserModel.findOneAndDelete({ uid: uid }, null, (err, doc) => {
@@ -176,7 +188,8 @@ function verifyCode(req: Request, res: Response) {
 const UserController = {
   createUser,
   updateUser,
-  getUser,
+  getUserInfo,
+  getOwnInfo,
   deleteUser,
   login,
   mailSender,

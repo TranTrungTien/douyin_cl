@@ -2,22 +2,12 @@ import { ReactNode } from "react";
 
 type Props = {
   children: ReactNode[] | ReactNode;
-  width?: string;
-  height?: string;
   styleArray?: string;
   cover_image?: string;
 };
-const VideoCard = ({
-  cover_image,
-  children,
-  width = "w-132px",
-  height = "w-176px",
-  styleArray,
-}: Props) => {
+const VideoCard = ({ cover_image, children, styleArray }: Props) => {
   return (
-    <div
-      className={`${width} ${height} ${styleArray} relative place-self-center`}
-    >
+    <div className={`${styleArray} relative place-self-center`}>
       <img
         src={
           cover_image

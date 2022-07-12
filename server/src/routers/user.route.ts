@@ -4,7 +4,8 @@ import { verifyToken } from "../middlewares/verifytoken";
 
 const router = express.Router();
 
-router.get("/", verifyToken, UserController.getUser);
+router.get("/", verifyToken, UserController.getOwnInfo);
+router.get("/info", UserController.getUserInfo);
 router.post("/save", UserController.createUser);
 router.put("/update", UserController.updateUser);
 router.delete("/delete", UserController.deleteUser);

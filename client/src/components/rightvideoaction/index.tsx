@@ -6,7 +6,7 @@ type Props = {
 
 const RightVideoAction = ({ children }: Props) => {
   return (
-    <div className="action_bar absolute right-3 top-12 w-auto max-h-min text-white flex flex-col justify-center items-center max-w-max space-y-6">
+    <div className="action_bar absolute right-3 z-[1] w-auto h-full text-white flex flex-col justify-center items-center max-w-max space-y-6">
       {/* Like, share, subscribe action, ect,..., */}
       {/* next, pre button */}
       {/* like share, cmt,.,,, */}

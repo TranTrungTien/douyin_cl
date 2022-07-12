@@ -9,7 +9,7 @@ type Props = {
 
 const SideContainer = ({
   children,
-  width = "w-0",
+  width,
   height = "h-full",
   styleArray,
 }: Props) => {

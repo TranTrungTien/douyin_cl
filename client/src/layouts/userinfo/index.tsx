@@ -1,10 +1,13 @@
 import AvatarCardButton from "../../components/avatarcardbutton";
 import Button from "../../components/button";
 import VerificationMark from "../../components/verificationmark";
+import { IUser } from "../../interfaces/user.interface";
 
-type Props = {};
+type Props = {
+  user: IUser;
+};
 
-const UserInfo = (props: Props) => {
+const UserInfo = ({ user }: Props) => {
   return (
     <div className="2xl:max-w-[400px] ml-auto px-3  space-y-4">
       <header className="flex justify-start items-center space-x-9">
@@ -17,26 +20,29 @@ const UserInfo = (props: Props) => {
         <div className="text-white opacity-90 leading-5 flex justify-center items-center space-x-16">
           <div className="flex flex-col justify-center items-start space-y-1">
             <span className="text-xs font-normal opacity-50">关注</span>
+            {/* following */}
             <span className="text-[17px] font-medium">123</span>
           </div>
           <div className="flex flex-col justify-center items-start space-y-1">
             <span className="text-xs font-normal opacity-50">粉丝</span>
+            {/* follower */}
             <span className="text-[17px] font-medium">123w</span>
           </div>
           <div className="flex flex-col justify-center items-start space-y-1">
             <span className="text-xs font-normal opacity-50">获赞</span>
+            {/* favoring count */}
             <span className="text-[17px] font-medium">1.1亿</span>
           </div>
         </div>
       </header>
       <div className="space-y-2">
         <div className="flex justify-start items-center space-x-3">
-          <h1 className="text-xl font-medium opacity-90">芒果捞头条君</h1>
+          <h1 className="text-xl font-medium opacity-90">{user.nickname}</h1>
           <VerificationMark />
         </div>
         <div className="flex justify-start items-center space-x-2 opacity-80 text-xs font-normal leading-5">
           <span>抖音号:</span>
-          <span>12345677</span>
+          <span>{user._id}</span>
         </div>
         <div className="flex flex-col justify-start items-start opacity-80 leading-[22px] text-sm font-normal">
           <span>谢谢您点进来看我</span>
