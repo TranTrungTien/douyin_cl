@@ -5,7 +5,8 @@ module.exports = {
       screens: {
         laptop: "1024px",
         desktop: "1280px",
-        "extra-desktop": "1536px",
+        "extra-desktop": "1440px",
+        "over-desktop": "1600px",
       },
       colors: {
         dark_blue: "#060716",
