@@ -4,15 +4,17 @@ import VerificationMark from "../../components/verificationmark";
 import { IUser } from "../../interfaces/user.interface";
 
 type Props = {
-  user: IUser;
+  avatar_thumb_url: string;
+  nickname: string;
+  user_id: string;
 };
 
-const UserInfo = ({ user }: Props) => {
+const UserInfo = ({ avatar_thumb_url, nickname, user_id }: Props) => {
   return (
     <div className="2xl:max-w-[400px] ml-auto px-3  space-y-4">
       <header className="flex justify-start items-center space-x-9">
         <AvatarCardButton
-          image={user.avatar_thumb.url_list[0]}
+          image={avatar_thumb_url}
           height="h-62px"
           width="w-62px"
           hint="User Cover"
@@ -37,12 +39,12 @@ const UserInfo = ({ user }: Props) => {
       </header>
       <div className="space-y-2">
         <div className="flex justify-start items-center space-x-3">
-          <h1 className="text-xl font-medium opacity-90">{user.nickname}</h1>
+          <h1 className="text-xl font-medium opacity-90">{nickname}</h1>
           <VerificationMark />
         </div>
         <div className="flex justify-start items-center space-x-2 opacity-80 text-xs font-normal leading-5">
           <span>抖音号:</span>
-          <span>{user._id}</span>
+          <span>{user_id}</span>
         </div>
         <div className="flex flex-col justify-start items-start opacity-80 leading-[22px] text-sm font-normal">
           <span>谢谢您点进来看我</span>

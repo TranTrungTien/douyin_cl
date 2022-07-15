@@ -22,7 +22,12 @@ import RightVideoAction from "../rightvideoaction";
 //  }, []);
 
 type Props = {
-  video: IVideo;
+  video_addr: string;
+  video_idf: string;
+  video_id: string;
+  video_desc: string;
+  video_duration: number;
+  nickname: string;
   fromVideoPage: boolean;
   allowedPlay: boolean;
   isPlay: boolean;
@@ -33,9 +38,14 @@ type Props = {
 };
 
 const Video = ({
+  video_addr,
+  nickname,
+  video_desc,
+  video_duration,
+  video_id,
+  video_idf,
   fromVideoPage,
   allowedPlay,
-  video,
   isPlay,
   isActive,
   avatar_thumb,
@@ -51,11 +61,7 @@ const Video = ({
   const mediaHeader = useMemo(() => {
     return axiosConfigHeaders("blob", "video/mp4", "video/mp4", null);
   }, []);
-  console.log({ video });
-  const videoBlob = useFetchSuspense<Blob>(
-    video.play_addr.url_list[0],
-    mediaHeader
-  );
+  const videoBlob = useFetchSuspense<Blob>(video_addr, mediaHeader);
 
   useEffect(() => {
     let videoRefCl: HTMLVideoElement | null = null;
@@ -93,7 +99,7 @@ const Video = ({
   const onTimeUpdate = () => {
     if (videoRef.current && progressBarRef.current && progressRef.current) {
       const currentTimePercent =
-        (videoRef.current.currentTime / video.duration) * 100;
+        (videoRef.current.currentTime / video_duration) * 100;
       const width =
         (progressBarRef.current.clientWidth / 100) * currentTimePercent;
       if (width > progressBarRef.current.clientWidth) {
@@ -123,7 +129,7 @@ const Video = ({
     if (progressBarRef.current && videoRef.current) {
       const progressBarPercentage =
         (position / progressBarRef.current.clientWidth) * 100;
-      const changedTime = (progressBarPercentage / 100) * video.duration;
+      const changedTime = (progressBarPercentage / 100) * video_duration;
       videoRef.current.currentTime = changedTime;
     }
   };
@@ -163,10 +169,14 @@ const Video = ({
       )}
       {/* Action's video */}
       <BottomVideoAction
+        nickname={nickname}
+        video_desc={video_desc}
+        video_duration={video_duration}
+        video_id={video_id}
+        video_idf={video_idf}
         handleChangeVolume={onChangeVolume}
         fromVideoPage={fromVideoPage}
         allowedPlay={allowedPlay}
-        video={video}
         ref={timeCounterRef}
         isPlay={isPlay}
         progressBar={
@@ -193,7 +203,7 @@ const Video = ({
             <Plus />
           </AvatarCardButton>
           {/* like share, cmt,.,,, */}
-          <LikeCmtShare video_id={video._id} onOpenRightBar={onOpenRightBar} />
+          <LikeCmtShare video_id={video_id} onOpenRightBar={onOpenRightBar} />
         </RightVideoAction>
       )}
     </>
