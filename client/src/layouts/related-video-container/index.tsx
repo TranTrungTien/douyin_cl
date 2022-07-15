@@ -1,7 +1,7 @@
 import { useMemo } from "react";
 import { RelatedVideo } from "../../components";
 import { axiosConfigHeaders } from "../../config/axios-config";
-import { useFetch } from "../../hooks/useFetch";
+import { useFetchSuspense } from "../../hooks/useFetchSuspense";
 import { IVideo } from "../../interfaces/video.interface";
 
 type Props = {
@@ -18,7 +18,7 @@ const RelatedVideoContainer = ({ id }: Props) => {
       }
     );
   }, [id]);
-  const relatedVideo = useFetch<{
+  const relatedVideo = useFetchSuspense<{
     message: string;
     doc: IVideo[];
   }>("recommendation/related", header);
