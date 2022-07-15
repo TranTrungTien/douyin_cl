@@ -1,7 +1,6 @@
 import { useEffect, useMemo, useRef } from "react";
 import { axiosConfigHeaders } from "../../config/axios-config";
 import { useFetchSuspense } from "../../hooks/useFetchSuspense";
-import { IVideo } from "../../interfaces/video.interface";
 import { RightBarAction } from "../../layouts/videoslide";
 import { timeFormat } from "../../utils/timeFormat";
 import AvatarCardButton from "../avatarcardbutton";
