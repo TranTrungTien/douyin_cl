@@ -102,6 +102,12 @@ const VideoPage = (props: Props) => {
                   >
                     {video && (
                       <Video
+                        nickname={video.doc.author_id.nickname}
+                        video_addr={video.doc.play_addr.url_list[0]}
+                        video_desc={video.doc.desc}
+                        video_duration={video.doc.duration}
+                        video_id={video.doc._id}
+                        video_idf={video.doc.id_f}
                         avatar_thumb={
                           video.doc.author_id.avatar_thumb.url_list[0]
                         }
@@ -110,7 +116,6 @@ const VideoPage = (props: Props) => {
                         isPlay={isPlay ? true : false}
                         onChangeVideo={() => {}}
                         allowedPlay={true}
-                        video={video.doc}
                       />
                     )}
                   </ErrorBoundary>

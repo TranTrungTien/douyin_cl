@@ -101,10 +101,15 @@ const VideoSlide = ({
               }
             >
               <Video
+                nickname={video.author_id.nickname}
+                video_addr={video.play_addr.url_list[0]}
+                video_desc={video.desc}
+                video_duration={video.duration}
+                video_id={video._id}
+                video_idf={video.id_f}
                 avatar_thumb={avatar_thumb}
                 fromVideoPage={false}
                 allowedPlay={allowedPlay}
-                video={video}
                 isPlay={isPlay}
                 isActive={isActive}
                 onChangeVideo={onChangeVideo}
@@ -114,7 +119,7 @@ const VideoSlide = ({
           </Suspense>
         )}
       </section>
-      {openRightBar.isOpen && isActive && (
+      {openRightBar.isOpen && (
         <RightContainer>
           {openRightBar.user ? (
             <UserContainer

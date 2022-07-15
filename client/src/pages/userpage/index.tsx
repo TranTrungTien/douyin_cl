@@ -52,14 +52,20 @@ const UserPage = (props: Props) => {
         </Header>
         <PageContainer styleArray="extra-desktop:max-w-[1280px] mx-auto">
           <SideContainer styleArray="min-w-max min-h-full flex-1 text-white pt-10">
-            {user && <UserInfo user={user.doc} />}
+            {user && (
+              <UserInfo
+                avatar_thumb_url={user.doc.avatar_thumb.url_list[0]}
+                nickname={user.doc.nickname}
+                user_id={user.doc._id}
+              />
+            )}
           </SideContainer>
           <SideContainer styleArray="text-white shadow-[-18px_0px_80px_#000] h-max">
             {user && (
               <UserVideoContainer
                 viewLikedAllowed={user.doc.show_favorite_list}
                 cursor={cursorState}
-                author_id={user?.doc._id}
+                author_id={user.doc._id}
               />
             )}
           </SideContainer>
