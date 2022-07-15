@@ -1,48 +1,115 @@
+import axios from "axios";
+import { UIEvent, useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 import LikeFooter from "../../components/likefooter";
 import UserBoxHeader from "../../components/userboxheader";
 import VideoBadge from "../../components/videobadge";
 import VideoCard from "../../components/videocard";
 import VideoCardFooter from "../../components/videocardfooter";
 import VideoContainer from "../../components/videocontainer";
+import { IVideo } from "../../interfaces/video.interface";
 import { RightBarAction } from "../videoslide";
-
 type Props = {
+  author_id: string;
+  uid: string;
+  avatar_thumb: string;
+  nickname: string;
   handleCloseUserBox: (action: RightBarAction) => void;
 };
-const UserContainer = ({ handleCloseUserBox }: Props) => {
+const UserContainer = ({
+  uid,
+  author_id,
+  avatar_thumb,
+  nickname,
+  handleCloseUserBox,
+}: Props) => {
+  const [ownVideos, setOwnVideos] = useState<null | {
+    message: string;
+    list: IVideo[];
+  }>(null);
+  const [cursor, setCursor] = useState(0);
+  useEffect(() => {
+    axios
+      .get<{ message: string; video_count: number; list: IVideo[] }>(
+        "media/get-video-by-user",
+        {
+          headers: {
+            Accept: "application/json",
+            "Content-Type": "application/json",
+          },
+          params: {
+            author_id: author_id,
+            cursor: cursor,
+          },
+        }
+      )
+      .then((data) => {
+        console.log(data.data.list);
+        const d = data.data;
+        setOwnVideos((preState) => {
+          if (!preState) {
+            return d;
+          } else {
+            return {
+              ...preState,
+              list: [...preState.list, ...d.list],
+            };
+          }
+        });
+      })
+      .catch(alert);
+  }, [author_id, cursor]);
+
+  const onScroll = (e: UIEvent<HTMLDivElement>) => {
+    const toBottom =
+      e.currentTarget.scrollHeight -
+      e.currentTarget.scrollTop -
+      e.currentTarget.clientHeight;
+    if (toBottom <= 0) {
+      setCursor((pre) => ++pre);
+    }
+  };
+
   return (
     <section className="w-full h-full overflow-hidden">
-      <UserBoxHeader handleCloseUserBox={handleCloseUserBox} />
-      <div>
-        <VideoContainer px="px-2" py="py-2" gapY="gap-y-3">
-          <VideoCard>
-            <VideoBadge pinned={true} text="置顶" />
-            <VideoCardFooter>
-              <LikeFooter />
-            </VideoCardFooter>
-          </VideoCard>
-          <VideoCard>
+      <UserBoxHeader
+        uid={uid}
+        avatar_thumb={avatar_thumb}
+        nickname={nickname}
+        handleCloseUserBox={handleCloseUserBox}
+      />
+      <div
+        onScroll={onScroll}
+        className="h-[calc(100%-70px)] w-full overflow-x-hidden overflow-y-auto hidden-scrollbar"
+      >
+        <VideoContainer px="px-2" py="py-2" gapY="gap-y-3" gapX="gap-x-3">
+          {ownVideos &&
+            ownVideos.list.map((video) => {
+              return (
+                <Link
+                  key={video.id_f}
+                  className="inline-block overflow-hidden"
+                  target="_blank"
+                  to={`/video/${video._id}/${video.id_f}`}
+                >
+                  <VideoCard
+                    cover_image={video.origin_cover.url_list[0]}
+                    styleArray="extra-desktop:max-h-[168px] h-full"
+                  >
+                    <VideoBadge pinned={true} text="置顶" />
+                    <VideoCardFooter>
+                      <LikeFooter />
+                    </VideoCardFooter>
+                  </VideoCard>
+                </Link>
+              );
+            })}
+          {/* <VideoCard>
             <VideoBadge hot={true} text="热榜" />
             <VideoCardFooter>
               <LikeFooter />
             </VideoCardFooter>
-          </VideoCard>
-          <VideoCard>
-            <VideoBadge hot={true} text="热榜" />
-            <VideoCardFooter>
-              <LikeFooter />
-            </VideoCardFooter>
-          </VideoCard>
-          <VideoCard>
-            <VideoCardFooter>
-              <LikeFooter />
-            </VideoCardFooter>
-          </VideoCard>
-          <VideoCard>
-            <VideoCardFooter>
-              <LikeFooter />
-            </VideoCardFooter>
-          </VideoCard>
+          </VideoCard> */}
         </VideoContainer>
       </div>
     </section>

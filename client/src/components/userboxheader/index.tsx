@@ -1,28 +1,39 @@
+import { Link } from "react-router-dom";
 import { RightBarAction } from "../../layouts/videoslide";
 import AvatarCard from "../avatarcardbutton";
 import Button from "../button";
 
 type Props = {
+  avatar_thumb: string;
+  nickname: string;
+  uid: string;
   handleCloseUserBox: (action: RightBarAction) => void;
 };
 
-const UserBoxHeader = ({ handleCloseUserBox }: Props) => {
+const UserBoxHeader = ({
+  avatar_thumb,
+  nickname,
+  uid,
+  handleCloseUserBox,
+}: Props) => {
   const onCloseUser = () => {
     handleCloseUserBox({ comment: false, isOpen: false, user: false });
   };
   return (
-    <header className="py-3 px-4 w-full h-auto">
+    <header className="py-3 px-4 w-full h-auto sticky top-0 left-0">
       <div className="flex justify-between items-center w-full h-auto">
         <div className="flex justify-start items-center space-x-3">
           <AvatarCard
             hint="User Cover"
             borderRadius="full"
-            image="https://ichef.bbci.co.uk/news/999/cpsprodpb/15951/production/_117310488_16.jpg"
+            image={avatar_thumb}
           />
           <div className="text-white flex flex-col justify-start items-start space-y-2 flex-1">
             <div className="flex justify-center items-center space-x-1 hover:text-fresh_red ">
               <h1 className="leading-[22px] font-medium text-base opacity-90">
-                李上头
+                <Link target="_blank" to={`/user/${uid}`}>
+                  {nickname}
+                </Link>
               </h1>
               <span className="mt-px">
                 <svg
