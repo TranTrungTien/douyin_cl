@@ -1,7 +1,8 @@
-import axios from "axios";
-import { UIEvent, useEffect, useState } from "react";
+import { UIEvent, useMemo, useState } from "react";
 import { useParams } from "react-router-dom";
 import { LeftHeaderWrapper, Logo, Nav, Search } from "../../components";
+import { axiosConfigHeaders } from "../../config/axios-config";
+import { useFetch } from "../../hooks/useFetch";
 import { IUser } from "../../interfaces/user.interface";
 import {
   Header,
@@ -15,28 +16,17 @@ type Props = {};
 
 const UserPage = (props: Props) => {
   const { user_id } = useParams();
-  const [user, setUser] = useState<null | { message: string; doc: IUser }>(
-    null
-  );
-
-  const [cursorState, setCursorState] = useState(0);
-  useEffect(() => {
-    axios
-      .get<{ message: string; doc: IUser }>("user/info", {
-        headers: {
-          "Content-Type": "application/json",
-          accept: "application/json",
-        },
-        params: {
-          uid: user_id,
-        },
-      })
-      .then((data) => {
-        console.log(data.data.doc);
-        setUser(data.data);
-      })
-      .catch(alert);
+  const jsonHeader = useMemo(() => {
+    return axiosConfigHeaders("json", "application/json", "application/json", {
+      uid: user_id,
+    });
   }, [user_id]);
+  const user = useFetch<null | { message: string; doc: IUser }>(
+    "user/info",
+    jsonHeader
+  );
+  const [cursorState, setCursorState] = useState(0);
+
   const onScroll = (e: UIEvent<HTMLDivElement>) => {
     const isScrollToBottom =
       e.currentTarget.scrollHeight -

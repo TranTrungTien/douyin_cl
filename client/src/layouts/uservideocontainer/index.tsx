@@ -1,11 +1,13 @@
 import axios from "axios";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 import LikeFooter from "../../components/likefooter";
 import VideoBadge from "../../components/videobadge";
 import VideoCard from "../../components/videocard";
 import VideoCardFooter from "../../components/videocardfooter";
 import VideoContainer from "../../components/videocontainer";
+import { axiosConfigHeaders } from "../../config/axios-config";
+import { useFetch } from "../../hooks/useFetch";
 import { IVideo } from "../../interfaces/video.interface";
 
 type Props = {
@@ -21,31 +23,17 @@ const UserVideoContainer = ({ author_id, cursor, viewLikedAllowed }: Props) => {
     message: string;
     list: IVideo[];
   }>(null);
-  const [count, setCount] = useState<{
+  const jsonHeader = useMemo(() => {
+    return axiosConfigHeaders("json", "application/json", "application/json", {
+      author_id: author_id,
+    });
+  }, [author_id]);
+  const count = useFetch<{
     message: string;
     ownVideoTotal: number;
     likedVideoTotal: number;
-  } | null>(null);
-  useEffect(() => {
-    axios
-      .get<{
-        message: string;
-        ownVideoTotal: number;
-        likedVideoTotal: number;
-      }>("media/get-count", {
-        headers: {
-          "Content-Type": "application/json",
-          Accept: "application/json",
-        },
-        params: {
-          author_id: author_id,
-        },
-      })
-      .then((data) => {
-        setCount(data.data);
-      })
-      .catch(alert);
-  }, [author_id]);
+  } | null>("media/get-count", jsonHeader);
+
   useEffect(() => {
     axios
       .get<{ message: string; video_count: number; list: IVideo[] }>(

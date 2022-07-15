@@ -5,7 +5,7 @@ import "swiper/css/bundle";
 import "swiper/css/virtual";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { axiosConfigHeaders } from "../../config/axios-config";
-import { useFetch } from "../../hooks/useFetch";
+import { useFetchSuspense } from "../../hooks/useFetchSuspense";
 import { IVideo } from "../../interfaces/video.interface";
 import { VideoSlide } from "../../layouts";
 SwiperCore.use([Virtual]);
@@ -20,7 +20,7 @@ const SwiperWrapper = () => {
       null
     );
   }, []);
-  const videos = useFetch<{ message: string; list: IVideo[] }>(
+  const videos = useFetchSuspense<{ message: string; list: IVideo[] }>(
     "recommendation/new",
     metaHeader
   );

@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useRef } from "react";
 import { axiosConfigHeaders } from "../../config/axios-config";
-import { useFetch } from "../../hooks/useFetch";
+import { useFetchSuspense } from "../../hooks/useFetchSuspense";
 import { IVideo } from "../../interfaces/video.interface";
 import { RightBarAction } from "../../layouts/videoslide";
 import { timeFormat } from "../../utils/timeFormat";
@@ -52,7 +52,10 @@ const Video = ({
     return axiosConfigHeaders("blob", "video/mp4", "video/mp4", null);
   }, []);
   console.log({ video });
-  const videoBlob = useFetch<Blob>(video.play_addr.url_list[0], mediaHeader);
+  const videoBlob = useFetchSuspense<Blob>(
+    video.play_addr.url_list[0],
+    mediaHeader
+  );
 
   useEffect(() => {
     let videoRefCl: HTMLVideoElement | null = null;
