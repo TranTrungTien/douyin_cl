@@ -36,7 +36,10 @@ const Comment = ({ styleArray }: Props) => {
           {/* Action: Like, Reply */}
           <div className="text-xs font-medium leading-5 text-inherit opacity-70  flex justify-start items-center space-x-5">
             <Heart />
-            <button className="flex justify-start items-center space-x-px hover:text-fresh_red">
+            <button
+              onClick={() => setIsReply(!isReply)}
+              className="flex justify-start items-center space-x-px hover:text-fresh_red"
+            >
               <svg
                 width="20"
                 height="20"
@@ -51,7 +54,7 @@ const Comment = ({ styleArray }: Props) => {
                   fillOpacity="0.9"
                 ></path>
               </svg>
-              <button onClick={() => setIsReply(!isReply)}>回复</button>
+              回复
             </button>
           </div>
           {isReply && <Input onSubmit={() => {}} />}

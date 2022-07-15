@@ -29,6 +29,7 @@ const SwiperWrapper = () => {
   };
   return (
     <Swiper
+      allowTouchMove={false}
       direction="vertical"
       slidesPerView={1}
       centeredSlides={true}
