@@ -44,7 +44,13 @@ const SwiperWrapper = () => {
             key={index}
             virtualIndex={index}
           >
-            <VideoSlide allowedPlay={start} video={video} onStart={onStart} />
+            <VideoSlide
+              avatar_thumb={video.author_id.avatar_thumb.url_list[0]}
+              nickname={video.author_id.nickname}
+              allowedPlay={start}
+              video={video}
+              onStart={onStart}
+            />
           </SwiperSlide>
         ))}
     </Swiper>

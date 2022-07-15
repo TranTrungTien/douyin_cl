@@ -13,6 +13,7 @@ const Input = ({ onSubmit }: Props) => {
           autoComplete="false"
           name="comment"
           id="comment"
+          placeholder="评论 ..."
         />
       </form>
     </div>

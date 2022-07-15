@@ -27,6 +27,7 @@ type Props = {
   allowedPlay: boolean;
   isPlay: boolean;
   isActive: boolean;
+  avatar_thumb: string;
   onChangeVideo: (action: boolean) => void;
   onOpenRightBar?: (action: RightBarAction) => void;
 };
@@ -37,6 +38,7 @@ const Video = ({
   video,
   isPlay,
   isActive,
+  avatar_thumb,
   onChangeVideo,
   onOpenRightBar,
 }: Props) => {
@@ -178,7 +180,7 @@ const Video = ({
           {/* next, pre button */}
           <NextVideoButton handleChangeVideo={onChangeVideo} />
           <AvatarCardButton
-            image="https://ichef.bbci.co.uk/news/999/cpsprodpb/15951/production/_117310488_16.jpg"
+            image={avatar_thumb}
             borderRadius="rounded-full"
             handleOpenRightBar={onOpenRightBar}
             height="h-10"

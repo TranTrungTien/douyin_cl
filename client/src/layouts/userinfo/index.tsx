@@ -12,7 +12,7 @@ const UserInfo = ({ user }: Props) => {
     <div className="2xl:max-w-[400px] ml-auto px-3  space-y-4">
       <header className="flex justify-start items-center space-x-9">
         <AvatarCardButton
-          image="https://luv.vn/wp-content/uploads/2021/09/hinh-anh-gai-xinh-trung-quoc-96-edited.jpg"
+          image={user.avatar_thumb.url_list[0]}
           height="h-62px"
           width="w-62px"
           hint="User Cover"

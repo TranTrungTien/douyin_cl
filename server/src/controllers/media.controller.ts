@@ -3,7 +3,7 @@ import { Request, Response } from "express";
 import * as fs from "fs";
 import path from "path";
 import { v4 } from "uuid";
-import { coverPath, videoPath } from "../const/path";
+import { avatarPath, coverPath, videoPath } from "../const/path";
 import LikedModel from "../models/liked.model";
 import VideoModel from "../models/video.model";
 
@@ -170,8 +170,14 @@ function getTotalDocuments(req: Request, res: Response) {
     }
   );
 }
-
+function getAvatarThumbnail(req: Request, res: Response) {
+  const avatar_id = req.query.avatar_id as string;
+  fs.createReadStream(avatarPath + "/avatar_thumbs/" + avatar_id + ".jpg").pipe(
+    res
+  );
+}
 const MediaController = {
+  getAvatarThumbnail,
   getAllVideoByUser,
   getVideoCover,
   getVideoStream,

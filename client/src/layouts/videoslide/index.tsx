@@ -10,6 +10,8 @@ import RightContainer from "../rightcontainer";
 import UserContainer from "../usercontainer";
 
 type Props = {
+  avatar_thumb: string;
+  nickname: string;
   video: IVideo;
   onStart: () => void;
   allowedPlay: boolean;
@@ -20,7 +22,13 @@ export interface RightBarAction {
   user: boolean;
 }
 const dataType = "clickable";
-const VideoSlide = ({ onStart, video, allowedPlay }: Props) => {
+const VideoSlide = ({
+  avatar_thumb,
+  nickname,
+  onStart,
+  video,
+  allowedPlay,
+}: Props) => {
   console.log("video slide rerender");
   const [isPlay, setIsPlay] = useState(true);
   const swiper = useSwiper();
@@ -61,7 +69,8 @@ const VideoSlide = ({ onStart, video, allowedPlay }: Props) => {
       };
     }
   ) => {
-    if (
+    if (!isActive) return;
+    else if (
       e.target.dataset.type !== dataType &&
       !e.target.closest("[data-type='bottom_play_clickable']") &&
       !e.target.closest("[data-type='center_play_clickable']")
@@ -74,13 +83,13 @@ const VideoSlide = ({ onStart, video, allowedPlay }: Props) => {
   };
   return (
     <div className="flex justify-between items-center w-full h-full rounded-md">
-      {isVisible && (
-        <section
-          onClick={onPlayOrPause}
-          data-type="clickable"
-          className="w-full h-full flex-1 relative grid place-content-center overflow-hidden rounded-md"
-        >
-          <BackgroundVideo cover_url={video.origin_cover.url_list[0]} />
+      <section
+        onClick={onPlayOrPause}
+        data-type="clickable"
+        className="w-full h-full flex-1 relative grid place-content-center overflow-hidden rounded-md"
+      >
+        <BackgroundVideo cover_url={video.origin_cover.url_list[0]} />
+        {isVisible && (
           <Suspense fallback={<Loading />}>
             <ErrorBoundary
               fallback={
@@ -92,6 +101,7 @@ const VideoSlide = ({ onStart, video, allowedPlay }: Props) => {
               }
             >
               <Video
+                avatar_thumb={avatar_thumb}
                 fromVideoPage={false}
                 allowedPlay={allowedPlay}
                 video={video}
@@ -102,12 +112,18 @@ const VideoSlide = ({ onStart, video, allowedPlay }: Props) => {
               />
             </ErrorBoundary>
           </Suspense>
-        </section>
-      )}
-      {openRightBar.isOpen && (
+        )}
+      </section>
+      {openRightBar.isOpen && isActive && (
         <RightContainer>
           {openRightBar.user ? (
-            <UserContainer handleCloseUserBox={onOpenRightBar} />
+            <UserContainer
+              uid={video.author_id.uid}
+              author_id={video.author_id._id}
+              avatar_thumb={avatar_thumb}
+              nickname={nickname}
+              handleCloseUserBox={onOpenRightBar}
+            />
           ) : (
             <CommentContainer
               video_id={video._id}

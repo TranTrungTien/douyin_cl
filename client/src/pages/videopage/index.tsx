@@ -102,6 +102,9 @@ const VideoPage = (props: Props) => {
                   >
                     {video && (
                       <Video
+                        avatar_thumb={
+                          video.doc.author_id.avatar_thumb.url_list[0]
+                        }
                         fromVideoPage={true}
                         isActive={true}
                         isPlay={isPlay ? true : false}
