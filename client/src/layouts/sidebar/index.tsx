@@ -5,7 +5,7 @@ import { sidebarAction } from "../../constants/sidebar_action";
 type Props = {};
 const Sidebar = (props: Props) => {
   return (
-    <aside className="bg-dark_blue extra-desktop:max-w-172px over-desktop:max-w-[200px] h-full sticky top-0 left-0">
+    <aside className="bg-dark_blue desktop:max-w-min extra-desktop:max-w-172px over-desktop:max-w-[200px] h-full sticky top-0 left-0">
       <div className="flex flex-col h-full overflow-auto hidden-scrollbar">
         <div className="flex justify-center items-center py-3 cursor-pointer">
           <Link to="/">
@@ -22,15 +22,15 @@ const Sidebar = (props: Props) => {
               return (
                 <NavLink to={action.path} key={index}>
                   <li className="flex justify-start items-center leading-9 cursor-pointer opacity-60 hover:opacity-100 m-3 mr-12 mb-0 ml-10">
-                    <div className="w-36px h-36px">
+                    <div className="desktop:w-[32px] desktop:h-[32px] extra-desktop:w-36px extra-desktop:h-36px">
                       <img
                         className="block w-full h-full object-cover object-center"
                         src={action.actionImage}
                         alt={action.actionName}
                       />
                     </div>
-                    <div>
-                      <span className="text-white text-base font-normal">
+                    <div className="max-h-min">
+                      <span className="text-white desktop:text-[15px] extra-desktop:text-base font-normal">
                         {action.actionName}
                       </span>
                     </div>
