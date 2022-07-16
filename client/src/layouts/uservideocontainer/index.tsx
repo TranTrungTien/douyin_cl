@@ -73,8 +73,8 @@ const UserVideoContainer = ({ author_id, cursor, viewLikedAllowed }: Props) => {
     }
   };
   return (
-    <div className="px-16 pt-8 space-y-6">
-      <header className="flex justify-start items-center space-x-10 leading-[26px] font-medium text-[18px] opacity-90">
+    <div className="extra-desktop:px-12 over-desktop:px-16 pt-8 space-y-6">
+      <header className="laptop:px-3 desktop:px-5 extra-desktop:px-0 flex justify-start items-center space-x-10 leading-[26px] font-medium text-[18px] opacity-90">
         <button
           onClick={() => onChangeViewOpt(0)}
           className="flex justify-start items-center space-x-2"
@@ -105,8 +105,13 @@ const UserVideoContainer = ({ author_id, cursor, viewLikedAllowed }: Props) => {
           )}
         </button>
       </header>
-      <div className="extra-desktop:w-[776px]">
-        <VideoContainer gapX="gap-x-3" gapY="gap-y-3">
+      <div className="laptop:max-w-[620px] desktop:max-w-[680px] extra-desktop:max-w-[776px]">
+        <VideoContainer
+          gapX="laptop:gap-x-5 desktop:gap-x-3"
+          gapY="laptop:gap-y-5 desktop:gap-y-3"
+          px="laptop:px-10 desktop:px-5 extra-desktop:px-0"
+          gridCol="laptop:grid-cols-2 desktop:grid-cols-3"
+        >
           {ownVideos &&
             ownVideos.list.map((video, index) => {
               return (
@@ -114,10 +119,10 @@ const UserVideoContainer = ({ author_id, cursor, viewLikedAllowed }: Props) => {
                   target="_blank"
                   to={`/video/${video._id}/${video.id_f}`}
                   key={video._id}
-                  className="block w-full h-full"
+                  className="block w-full  extra-desktop:h-full"
                 >
                   <VideoCard
-                    styleArray="extra-desktop:h-[328px]"
+                    styleArray="laptop:h-[320px] desktop:h-[280px] extra-desktop:h-[328px] overflow-hidden"
                     cover_image={video.origin_cover.url_list[0]}
                   >
                     <VideoBadge pinned={true} text="置顶" />

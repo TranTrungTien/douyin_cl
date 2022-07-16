@@ -50,8 +50,8 @@ const UserPage = (props: Props) => {
           </LeftHeaderWrapper>
           <Nav />
         </Header>
-        <PageContainer styleArray="extra-desktop:max-w-[1280px] mx-auto">
-          <SideContainer styleArray="min-w-max min-h-full flex-1 text-white pt-10">
+        <PageContainer styleArray="laptop:w-full laptop:px-5 desktop:max-w-max extra-desktop:max-w-[1280px] mx-auto desktop:space-x-3 extra-desktop:space-x-0">
+          <SideContainer styleArray="desktop:min-w-min  min-h-full flex-1 text-white pt-10">
             {user && (
               <UserInfo
                 avatar_thumb_url={user.doc.avatar_thumb.url_list[0]}
