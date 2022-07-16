@@ -30,7 +30,7 @@ const Sidebar = (props: Props) => {
                       />
                     </div>
                     <div className="max-h-min">
-                      <span className="text-white desktop:text-[15px] extra-desktop:text-base font-normal">
+                      <span className="text-white laptop:text-[15px] desktop:text-base font-normal">
                         {action.actionName}
                       </span>
                     </div>

@@ -10,15 +10,15 @@ type Props = {
 
 const UserInfo = ({ avatar_thumb_url, nickname, user_id }: Props) => {
   return (
-    <div className="2xl:max-w-[400px] ml-auto px-3  space-y-4">
-      <header className="flex justify-start items-center space-x-9">
+    <div className="laptop:max-w-[320px] desktop:max-w-[350px] extra-desktop:max-w-[400px] ml-auto px-3  space-y-4">
+      <header className="flex justify-start items-center laptop:space-x-9">
         <AvatarCardButton
           image={avatar_thumb_url}
           height="h-62px"
           width="w-62px"
           hint="User Cover"
         />
-        <div className="text-white opacity-90 leading-5 flex justify-center items-center space-x-16">
+        <div className="text-white opacity-90 leading-5 flex justify-center items-center laptop:space-x-6 desktop:space-x-16">
           <div className="flex flex-col justify-center items-start space-y-1">
             <span className="text-xs font-normal opacity-50">关注</span>
             {/* following */}
