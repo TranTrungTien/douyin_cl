@@ -8,7 +8,7 @@ const VideoSlideContainer = (props: Props) => {
   console.log("video slide container re render");
 
   return (
-    <main className="w-full h-[95%] px-[30px] overflow-hidden relative">
+    <main className="w-full h-[95%] laptop:px-[20px] desktop:px-[30px] overflow-hidden relative">
       <Suspense fallback={<Loading />}>
         <ErrorBoundary
           fallback={

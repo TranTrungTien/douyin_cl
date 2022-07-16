@@ -20,22 +20,22 @@ const UserBoxHeader = ({
     handleCloseUserBox({ comment: false, isOpen: false, user: false });
   };
   return (
-    <header className="py-3 px-4 w-full h-auto sticky top-0 left-0">
-      <div className="flex justify-between items-center w-full h-auto">
-        <div className="flex justify-start items-center space-x-3">
+    <header className="laptop:px-2 desktop:px-3 py-3 extra-desktop:px-4 w-full h-auto sticky top-0 left-0">
+      <div className="flex justify-between items-center w-full h-auto laptop:space-x-3 desktop:space-x-2 laptop:items-center">
+        <div className="flex justify-start desktop:flex-row desktop:items-center laptop:items-center laptop:space-x-2 desktop:space-x-3">
           <AvatarCard
             hint="User Cover"
             borderRadius="full"
             image={avatar_thumb}
           />
-          <div className="text-white flex flex-col justify-start items-start space-y-2 flex-1">
+          <div className="text-white flex flex-col justify-start items-start space-y-2 flex-1 desktop:mt-0">
             <div className="flex justify-center items-center space-x-1 hover:text-fresh_red ">
               <h1 className="leading-[22px] font-medium text-base opacity-90">
                 <Link target="_blank" to={`/user/${uid}`}>
                   {nickname}
                 </Link>
               </h1>
-              <span className="mt-px">
+              <span className="laptop:hidden extra-desktop:block mt-px">
                 <svg
                   width="19"
                   height="19"
@@ -51,7 +51,7 @@ const UserBoxHeader = ({
                 </svg>
               </span>
             </div>
-            <div className="flex justify-center items-center space-x-5 opacity-90 text-xs font-normal">
+            <div className="laptop:hidden desktop:block mt-px flex justify-center items-center desktop:space-x-3 extra-desktop:space-x-5 opacity-90 text-xs font-normal">
               <span>
                 <span>63.0w</span>粉丝
               </span>
@@ -61,7 +61,7 @@ const UserBoxHeader = ({
             </div>
           </div>
         </div>
-        <div className="flex justify-center text-white items-center space-x-5">
+        <div className="flex justify-center text-white items-center desktop:space-x-3 laptop:space-x-2">
           <Button
             onClick={() => {}}
             borderRadius="rounded"
@@ -74,7 +74,7 @@ const UserBoxHeader = ({
             text="关注"
           />
           <div className="flex justify-start items-center">
-            <button className="text-white opacity-50 hover:opacity-100">
+            <button className="laptop:hidden desktop:block text-white opacity-50 hover:opacity-100">
               <svg
                 width="36"
                 height="36"

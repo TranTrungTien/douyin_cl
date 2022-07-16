@@ -6,7 +6,7 @@ type Props = {
 
 const RightContainer = ({ children }: Props) => {
   return (
-    <section className="2xl:w-[444px] h-full bg-darkslategray3 rounded-md overflow-hidden">
+    <section className="laptop:max-w-[300px] desktop:max-w-[440px] extra-desktop:max-w-[500px] laptop:w-[300px] desktop:w-[440px] extra-desktop:w-[500px] h-full bg-darkslategray3 rounded-md overflow-hidden">
       <div className="flex flex-col justify-start items-start w-full h-full overflow-hidden">
         {children}
       </div>

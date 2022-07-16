@@ -82,19 +82,25 @@ const UserContainer = ({
         onScroll={onScroll}
         className="h-[calc(100%-70px)] w-full overflow-x-hidden overflow-y-auto hidden-scrollbar"
       >
-        <VideoContainer px="px-2" py="py-2" gapY="gap-y-3" gapX="gap-x-3">
+        <VideoContainer
+          gridCol="laptop:grid-cols-2 desktop:grid-cols-3"
+          px="laptop:px-3 "
+          py="py-2"
+          gapY="laptop:gap-y-2 desktop:gap-y-3"
+          gapX="laptop:gap-x-2 desktop:gap-x-3"
+        >
           {ownVideos &&
             ownVideos.list.map((video) => {
               return (
                 <Link
                   key={video.id_f}
-                  className="inline-block overflow-hidden"
+                  className="inline-block overflow-hidden self-center h-full"
                   target="_blank"
                   to={`/video/${video._id}/${video.id_f}`}
                 >
                   <VideoCard
                     cover_image={video.origin_cover.url_list[0]}
-                    styleArray="extra-desktop:max-h-[168px] h-full"
+                    styleArray="mx-auto laptop:max-w-auto laptop:max-h-[160px] extra-desktop:max-h-[170px] h-full"
                   >
                     <VideoBadge pinned={true} text="置顶" />
                     <VideoCardFooter>
