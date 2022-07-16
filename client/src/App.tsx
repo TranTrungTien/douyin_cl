@@ -16,7 +16,7 @@ function App() {
     fetchUser();
   }, [dispatch]);
   return (
-    <div className="App">
+    <div className="App hidden laptop:block">
       <Routers />
     </div>
   );

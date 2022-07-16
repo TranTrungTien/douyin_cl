@@ -2,7 +2,7 @@ type Props = {};
 
 const Search = (props: Props) => {
   return (
-    <form className="text-base font-medium text-white 2xl:w-[500px] flex justify-center item-center h-[42px] bg-darkslategray rounded-[5px]">
+    <form className="text-base font-medium text-white laptop:w-[400px] desktop:w-[500px] flex justify-center item-center h-[42px] bg-darkslategray rounded-[5px]">
       <div className="h-full flex justify-start items-center p-2">
         <svg
           width="18"
@@ -18,7 +18,7 @@ const Search = (props: Props) => {
           ></path>
         </svg>
       </div>
-      <div className=" flex-1 h-full flex justify-start items-center">
+      <div className="flex-1 h-full flex justify-start items-center">
         <input
           className="focus:outline-none focus:border-none border-none outline-none bg-transparent text-white w-full"
           type="text"

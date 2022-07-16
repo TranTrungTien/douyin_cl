@@ -14,7 +14,7 @@ const VideoContainer = ({
   px = "px-0",
   gapY = "gap-y-0",
   gapX = "gap-x-0",
-  gridCol = "2xl:grid-cols-3",
+  gridCol = "desktop:grid-cols-3",
 }: Props) => {
   return (
     <div className={`grid ${gridCol} ${py} ${px} ${gapX} ${gapY}`}>

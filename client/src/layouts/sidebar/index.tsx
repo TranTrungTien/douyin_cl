@@ -5,12 +5,12 @@ import { sidebarAction } from "../../constants/sidebar_action";
 type Props = {};
 const Sidebar = (props: Props) => {
   return (
-    <aside className="bg-dark_blue desktop:max-w-min extra-desktop:max-w-172px over-desktop:max-w-[200px] h-full sticky top-0 left-0">
-      <div className="flex flex-col h-full overflow-auto hidden-scrollbar">
-        <div className="flex justify-center items-center py-3 cursor-pointer">
+    <aside className="bg-dark_blue laptop:max-w-min desktop:max-w-min extra-desktop:max-w-172px over-desktop:max-w-[200px] h-full sticky top-0 left-0">
+      <div className="flex flex-col laptop:items-center h-full overflow-auto hidden-scrollbar">
+        <div className="w-28 h-20 flex laptop:justify-center desktop:ml-0 desktop:justify-center items-center py-3 cursor-pointer">
           <Link to="/">
             <img
-              className="block w-auto h-auto object-cover object-center"
+              className="block w-full h-full object-cover object-center"
               src="/images/douyin_logo.svg"
               alt="Logo"
             />
@@ -21,8 +21,8 @@ const Sidebar = (props: Props) => {
             {sidebarAction.map((action, index) => {
               return (
                 <NavLink to={action.path} key={index}>
-                  <li className="flex justify-start items-center leading-9 cursor-pointer opacity-60 hover:opacity-100 m-3 mr-12 mb-0 ml-10">
-                    <div className="desktop:w-[32px] desktop:h-[32px] extra-desktop:w-36px extra-desktop:h-36px">
+                  <li className="flex desktop:justify-start laptop:items-center desktop:items-center leading-9 cursor-pointer opacity-60 hover:opacity-100 desktop:m-3 laptop:m-0 laptop:flex-col desktop:flex-row laptop:space-x-0 desktop:space-x-1  laptop:ml-0 desktop:ml-5 desktop:mx-12 mb-0">
+                    <div className="w-36px h-36px">
                       <img
                         className="block w-full h-full object-cover object-center"
                         src={action.actionImage}
@@ -40,7 +40,7 @@ const Sidebar = (props: Props) => {
             })}
           </ul>
         </div>
-        <div className="py-16 pr-4 pl-3">
+        <div className="laptop:hidden desktop:block py-16 pr-4 pl-3">
           <div className="text-white opacity-50 text-xs">
             <div className="o1h2uP_i">
               <div className="h9hROuDG">

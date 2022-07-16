@@ -15,7 +15,10 @@ const HomePage = (props: Props) => {
     <div className="flex justify-start items-start h-screen overflow-hidden">
       <Sidebar />
       <div className="flex flex-col justify-start items-start bg-light_blue h-full w-full overflow-hidden">
-        <Header styleArray="py-[9px]">
+        <Header
+          fromHomePage={true}
+          styleArray="laptop:py-[6px] desktop:py-[9px]"
+        >
           <Search />
           <Nav />
         </Header>
