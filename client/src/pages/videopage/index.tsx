@@ -78,12 +78,15 @@ const VideoPage = (props: Props) => {
           <Nav />
         </Header>
         <PageContainer styleArray="pt-6">
-          <div className="2xl:max-w-[1306] 2xl:w-[1306px] flex justify-center items-start mx-auto space-x-3">
-            <SideContainer width="w-[960px]" height="h-full">
+          <div className="laptop:w-full laptop:px-6 desktop:px-0 desktop:max-w-[1080px] extra-desktop:w-[1170px] over-desktop:max-w-[1300px] flex laptop:justify-start desktop:justify-center items-start mx-auto laptop:space-x-3">
+            <SideContainer
+              width="laptop:w-[75%] desktop:w-[770px] extra-desktop:w-[850px] over-desktop:w-[960px]"
+              height="h-full"
+            >
               <section
                 onClick={onPlayOrPause}
                 data-type="clickable"
-                className="w-full xl:h-[574px]  flex-1 relative grid place-content-center overflow-hidden rounded-md backdrop-blur-sm"
+                className="w-full laptop:h-[574px]  flex-1 relative grid place-content-center overflow-hidden rounded-md backdrop-blur-sm"
               >
                 {video && (
                   <BackgroundVideo
@@ -161,7 +164,7 @@ const VideoPage = (props: Props) => {
                       <h4 className="font-medium text-sm opacity-90 leading-[22px] truncate">
                         猫七baby🍓
                       </h4>
-                      <div className="flex justify-center items-center space-x-2 ">
+                      <div className="flex justify-center desktop:flex-row laptop:flex-col laptop:items-start desktop:items-center desktop:space-x-2 ">
                         <div className="flex justify-center items-center space-x-px leading-5 text-xs">
                           <span className="font-medium opacity-50 ">粉丝</span>
                           <span className="font-semibold opacity-90 ">
