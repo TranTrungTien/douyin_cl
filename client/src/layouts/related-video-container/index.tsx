@@ -29,7 +29,12 @@ const RelatedVideoContainer = ({ id }: Props) => {
       {relatedVideo &&
         relatedVideo.doc &&
         relatedVideo.doc.map((video, index) => (
-          <RelatedVideo key={index} video={video} />
+          <RelatedVideo
+            key={index}
+            video_cover={video.origin_cover.url_list[0]}
+            desc={video.desc}
+            nickname={video.author_id.nickname}
+          />
         ))}
     </div>
   );
