@@ -1,4 +1,4 @@
-import { lazy, Suspense } from "react";
+import { lazy, Suspense, useState } from "react";
 import { Loading } from "../../components";
 import Modal from "../../components/modal";
 import Nav from "../../components/nav";
@@ -11,8 +11,9 @@ const VideoSlideContainerWrapper = lazy(
 );
 type Props = {};
 const HomePage = (props: Props) => {
+  const [openModal, setopenModal] = useState(false);
   return (
-    <div className="flex justify-start items-start h-screen overflow-hidden">
+    <div className={`flex justify-start items-start h-screen overflow-hidden`}>
       <Sidebar />
       <div className="flex flex-col justify-start items-start bg-light_blue h-full w-full overflow-hidden">
         <Header
