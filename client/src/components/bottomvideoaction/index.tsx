@@ -15,6 +15,7 @@ type Props = {
   progressBar: JSX.Element;
   turnOnOffVolume?: (action: boolean) => void;
   handleChangeVolume: (volume: number) => void;
+  handleToggleFullscreenMode: () => void;
 };
 
 const BottomVideoAction = forwardRef<HTMLSpanElement, Props>(
@@ -31,6 +32,7 @@ const BottomVideoAction = forwardRef<HTMLSpanElement, Props>(
       nickname,
       turnOnOffVolume,
       handleChangeVolume,
+      handleToggleFullscreenMode,
     }: Props,
     timeCounterRef
   ) => {
@@ -229,7 +231,10 @@ const BottomVideoAction = forwardRef<HTMLSpanElement, Props>(
                     </div>
                   </button>
                   {/* Fullscreen */}
-                  <button className="mt-[2px]">
+                  <button
+                    onClick={handleToggleFullscreenMode}
+                    className="mt-[2px]"
+                  >
                     <svg
                       width="32"
                       height="32"

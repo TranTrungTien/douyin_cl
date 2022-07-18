@@ -78,12 +78,13 @@ const VideoPage = (props: Props) => {
           <Nav />
         </Header>
         <PageContainer styleArray="pt-6">
-          <div className="laptop:w-full laptop:px-6 desktop:px-0 desktop:max-w-[1080px] extra-desktop:w-[1170px] over-desktop:max-w-[1300px] flex laptop:justify-start desktop:justify-center items-start mx-auto laptop:space-x-3">
+          <div className="laptop:w-full laptop:px-6 desktop:px-0 desktop:max-w-[1080px] extra-desktop:w-[1280px] over-desktop:max-w-[1440px] flex laptop:justify-start desktop:justify-center items-start mx-auto laptop:space-x-3">
             <SideContainer
               width="laptop:w-[75%] desktop:w-[770px] extra-desktop:w-[850px] over-desktop:w-[960px]"
               height="h-full"
             >
               <section
+                id="fullscreen"
                 onClick={onPlayOrPause}
                 data-type="clickable"
                 className="w-full laptop:h-[574px]  flex-1 relative grid place-content-center overflow-hidden rounded-md backdrop-blur-sm"

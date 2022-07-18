@@ -2,6 +2,7 @@ import { useEffect, useMemo, useRef } from "react";
 import { axiosConfigHeaders } from "../../config/axios-config";
 import { useFetchSuspense } from "../../hooks/useFetchSuspense";
 import { RightBarAction } from "../../layouts/videoslide";
+import { toggleFullScreen } from "../../utils/fullscreen";
 import { timeFormat } from "../../utils/timeFormat";
 import AvatarCardButton from "../avatarcardbutton";
 import BottomVideoAction from "../bottomvideoaction";
@@ -137,14 +138,20 @@ const Video = ({
     videoRef.current && (videoRef.current.volume = volume);
     localStorage.setItem("volume", JSON.stringify(volume));
   };
+
+  const onToggleFullscreenMode = () => {
+    const player = document.querySelector("#fullscreen") as HTMLElement;
+    toggleFullScreen(player);
+  };
   return (
     <>
       {/* Video */}
       <video
+        id="video"
         ref={videoRef}
         data-type="clickable"
         playsInline
-        className="max-h-full w-auto h-auto object-contain object-center rounded-md absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 hover:cursor-pointer"
+        className="max-h-full min-h-full h-full w-auto  object-contain object-center rounded-md absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 hover:cursor-pointer"
         loop={isActive && true}
         autoPlay={isActive && allowedPlay}
         onTimeUpdate={onTimeUpdate}
@@ -168,6 +175,7 @@ const Video = ({
       )}
       {/* Action's video */}
       <BottomVideoAction
+        handleToggleFullscreenMode={onToggleFullscreenMode}
         nickname={nickname}
         video_desc={video_desc}
         video_duration={video_duration}

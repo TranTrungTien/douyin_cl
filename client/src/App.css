@@ -7,6 +7,14 @@
   box-sizing: border-box;
 }
 
+video::-webkit-media-controls {
+  display: none !important;
+}
+
+video::-webkit-media-controls-enclosure {
+  display: none !important;
+}
+
 .hidden-scrollbar::-webkit-scrollbar {
   display: none;
 }
