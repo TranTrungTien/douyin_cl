@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { MouseEvent, useState } from "react";
 import { Link } from "react-router-dom";
 import { useAppSelector } from "../../app/hooks";
 import AvatarCardButton from "../avatarcardbutton";
@@ -17,6 +17,10 @@ const Nav = (props: Props) => {
   const onVerifyEmail = (emailVerified: string) => {
     emailVerified && setEmailVerified(emailVerified);
   };
+
+  const onUploadVideo = (e: MouseEvent<HTMLAnchorElement>) => {
+    return false;
+  };
   return (
     <ul className="flex justify-between items-center">
       <li className="opacity-80 hover:opacity-100 cursor-pointer desktop:block laptop:hidden ">
@@ -31,7 +35,7 @@ const Nav = (props: Props) => {
         </li>
       )}
       <li className="ml-8 relative">
-        <Link to="/upload">
+        <Link target="_blank" onClick={onUploadVideo} to="/upload">
           {/* <div className="absolute top-0 z-[-1] -left-px w-[3px] h-full bg-bright_blue"></div> */}
           <div className="laptop:w-[100px] desktop:w-[104px] laptop:h-[36px] desktop:h-[38px] bg-light_blue flex justify-center item-center border-2 border-white w-[104px] h-[38px] rounded-[5px] before:absolute before:top-0 before:z-[-1] before:-right-[3px] before:w-full before:rounded-[5px]  before:h-full before:bg-fresh_red after:absolute after:top-0 after:z-[-1] after:-left-[3px] after:w-full after:rounded-[5px] after:h-full after:bg-bright_blue">
             <span className="laptop:leading-8 desktop:leading-9 text-lg mr-2">

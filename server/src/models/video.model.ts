@@ -28,6 +28,24 @@ const videoSchema = new mongoose.Schema<IVideo>(
       type: Number,
       required: true,
     },
+    allow_user_do: {
+      comment: {
+        type: Boolean,
+        default: true,
+      },
+      duet: {
+        type: Boolean,
+        default: true,
+      },
+      stich: {
+        type: Boolean,
+        default: true,
+      },
+    },
+    who_can_view: {
+      type: String,
+      default: "Public",
+    },
     play_addr: {
       url_list: {
         type: [String],
