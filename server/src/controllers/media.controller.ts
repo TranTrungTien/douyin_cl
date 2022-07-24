@@ -3,22 +3,45 @@ import { Request, Response } from "express";
 import * as fs from "fs";
 import path from "path";
 import { v4 } from "uuid";
-import { avatarPath, coverPath, videoPath } from "../const/path";
+import { avatarPath, coverPath, musicPath, videoPath } from "../const/path";
 import LikedModel from "../models/liked.model";
+import MusicModel from "../models/music.model";
 import VideoModel from "../models/video.model";
+import { convertMp4ToMp3 } from "../utils/convertMp4ToMp3";
 
 function uploadFile(req: Request, res: Response) {
   let hasFinished = false;
   let filesCounter = 0;
-  let info: any = null;
+  let info: { id_f: string } = { id_f: "" };
   const busboy = Busboy({ headers: req.headers });
-  busboy.on("file", async (fileName, fileStream, fileInfo) => {
-    const videoType = fileInfo.mimeType.includes("video");
-    const filePath = videoType
-      ? `${videoPath}/${v4()}.mp4`
-      : `${coverPath}/${v4()}_cover.png`;
-    fileStream.pipe(fs.createWriteStream(filePath));
-    ++filesCounter;
+  const id_f = v4();
+  busboy.on("file", (fileName, fileStream, fileInfo) => {
+    const type = fileInfo.mimeType;
+
+    if (type.includes("video")) {
+      const videoFilePath = `${videoPath}/${id_f}.mp4`;
+      fileStream.pipe(fs.createWriteStream(videoFilePath)).on("close", () => {
+        info["id_f"] = id_f;
+        ++filesCounter;
+        const musicFilePath = `${musicPath}/${id_f}_music.mp3`;
+        convertMp4ToMp3(videoFilePath, musicFilePath)
+          .then((_) => {
+            ++filesCounter;
+            if (filesCounter === 3 && hasFinished)
+              return res.status(201).send(info);
+          })
+          .catch(console.error);
+      });
+    } else {
+      const coverFilePath = `${coverPath}/${id_f}_cover.png`;
+      fileStream.pipe(
+        fs.createWriteStream(coverFilePath).on("close", () => {
+          ++filesCounter;
+          if (filesCounter === 3 && hasFinished)
+            return res.status(201).send(info);
+        })
+      );
+    }
   });
   busboy.on("error", (e) => {
     console.log({ e });
@@ -34,11 +57,17 @@ function uploadFile(req: Request, res: Response) {
 }
 
 function uploadMetaData(req: Request, res: Response) {
-  const uid = req.body.uid as string;
   const _id = req.body._id as string;
   const caption = req.body.caption as string;
-  const video_id = req.body.video_id as string;
-  const cover_id = req.body.cover_id as string;
+  const video_id_f = req.body.video_id_f as string;
+  const cover_id_f = req.body.cover_id_f as string;
+  const music_id_f = req.body.music_id_f as string;
+  const whoCanView = req.body.whoCanView as string;
+  const allowUserDo = req.body.allowUserDo as {
+    cmt: boolean;
+    duet: boolean;
+    stich: boolean;
+  };
   const videoMetaData = req.body.videoMetaData as {
     width: number;
     height: number;
@@ -47,39 +76,57 @@ function uploadMetaData(req: Request, res: Response) {
     duration: number;
   };
 
-  const url = `http://localhost:3001/api/v1/media/get-stream-video?video_id=${video_id}&mimeType=${videoMetaData.type}&size=${videoMetaData.size}`;
-  const coverUrl = `http://localhost:3001/api/v1/media/get-video-cover?cover_id=${cover_id}`;
+  const url = `http://localhost:3001/api/v1/media/get-stream-video?video_id_f=${video_id_f}&mimeType=${videoMetaData.type}&size=${videoMetaData.size}`;
+  const coverUrl = `http://localhost:3001/api/v1/media/get-video-cover?video_cover_id_f=${cover_id_f}`;
+  const musicUrl = `http://localhost:3001/api/v1/media/get-music?music_id_f=${music_id_f}`;
 
-  const video = new VideoModel({
-    author: _id,
-    desc: caption,
-    music: {
-      author_id: uid,
-      id: v4(),
-      title: "Music of own author",
-      duration: videoMetaData.duration,
+  const music = new MusicModel({
+    id_f: music_id_f,
+    author_id: _id,
+    play_addr: {
+      url_list: [musicUrl],
     },
-    video: {
-      width: videoMetaData.width,
-      height: videoMetaData.height,
-      mimeType: videoMetaData.type,
-      size: videoMetaData.size,
-      duration: videoMetaData.duration,
-      play_addr: {
-        url_list: [url],
-      },
-      origin_cover: {
-        url_list: [coverUrl],
-      },
-    },
-    video_id: video_id,
+    duration: 0,
+    title: "",
   });
-  video
-    .save()
-    .then((doc) => {
-      return res.status(201).send({ message: "Successfully", doc });
-    })
-    .catch((err) => res.status(500).send({ message: "Successfully", err }));
+
+  music.save((err, doc) => {
+    if (err)
+      return res
+        .status(500)
+        .send({ message: "  Error saving music  , error: " + err });
+    else {
+      const video = new VideoModel({
+        id_f: video_id_f,
+        desc: caption,
+        author_id: _id,
+        width: videoMetaData.width,
+        height: videoMetaData.height,
+        mimeType: videoMetaData.type,
+        size: videoMetaData.size,
+        duration: videoMetaData.duration,
+        allow_user_do: {
+          comment: allowUserDo.cmt,
+          duet: allowUserDo.duet,
+          stich: allowUserDo.stich,
+        },
+        who_can_view: whoCanView,
+        origin_cover: {
+          url_list: [coverUrl],
+        },
+        play_addr: {
+          url_list: [url],
+        },
+        music_id: doc._id,
+      });
+      video
+        .save()
+        .then((doc) => {
+          return res.status(201).send({ message: "Successfully", doc });
+        })
+        .catch((err) => res.status(500).send({ message: "Successfully", err }));
+    }
+  });
 }
 
 function getVideoStream(req: Request, res: Response) {

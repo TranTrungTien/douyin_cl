@@ -129,13 +129,15 @@ const UploadContainer = () => {
           duet: target.duet.checked,
           stich: target.stich.checked,
         };
-        const video_id = data.data.info.id;
+        const video_id_f = data.data.id_f;
         const videoMetaData = file.videoMetaData;
         axios
           .post(
             "media/upload-meta-data",
             {
-              video_id,
+              video_id_f,
+              cover_id_f: video_id_f + "_cover.png",
+              music_id_f: video_id_f + "_music.mp3",
               caption,
               whoCanView,
               allowUserDo,
@@ -176,7 +178,7 @@ const UploadContainer = () => {
                     <span>0</span>/<span>150</span>
                   </div>
                 </div>
-                <div className="w-full h-[42px] rounded border-[rgba(22,24,35,0.12)] border p-[0px_80px_0px_16px]">
+                <div className="w-full min-h-full rounded border-[rgba(22,24,35,0.12)] border p-[0px_80px_0px_16px]">
                   <div
                     ref={textInputRef}
                     className="py-3 outline-none border-none leading-[18px] font-normal text-[15px] select-text whitespace-pre-wrap break-words"
