@@ -6,8 +6,9 @@ import { saveUser } from "../../slice/user.slice";
 
 type Props = {
   emailVerified: string;
+  code: string;
 };
-const BasicInfo = ({ emailVerified }: Props) => {
+const BasicInfo = ({ emailVerified, code }: Props) => {
   const dispatch = useAppDispatch();
   const onSubmit = (e: SyntheticEvent) => {
     e.preventDefault();
@@ -36,7 +37,7 @@ const BasicInfo = ({ emailVerified }: Props) => {
           axios
             .post<{ message: string; doc: IUser }>(
               "user/login",
-              { email, password },
+              { email, password, code },
               {
                 headers: { "Content-Type": "application/json" },
                 withCredentials: true,

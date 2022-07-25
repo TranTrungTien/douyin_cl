@@ -5,7 +5,7 @@ import { IUser } from "../../interfaces/user.interface";
 import { saveUser } from "../../slice/user.slice";
 
 type Props = {
-  onVerifyEmail: (emailVerified: string) => void;
+  onVerifyEmail: (emailVerified: string, code: string | null) => void;
 };
 const SubRegisterOrLogin = ({ onVerifyEmail }: Props) => {
   const dispatch = useAppDispatch();
@@ -41,6 +41,7 @@ const SubRegisterOrLogin = ({ onVerifyEmail }: Props) => {
               userEmail: string;
               secretCode: string | null;
               userExisted: boolean;
+              code: string | null;
             },
             any
           >
@@ -54,10 +55,10 @@ const SubRegisterOrLogin = ({ onVerifyEmail }: Props) => {
           }
         )
         .then((data) => {
-          const { userEmail, secretCode, userExisted } = data.data;
+          const { userEmail, secretCode, userExisted, code } = data.data;
 
           if (userEmail && !userExisted && !secretCode)
-            onVerifyEmail(userEmail);
+            onVerifyEmail(userEmail, code);
           else if (userEmail && userExisted && secretCode) {
             axios
               .post<any, AxiosResponse<{ message: string; doc: IUser }, any>>(

@@ -14,9 +14,12 @@ const Nav = (props: Props) => {
   const navigate = useNavigate();
   console.log({ user });
   const [signIn, setSignIn] = useState(false);
-  const [emailVerified, setEmailVerified] = useState("");
-  const onVerifyEmail = (emailVerified: string) => {
-    emailVerified && setEmailVerified(emailVerified);
+  const [emailVerified, setEmailVerified] = useState<{
+    emailVerified: string;
+    code: string;
+  } | null>(null);
+  const onVerifyEmail = (emailVerified: string, code: string | null) => {
+    emailVerified && code && setEmailVerified({ emailVerified, code });
   };
 
   const onLoginChecking = (e: MouseEvent<HTMLAnchorElement>) => {
@@ -67,8 +70,11 @@ const Nav = (props: Props) => {
       )}
       {signIn && !user.data && (
         <Modal>
-          {emailVerified ? (
-            <BasicInfo emailVerified={emailVerified} />
+          {emailVerified?.emailVerified && emailVerified?.code ? (
+            <BasicInfo
+              emailVerified={emailVerified.emailVerified}
+              code={emailVerified.code}
+            />
           ) : (
             <Login
               onVerifyEmail={onVerifyEmail}

@@ -1,7 +1,7 @@
 import SubRegisterOrLogin from "../sub-login";
 
 type Props = {
-  onVerifyEmail: (emailVerified: string) => void;
+  onVerifyEmail: (emailVerified: string, code: string | null) => void;
   onCloseLogin: () => void;
 };
 const Login = ({ onCloseLogin, onVerifyEmail }: Props) => {
