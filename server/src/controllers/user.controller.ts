@@ -5,12 +5,9 @@ import bcrypt from "bcrypt";
 import { v4 } from "uuid";
 import jwt from "jsonwebtoken";
 import NodeMailer from "nodemailer";
-let code: string = "";
-const isExisted = {
-  isExisted: false,
-  email: "",
-};
-let codeVerified = "";
+import LoginHelper from "../utils/login-helper";
+
+const loginHelper = new LoginHelper();
 
 function createUser(req: Request, res: Response) {
   const { password, ...user } = req.body.user as IUser;
@@ -91,7 +88,7 @@ function login(req: Request, res: Response) {
         const token = jwt.sign(
           { uid: doc.uid, _id: doc._id },
           process.env.JWT_SECRET ?? ""
-        );
+        ) as string;
         const date = new Date();
         return res
           .status(200)
@@ -110,43 +107,53 @@ function login(req: Request, res: Response) {
 function loginWithoutPassword(req: Request, res: Response) {
   const email = req.body.email as string;
   const secretCode = req.body.secretCode as string;
-  if (secretCode !== codeVerified) {
+  const codeVerified = loginHelper.findVerifiedCode(secretCode, email);
+
+  if (codeVerified && secretCode) {
+    loginHelper.deletePendingLogin(codeVerified.code, email);
+    UserModel.findOne({ email }, { password: 0 }, null, (err, doc) => {
+      if (err) return res.status(500).send(err);
+      else {
+        if (!doc) return res.status(404).send(doc);
+        else {
+          const token = jwt.sign(
+            { uid: doc.uid, _id: doc._id },
+            process.env.JWT_SECRET ?? ""
+          ) as string;
+          return res
+            .status(200)
+            .cookie("token", token, {
+              expires: new Date(Date.now() + 3600000),
+              httpOnly: true,
+            })
+            .send({ message: "Successfully", doc });
+        }
+      }
+    });
+  } else if (!codeVerified && !secretCode) {
     return res.status(400).send({ message: "Invalid email or secret code" });
   }
-  UserModel.findOne({ email }, { password: 0 }, null, (err, doc) => {
-    if (err) return res.status(500).send(err);
-    else {
-      if (!doc) return res.status(404).send(doc);
-      else {
-        const token = jwt.sign(
-          { uid: doc.uid, _id: doc._id },
-          process.env.JWT_SECRET ?? ""
-        ) as string;
-        return res
-          .status(200)
-          .cookie("token", token, {
-            expires: new Date(Date.now() + 3600000),
-            httpOnly: true,
-          })
-          .send({ message: "Successfully", doc });
-      }
-    }
-  });
 }
 async function mailSender(req: Request, res: Response) {
   const email = req.body.email as string;
   const user = await UserModel.findOne({ email: email });
-  code = v4();
-  const transporter = NodeMailer.createTransport({
-    service: "gmail",
-    auth: {
-      user: process.env.EMAIL_USERNAME,
-      pass: process.env.EMAIL_PASSWORD,
-    },
-  });
-  isExisted.email = user ? email : "";
-  isExisted.isExisted = user ? true : false;
+  const code = v4();
+  loginHelper.addNewCode({ code, email });
+  // const transporter = NodeMailer.createTransport({
+  //   service: "gmail",
+  //   auth: {
+  //     user: process.env.EMAIL_USERNAME,
+  //     pass: process.env.EMAIL_PASSWORD,
+  //   },
+  // });
+
   console.log({ code });
+
+  loginHelper.addNewExistedEmail({
+    email: user ? email : null,
+    isExisted: user ? true : false,
+    code: code,
+  });
 
   // transporter.sendMail(
   //   {
@@ -169,15 +176,22 @@ async function mailSender(req: Request, res: Response) {
 function verifyCode(req: Request, res: Response) {
   const clientCode = req.body.code as string;
   const existedEmail = req.body.existedEmail as string;
-  if (code === clientCode) {
+  const serverCode = loginHelper.findCode(clientCode, existedEmail);
+  const isExisted = loginHelper.findExistedEmail(existedEmail);
+
+  if (serverCode?.code === clientCode && existedEmail === serverCode.email) {
     const secretCode = v4() + v4() + v4() + v4();
-    codeVerified = secretCode;
+    loginHelper.addVerifyCode({
+      email: existedEmail,
+      code: clientCode,
+      verifyCode: secretCode,
+    });
     return res.status(200).send({
       message: "Successfully",
-      userExisted: existedEmail === isExisted.email && isExisted.isExisted,
+      userExisted: existedEmail === isExisted?.email && isExisted.isExisted,
       userEmail: existedEmail,
       secretCode:
-        existedEmail === isExisted.email && isExisted.isExisted
+        existedEmail === isExisted?.email && isExisted.isExisted
           ? secretCode
           : null,
     });
