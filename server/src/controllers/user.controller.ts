@@ -76,10 +76,12 @@ function deleteUser(req: Request, res: Response) {
 }
 function login(req: Request, res: Response) {
   const email = req.body.email as string;
+  const code = req.body.code as string;
   const password = req.body.password as string;
   if (!password && !email) {
     return res.status(400).send({ message: "Invalid email or password" });
   }
+  loginHelper.deletePendingLogin(code, email);
   UserModel.findOne({ email, password }, null, null, (err, doc) => {
     if (err) return res.status(500).send(err);
     else {
@@ -190,6 +192,7 @@ function verifyCode(req: Request, res: Response) {
       message: "Successfully",
       userExisted: existedEmail === isExisted?.email && isExisted.isExisted,
       userEmail: existedEmail,
+      code: isExisted ? isExisted.code : null,
       secretCode:
         existedEmail === isExisted?.email && isExisted.isExisted
           ? secretCode
