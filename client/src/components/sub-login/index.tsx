@@ -55,7 +55,6 @@ const SubRegisterOrLogin = ({ onVerifyEmail }: Props) => {
         )
         .then((data) => {
           const { userEmail, secretCode, userExisted } = data.data;
-          console.log(userEmail, secretCode, userExisted);
 
           if (userEmail && !userExisted && !secretCode)
             onVerifyEmail(userEmail);

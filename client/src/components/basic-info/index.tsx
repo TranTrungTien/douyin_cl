@@ -1,13 +1,14 @@
 import axios, { AxiosResponse } from "axios";
 import { SyntheticEvent } from "react";
+import { useAppDispatch } from "../../app/hooks";
 import { IUser } from "../../interfaces/user.interface";
+import { saveUser } from "../../slice/user.slice";
 
 type Props = {
   emailVerified: string;
 };
 const BasicInfo = ({ emailVerified }: Props) => {
-  console.log(emailVerified);
-
+  const dispatch = useAppDispatch();
   const onSubmit = (e: SyntheticEvent) => {
     e.preventDefault();
     const target = e.target as typeof e.target & {
@@ -33,7 +34,7 @@ const BasicInfo = ({ emailVerified }: Props) => {
           const email = user.data.doc.email;
           const password = user.data.doc.password;
           axios
-            .post(
+            .post<{ message: string; doc: IUser }>(
               "user/login",
               { email, password },
               {
@@ -41,7 +42,7 @@ const BasicInfo = ({ emailVerified }: Props) => {
                 withCredentials: true,
               }
             )
-            .then((userLogin) => console.log(userLogin.data));
+            .then((userLogin) => dispatch(saveUser(userLogin.data.doc)));
         })
         .catch(console.error);
     }
