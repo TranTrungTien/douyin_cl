@@ -13,6 +13,7 @@ const UserInfo = ({ avatar_thumb_url, nickname, user_id }: Props) => {
     <div className="laptop:max-w-[320px] desktop:max-w-[350px] extra-desktop:max-w-[400px] ml-auto px-3  space-y-4">
       <header className="flex justify-start items-center laptop:space-x-9">
         <AvatarCardButton
+          firstNickNameCharacter={nickname[0]}
           image={avatar_thumb_url}
           height="h-62px"
           width="w-62px"

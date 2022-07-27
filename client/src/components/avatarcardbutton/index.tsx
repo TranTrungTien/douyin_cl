@@ -9,10 +9,12 @@ type Props = {
   hint?: string;
   borderRadius?: string | number;
   styleArray?: string;
+  firstNickNameCharacter: string;
   handleOpenRightBar?: (action: RightBarAction) => void;
 };
 //
 const AvatarCardButton = ({
+  firstNickNameCharacter,
   children,
   width = "w-10",
   height = "h-10",
@@ -32,15 +34,23 @@ const AvatarCardButton = ({
     >
       <button
         type="button"
-        title="User"
+        title={hint}
         className={`${width} ${height} ${borderRadius}`}
         onClick={onOpenRightBar}
       >
-        <img
-          src={image}
-          alt={hint}
-          className="w-full h-full object-cover object-center rounded-full block"
-        />
+        {image ? (
+          <img
+            src={image}
+            alt={hint}
+            className="w-full h-full object-cover object-center rounded-full block"
+          />
+        ) : (
+          <div className="w-full h-full bg-blue-600 rounded-full grid place-content-center">
+            <span className="text-white font-bold text-2xl">
+              {firstNickNameCharacter}
+            </span>
+          </div>
+        )}
       </button>
       {Array.isArray(children) ? children.map((child) => child) : children}
     </div>

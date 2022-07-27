@@ -25,16 +25,32 @@ const UserPage = (props: Props) => {
     "user/info",
     jsonHeader
   );
-  const [cursorState, setCursorState] = useState(0);
-
+  const [cursorState, setCursorState] = useState({
+    cursorPosition: 0,
+    reachToEnd: false,
+  });
   const onScroll = (e: UIEvent<HTMLDivElement>) => {
     const isScrollToBottom =
       e.currentTarget.scrollHeight -
       window.innerHeight -
       e.currentTarget.scrollTop;
-    if (isScrollToBottom === 0) {
-      setCursorState((preState) => ++preState);
+    if (isScrollToBottom === 0 && !cursorState.reachToEnd) {
+      setCursorState((preState) => {
+        return {
+          cursorPosition: preState.cursorPosition + 1,
+          reachToEnd: false,
+        };
+      });
     }
+  };
+  const stopFetchingMoreVideo = () => {
+    if (!cursorState.reachToEnd)
+      setCursorState((preState) => {
+        return {
+          cursorPosition: cursorState.cursorPosition,
+          reachToEnd: true,
+        };
+      });
   };
   return (
     <section className="w-full flex flex-col justify-start items-start h-screen">
@@ -50,9 +66,9 @@ const UserPage = (props: Props) => {
           </LeftHeaderWrapper>
           <Nav />
         </Header>
-        <PageContainer styleArray="laptop:w-full laptop:px-5 desktop:max-w-max extra-desktop:max-w-[1280px] mx-auto desktop:space-x-3 extra-desktop:space-x-0">
+        <PageContainer styleArray="laptop:w-full laptop:px-5 desktop:max-w-max extra-desktop:max-w-[1280px] over-desktop:max-w-[1440px] mx-auto desktop:space-x-3 extra-desktop:space-x-0">
           <SideContainer styleArray="desktop:min-w-min  min-h-full flex-1 text-white pt-10">
-            {user && (
+            {user?.doc && (
               <UserInfo
                 avatar_thumb_url={user.doc.avatar_thumb.url_list[0]}
                 nickname={user.doc.nickname}
@@ -61,10 +77,11 @@ const UserPage = (props: Props) => {
             )}
           </SideContainer>
           <SideContainer styleArray="text-white shadow-[-18px_0px_80px_#000] h-max">
-            {user && (
+            {user?.doc && (
               <UserVideoContainer
                 viewLikedAllowed={user.doc.show_favorite_list}
-                cursor={cursorState}
+                stopFetchingMoreVideo={stopFetchingMoreVideo}
+                cursor={cursorState.cursorPosition}
                 author_id={user.doc._id}
               />
             )}

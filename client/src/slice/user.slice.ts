@@ -18,17 +18,20 @@ const initialState: IInitialState = {
   data: null,
   error: null,
 };
-export const fetchUserAsync = createAsyncThunk<IUser>(
+export const fetchUserAsync = createAsyncThunk(
   "fetchUserAsync/user",
   async () => {
     try {
-      const userData = await axios.get("user/", {
-        headers: {
-          "Content-Type": "application/json",
-        },
-        withCredentials: true,
-      });
-      return userData.data;
+      const userData = await axios.get<{ message: string; doc: IUser }>(
+        "user/",
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+          withCredentials: true,
+        }
+      );
+      return userData.data.doc;
     } catch (error) {
       throw error;
     }

@@ -200,6 +200,7 @@ const Video = ({
           {/* next, pre button */}
           <NextVideoButton handleChangeVideo={onChangeVideo} />
           <AvatarCardButton
+            firstNickNameCharacter={nickname[0]}
             image={avatar_thumb}
             borderRadius="rounded-full"
             handleOpenRightBar={onOpenRightBar}

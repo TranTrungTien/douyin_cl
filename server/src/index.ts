@@ -18,45 +18,44 @@ import CommentRouter from "./routers/comment.route";
 
 DBConnect()
   .then((_) => {
-    const app: Express = express();
-    dotenv.config({ path: path.join(__dirname, "config.env") });
-    const PORT = process.env.PORT || 3001;
-    const server = http.createServer(app).listen(PORT, () => {
-      console.log("server is running on port", PORT);
-    });
+    RecommendationUtils.train()
+      .then((done) => {
+        console.log("trained : ", done);
+        const app: Express = express();
+        dotenv.config({ path: path.join(__dirname, "config.env") });
+        const PORT = process.env.PORT || 3001;
+        const server = http.createServer(app).listen(PORT, () => {
+          console.log("server is running on port", PORT);
+        });
 
-    app.use(
-      cors({
-        origin: true,
-        methods: "*",
-        credentials: true,
+        app.use(
+          cors({
+            origin: true,
+            methods: "*",
+            credentials: true,
+          })
+        );
+        app.use(cookieParser());
+        app.use(express.json());
+        app.use(express.urlencoded({ extended: true }));
+        app.use("/api/v1/media", MediaRouter);
+        app.use("/api/v1/user", UserRouter);
+        app.use("/api/v1/recommendation", RecommendationRouter);
+        app.use("/api/v1/statistics", StatisticsRouter);
+        app.use("/api/v1/music", MusicRouter);
+        app.use("/api/v1/user-actions", LikeRouter);
+        app.use("/api/v1/image", CoverRouter);
+        app.use("/api/v1/user-actions", ShareRouter);
+        app.use("/api/v1/comment", CommentRouter);
+
+        app.get("/", (req: Request, res: Response) => {
+          res.send("run on https ......");
+        });
       })
-    );
-    app.use(cookieParser());
-    app.use(express.json());
-    app.use(express.urlencoded({ extended: true }));
-    app.use("/api/v1/media", MediaRouter);
-    app.use("/api/v1/user", UserRouter);
-    app.use("/api/v1/recommendation", RecommendationRouter);
-    app.use("/api/v1/statistics", StatisticsRouter);
-    app.use("/api/v1/music", MusicRouter);
-    app.use("/api/v1/user-actions", LikeRouter);
-    app.use("/api/v1/image", CoverRouter);
-    app.use("/api/v1/user-actions", ShareRouter);
-    app.use("/api/v1/comment", CommentRouter);
-
-    app.get("/", (req: Request, res: Response) => {
-      res.send("run on https ......");
-    });
-    // RecommendationUtils.train()
-    //   .then((done) => {
-    //     console.log("trained : ", done);
-
-    //   })
-    //   .catch((_) => {
-    //     console.log("something went wrong !!!");
-    //     process.exit(-1);
-    //   });
+      .catch((_) => {
+        console.log("something went wrong !!!");
+        process.exit(-1);
+      });
   })
   .catch((err) => {
     console.log(err);

@@ -14,9 +14,15 @@ type Props = {
   cursor: number;
   author_id: string;
   viewLikedAllowed: boolean;
+  stopFetchingMoreVideo: () => void;
 };
 
-const UserVideoContainer = ({ author_id, cursor, viewLikedAllowed }: Props) => {
+const UserVideoContainer = ({
+  author_id,
+  cursor,
+  viewLikedAllowed,
+  stopFetchingMoreVideo,
+}: Props) => {
   console.log({ cursor });
   const [viewOpt, setViewOpt] = useState({ viewOwn: true, viewLiked: false });
   const [ownVideos, setOwnVideos] = useState<null | {
@@ -63,7 +69,10 @@ const UserVideoContainer = ({ author_id, cursor, viewLikedAllowed }: Props) => {
           }
         });
       })
-      .catch(alert);
+      .catch((err) => {
+        alert(err);
+        stopFetchingMoreVideo();
+      });
   }, [author_id, cursor]);
   const onChangeViewOpt = (fromOwnVideo: number) => {
     if (!fromOwnVideo && !viewOpt.viewOwn) {
@@ -73,7 +82,7 @@ const UserVideoContainer = ({ author_id, cursor, viewLikedAllowed }: Props) => {
     }
   };
   return (
-    <div className="extra-desktop:px-12 over-desktop:px-16 pt-8 space-y-6">
+    <div className="extra-desktop:px-12 over-desktop:px-16 py-8 space-y-6">
       <header className="laptop:px-3 desktop:px-5 extra-desktop:px-0 flex justify-start items-center space-x-10 leading-[26px] font-medium text-[18px] opacity-90">
         <button
           onClick={() => onChangeViewOpt(0)}

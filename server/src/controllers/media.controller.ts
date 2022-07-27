@@ -76,9 +76,9 @@ function uploadMetaData(req: Request, res: Response) {
     duration: number;
   };
 
-  const url = `http://localhost:3001/api/v1/media/get-stream-video?video_id_f=${video_id_f}&mimeType=${videoMetaData.type}&size=${videoMetaData.size}`;
-  const coverUrl = `http://localhost:3001/api/v1/media/get-video-cover?video_cover_id_f=${cover_id_f}`;
-  const musicUrl = `http://localhost:3001/api/v1/media/get-music?music_id_f=${music_id_f}`;
+  const url = `http://localhost:3001/api/v1/media/play?video_id_f=${video_id_f}&mimeType=${videoMetaData.type}&size=${videoMetaData.size}`;
+  const coverUrl = `http://localhost:3001/api/v1/image/cover?cover_id_f=${cover_id_f}`;
+  const musicUrl = `http://localhost:3001/api/v1/music/play?music_id_f=${music_id_f}`;
 
   const music = new MusicModel({
     id_f: music_id_f,
@@ -86,7 +86,7 @@ function uploadMetaData(req: Request, res: Response) {
     play_addr: {
       url_list: [musicUrl],
     },
-    duration: 0,
+    duration: videoMetaData.duration,
     title: "",
   });
 
