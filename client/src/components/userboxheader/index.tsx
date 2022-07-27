@@ -24,6 +24,7 @@ const UserBoxHeader = ({
       <div className="flex justify-between items-center w-full h-auto laptop:space-x-3 desktop:space-x-2 laptop:items-center">
         <div className="flex justify-start desktop:flex-row desktop:items-center laptop:items-center laptop:space-x-2 desktop:space-x-3">
           <AvatarCard
+            firstNickNameCharacter={nickname[0]}
             hint="User Cover"
             borderRadius="full"
             image={avatar_thumb}

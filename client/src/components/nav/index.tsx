@@ -37,7 +37,11 @@ const Nav = (props: Props) => {
       </li>
       {user.data && (
         <li className="opacity-80 hover:opacity-100 cursor-pointer ml-8">
-          <AvatarCardButton image="https://thumbs.dreamstime.com/z/astronaut-outer-space-porthole-background-earth-elements-image-furnished-nasa-astronaut-outer-131582688.jpg" />
+          <AvatarCardButton
+            firstNickNameCharacter={user.data.nickname[0]}
+            hint={user.data.nickname}
+            image="https://thumbs.dreamstime.com/z/astronaut-outer-space-porthole-background-earth-elements-image-furnished-nasa-astronaut-outer-131582688.jpg"
+          />
         </li>
       )}
       <li className="ml-8 relative">
