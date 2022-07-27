@@ -3,7 +3,13 @@ import { Request, Response } from "express";
 import * as fs from "fs";
 import path from "path";
 import { v4 } from "uuid";
-import { avatarPath, coverPath, musicPath, videoPath } from "../const/path";
+import {
+  avatarPath,
+  coverPath,
+  metaPath,
+  musicPath,
+  videoPath,
+} from "../const/path";
 import LikedModel from "../models/liked.model";
 import MusicModel from "../models/music.model";
 import VideoModel from "../models/video.model";
@@ -122,6 +128,11 @@ function uploadMetaData(req: Request, res: Response) {
       video
         .save()
         .then((doc) => {
+          fs.appendFileSync(
+            `${metaPath}/video_id_desc.json`,
+            "," + JSON.stringify({ video_id: video_id_f, desc: caption }),
+            { encoding: "utf-8" }
+          );
           return res.status(201).send({ message: "Successfully", doc });
         })
         .catch((err) => res.status(500).send({ message: "Successfully", err }));

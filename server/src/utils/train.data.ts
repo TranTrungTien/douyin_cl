@@ -1,13 +1,12 @@
 import * as fs from "fs";
 import path from "path";
+import { metaPath } from "../const/path";
 import Recommendation, { RecommendationUtils } from "./recommendation";
 
-const rawData = fs.readFileSync(
-  path.join(__dirname, "..", "assets", "meta", "video_id_desc.json"),
-  {
+const rawData =
+  fs.readFileSync(`${metaPath}/video_id_desc.json`, {
     encoding: "utf8",
-  }
-);
+  }) + "]";
 const data = JSON.parse(rawData) as {
   desc: string;
   video_id: string;
