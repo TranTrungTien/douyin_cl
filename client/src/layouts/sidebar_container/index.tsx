@@ -3,7 +3,7 @@ import { Link, NavLink } from "react-router-dom";
 import { sidebarAction } from "../../constants/sidebar_action";
 
 type Props = {};
-const Sidebar = (props: Props) => {
+const SidebarContainer = (props: Props) => {
   return (
     <aside className="bg-dark_blue laptop:max-w-min desktop:max-w-min extra-desktop:max-w-172px over-desktop:max-w-[200px] h-full sticky top-0 left-0">
       <div className="flex flex-col laptop:items-center h-full overflow-auto hidden-scrollbar">
@@ -232,4 +232,4 @@ const Sidebar = (props: Props) => {
   );
 };
 
-export default Sidebar;
+export default SidebarContainer;
