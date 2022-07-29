@@ -1,5 +1,6 @@
 import LikeCmtShare from "../../components/like_cmt_share_action";
 import { IVideo } from "../../interfaces/video.interface";
+import "./style.css";
 
 type Props = {
   video: IVideo;
@@ -9,7 +10,7 @@ const VideoHeaderContainer = ({ video }: Props) => {
   return (
     <header className="w-full h-auto pt-2 text-white mt-2">
       <div className="flex flex-col justify-start items-start space-y-px">
-        <h1 className="leading-[26px] font-medium opacity-90 text-lg truncate">
+        <h1 className="leading-[26px] font-medium opacity-90 text-lg w-full truncate-3-lines">
           {video.desc}
         </h1>
         <div className="flex justify-between items-center w-full">
