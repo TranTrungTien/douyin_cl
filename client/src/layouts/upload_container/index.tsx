@@ -2,7 +2,24 @@ import axios from "axios";
 import { MouseEvent, ReactNode, SyntheticEvent, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import { Button, SelectFile } from "../../components";
+import { servicesPath } from "../../config/app_config";
+import { postData } from "../../services/app_services";
 import "./style.css";
+
+type IInputOpts = {
+  cmt: {
+    checked: boolean;
+  };
+  duet: {
+    checked: boolean;
+  };
+  stich: {
+    checked: boolean;
+  };
+  copyrightCheck: {
+    checked: boolean;
+  };
+};
 
 const UploadContainer = () => {
   const textInputRef = useRef<HTMLDivElement>(null);
@@ -91,20 +108,7 @@ const UploadContainer = () => {
     e.preventDefault();
     if (!file || !videoCover) return;
 
-    const target = e.target as typeof e.target & {
-      cmt: {
-        checked: boolean;
-      };
-      duet: {
-        checked: boolean;
-      };
-      stich: {
-        checked: boolean;
-      };
-      copyrightCheck: {
-        checked: boolean;
-      };
-    };
+    const target = e.target as typeof e.target & IInputOpts;
     const formData = new FormData();
     formData.append(videoCover.name, videoCover, videoCover.name);
     formData.append(
@@ -112,14 +116,13 @@ const UploadContainer = () => {
       file.video,
       file.videoMetaData.name
     );
-    axios
-      .post("media/upload-file", formData, {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
-        withCredentials: true,
-      })
-      .then((data) => {
+    postData<{ id_f: string }>(
+      servicesPath.POST_FORMDATA,
+      formData,
+      true,
+      "multipart/form-data"
+    )
+      .then((res) => {
         const caption = textInputRef.current && textInputRef.current.innerText;
         const whoCanView = openOption.select;
         const copyrightCheck = target.copyrightCheck.checked;
@@ -129,33 +132,29 @@ const UploadContainer = () => {
           duet: target.duet.checked,
           stich: target.stich.checked,
         };
-        const video_id_f = data.data.id_f;
+        const video_id_f = res.data.id_f;
         const videoMetaData = file.videoMetaData;
-        axios
-          .post(
-            "media/upload-meta-data",
-            {
-              video_id_f,
-              cover_id_f: video_id_f + "_cover.png",
-              music_id_f: video_id_f + "_music.mp3",
-              caption,
-              whoCanView,
-              allowUserDo,
-              copyrightCheck,
-              videoMetaData,
-            },
-            {
-              headers: {
-                "Content-Type": "application/json",
-              },
-              withCredentials: true,
-            }
-          )
+        postData(
+          servicesPath.POST_METADATA,
+          {
+            video_id_f,
+            cover_id_f: video_id_f + "_cover.png",
+            music_id_f: video_id_f + "_music.mp3",
+            caption,
+            whoCanView,
+            allowUserDo,
+            copyrightCheck,
+            videoMetaData,
+          },
+          true
+        )
           .then((data) => {
             console.log(data.data);
             alert("Upload Successfully");
           })
-          .catch(console.log);
+          .catch((err) => {
+            throw err;
+          });
       })
       .catch(console.log);
   };

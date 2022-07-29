@@ -3,6 +3,8 @@ import { SyntheticEvent } from "react";
 import Comment from "../../components/comment";
 import CommentHeader from "../../components/commentbboxheader";
 import Input from "../../components/input";
+import { servicesPath } from "../../config/app_config";
+import { postData } from "../../services/app_services";
 import { RightBarAction } from "../videoslide";
 
 type Props = {
@@ -21,19 +23,13 @@ const CommentContainer = ({ handleCloseComment, video_id }: Props) => {
     };
     const text = target.comment.value;
     target.reset();
-
-    axios.post(
-      "comment/create-comment",
+    postData(
+      servicesPath.POST_COMMENT,
       {
         video_id: video_id,
         text: text,
       },
-      {
-        headers: {
-          "Content-Type": "application/json",
-        },
-        withCredentials: true,
-      }
+      true
     );
   };
   return (

@@ -59,7 +59,7 @@ const Video = ({
   const timeCounterRef = useRef<HTMLSpanElement>(null);
   const progressContainerRef = useRef({ progressRef, progressBarRef });
   const mediaHeader = useMemo(() => {
-    return axiosConfigHeaders("blob", "video/mp4", "video/mp4", null);
+    return axiosConfigHeaders("GET", "blob", "video/mp4", "video/mp4", null);
   }, []);
   const videoBlob = useFetchSuspense<Blob>(video_addr, mediaHeader);
 

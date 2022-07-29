@@ -1,6 +1,7 @@
 import { UIEvent, useMemo, useState } from "react";
 import { useParams } from "react-router-dom";
 import { LeftHeaderWrapper, Logo, Nav, Search } from "../../components";
+import { servicesPath } from "../../config/app_config";
 import { axiosConfigHeaders } from "../../config/axios-config";
 import { useFetch } from "../../hooks/useFetch";
 import { IUser } from "../../interfaces/user.interface";
@@ -17,12 +18,18 @@ type Props = {};
 const UserPage = (props: Props) => {
   const { user_id } = useParams();
   const jsonHeader = useMemo(() => {
-    return axiosConfigHeaders("json", "application/json", "application/json", {
-      uid: user_id,
-    });
+    return axiosConfigHeaders(
+      "GET",
+      "json",
+      "application/json",
+      "application/json",
+      {
+        uid: user_id,
+      }
+    );
   }, [user_id]);
   const user = useFetch<null | { message: string; doc: IUser }>(
-    "user/info",
+    servicesPath.GET_USER_INFO,
     jsonHeader
   );
   const [cursorState, setCursorState] = useState({
