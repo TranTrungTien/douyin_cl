@@ -1,15 +1,13 @@
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
-import { HomePage, Lives, UploadVideo, UserPage, VideoPage } from "../pages";
+import { routesPath } from "./route";
 
 const Routers = () => {
   return (
     <Router>
       <Routes>
-        <Route path="/" element={<HomePage />} />
-        <Route path="/lives" element={<Lives />} />
-        <Route path="/user/:user_id" element={<UserPage />} />
-        <Route path="/video/:video_id/:video_idf" element={<VideoPage />} />
-        <Route path="/upload" element={<UploadVideo />} />
+        {routesPath.map((route, index) => (
+          <Route key={index} path={route.path} element={<route.element />} />
+        ))}
       </Routes>
     </Router>
   );

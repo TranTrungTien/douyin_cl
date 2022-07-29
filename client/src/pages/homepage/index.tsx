@@ -1,17 +1,9 @@
-import { lazy, Suspense, useState } from "react";
-import { Loading } from "../../components";
-import Modal from "../../components/modal";
 import Nav from "../../components/nav";
 import Search from "../../components/search";
-import { Header, Sidebar } from "../../layouts";
-import ErrorBoundary from "../../utils/error-boundaries";
+import { Header, Sidebar, VideoSlideContainer } from "../../layouts";
 
-const VideoSlideContainerWrapper = lazy(
-  () => import("../../layouts/videoslidecontainer")
-);
 type Props = {};
 const HomePage = (props: Props) => {
-  const [openModal, setopenModal] = useState(false);
   return (
     <div className={`flex justify-start items-start h-screen overflow-hidden`}>
       <Sidebar />
@@ -24,19 +16,7 @@ const HomePage = (props: Props) => {
           <Nav />
         </Header>
         <div className="w-full h-[calc(100vh-63px)] flex justify-center items-center">
-          <Suspense fallback={<Loading />}>
-            <ErrorBoundary
-              fallback={
-                <Modal>
-                  <div className="w-96 h-96 rounded bg-white text-center text-black">
-                    <h1>Opps we ran into some problems</h1>
-                  </div>
-                </Modal>
-              }
-            >
-              <VideoSlideContainerWrapper />
-            </ErrorBoundary>
-          </Suspense>
+          <VideoSlideContainer />
         </div>
       </div>
     </div>
