@@ -6,7 +6,7 @@ type Props = {
   styleArray?: string;
   fromHomePage?: boolean;
 };
-const Header = ({
+const HeaderContainer = ({
   fromHomePage,
   children,
   backgroundColor = "bg-light_blue",
@@ -28,4 +28,4 @@ const Header = ({
   );
 };
 
-export default Header;
+export default HeaderContainer;

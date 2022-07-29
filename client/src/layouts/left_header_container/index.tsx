@@ -3,7 +3,7 @@ import { ReactNode } from "react";
 type Props = {
   children: ReactNode[] | ReactNode;
 };
-const LeftHeaderWrapper = ({ children }: Props) => {
+const LeftHeaderContainer = ({ children }: Props) => {
   return (
     <div className="flex justify-start items-center space-x-20">
       {Array.isArray(children) ? children.map((child) => child) : children}
@@ -11,4 +11,4 @@ const LeftHeaderWrapper = ({ children }: Props) => {
   );
 };
 
-export default LeftHeaderWrapper;
+export default LeftHeaderContainer;

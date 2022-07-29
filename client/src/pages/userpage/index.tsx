@@ -1,15 +1,16 @@
 import { UIEvent, useMemo, useState } from "react";
 import { useParams } from "react-router-dom";
-import { LeftHeaderWrapper, Logo, Nav, Search } from "../../components";
+import { Logo, Nav, Search } from "../../components";
 import { servicesPath } from "../../config/app_config";
 import { axiosConfigHeaders } from "../../config/axios-config";
 import { useFetch } from "../../hooks/useFetch";
 import { IUser } from "../../interfaces/user.interface";
 import {
-  Header,
+  HeaderContainer,
+  LeftHeaderContainer,
   PageContainer,
   SideContainer,
-  UserInfo,
+  UserInfoContainer,
   UserVideoContainer,
 } from "../../layouts";
 
@@ -66,17 +67,17 @@ const UserPage = (props: Props) => {
         onScroll={onScroll}
         className="w-full h-full custom-scrollbar bg-light_blue"
       >
-        <Header styleArray="py-[10px]">
-          <LeftHeaderWrapper>
+        <HeaderContainer styleArray="py-[10px]">
+          <LeftHeaderContainer>
             <Logo py="0" />
             <Search />
-          </LeftHeaderWrapper>
+          </LeftHeaderContainer>
           <Nav />
-        </Header>
+        </HeaderContainer>
         <PageContainer styleArray="laptop:w-full laptop:px-5 desktop:max-w-max extra-desktop:max-w-[1280px] over-desktop:max-w-[1440px] mx-auto desktop:space-x-3 extra-desktop:space-x-0">
           <SideContainer styleArray="desktop:min-w-min  min-h-full flex-1 text-white pt-10">
             {user?.doc && (
-              <UserInfo
+              <UserInfoContainer
                 avatar_thumb_url={user.doc.avatar_thumb.url_list[0]}
                 nickname={user.doc.nickname}
                 user_id={user.doc._id}

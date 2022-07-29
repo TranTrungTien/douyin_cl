@@ -5,7 +5,6 @@ import {
   BackgroundVideo,
   Button,
   Comment,
-  LeftHeaderWrapper,
   Loading,
   Logo,
   Nav,
@@ -15,9 +14,10 @@ import {
 import Modal from "../../components/modal";
 import { dataType } from "../../constants/type";
 import {
-  Header,
+  HeaderContainer,
+  LeftHeaderContainer,
   PageContainer,
-  Related,
+  RelatedContainer,
   RelatedVideoContainer,
   SideContainer,
   VideoHeaderContainer,
@@ -77,13 +77,13 @@ const VideoPage = (props: Props) => {
         style={{ overflow: "overlay" }}
         className="w-full h-full bg-light_blue custom-scrollbar"
       >
-        <Header backgroundColor="bg-light_blue">
-          <LeftHeaderWrapper>
+        <HeaderContainer backgroundColor="bg-light_blue">
+          <LeftHeaderContainer>
             <Logo />
             <Search />
-          </LeftHeaderWrapper>
+          </LeftHeaderContainer>
           <Nav />
-        </Header>
+        </HeaderContainer>
         <PageContainer styleArray="pt-6">
           <div className="laptop:w-full laptop:px-6 desktop:px-0 desktop:max-w-[1080px] extra-desktop:w-[1280px] over-desktop:max-w-[1440px] flex laptop:justify-start desktop:justify-center items-start mx-auto laptop:space-x-3">
             <SideContainer
@@ -159,7 +159,7 @@ const VideoPage = (props: Props) => {
               </div>
             </SideContainer>
             <SideContainer width="w-auto" styleArray="flex-1">
-              <Related>
+              <RelatedContainer>
                 <div className="flex justify-between items-center space-x-2 w-full border-b border-darkslategray pb-5">
                   <div className="flex justify-start items-center space-x-2">
                     <AvatarCardLink
@@ -216,7 +216,7 @@ const VideoPage = (props: Props) => {
                     </Suspense>
                   )}
                 </div>
-              </Related>
+              </RelatedContainer>
             </SideContainer>
           </div>
         </PageContainer>

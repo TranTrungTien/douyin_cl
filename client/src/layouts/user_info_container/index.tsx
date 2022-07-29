@@ -8,7 +8,7 @@ type Props = {
   user_id: string;
 };
 
-const UserInfo = ({ avatar_thumb_url, nickname, user_id }: Props) => {
+const UserInfoContainer = ({ avatar_thumb_url, nickname, user_id }: Props) => {
   return (
     <div className="laptop:max-w-[320px] desktop:max-w-[350px] extra-desktop:max-w-[400px] ml-auto px-3  space-y-4">
       <header className="flex justify-start items-center laptop:space-x-9">
@@ -73,4 +73,4 @@ const UserInfo = ({ avatar_thumb_url, nickname, user_id }: Props) => {
   );
 };
 
-export default UserInfo;
+export default UserInfoContainer;

@@ -4,7 +4,7 @@ type Props = {
   children: ReactNode[];
 };
 
-const Related = ({ children }: Props) => {
+const RelatedContainer = ({ children }: Props) => {
   return (
     <div className="flex flex-col justify-start items-start w-full h-auto">
       {children.map((child) => child)}
@@ -12,4 +12,4 @@ const Related = ({ children }: Props) => {
   );
 };
 
-export default Related;
+export default RelatedContainer;
