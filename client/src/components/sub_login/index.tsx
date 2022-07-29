@@ -1,8 +1,6 @@
-import axios, { AxiosResponse } from "axios";
 import { MouseEvent, useRef } from "react";
 import { useAppDispatch } from "../../app/hooks";
 import { servicesPath } from "../../config/app_config";
-import { useFetch } from "../../hooks/useFetch";
 import { IUser } from "../../interfaces/user.interface";
 import { postData } from "../../services/app_services";
 import { saveUser } from "../../slice/user.slice";

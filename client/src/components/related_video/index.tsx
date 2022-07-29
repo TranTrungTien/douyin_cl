@@ -1,8 +1,8 @@
 import { Link } from "react-router-dom";
 import Heart from "../heart";
-import TimeFooter from "../timefooter";
-import VideoCard from "../videocard";
-import VideoCardFooter from "../videocardfooter";
+import TimeFooter from "../time_footer";
+import VideoCard from "../video_card";
+import VideoCardFooter from "../../layouts/video_card_footer_container";
 
 type Props = {
   video_cover: string;

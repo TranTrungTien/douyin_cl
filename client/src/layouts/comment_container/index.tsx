@@ -1,11 +1,10 @@
-import axios from "axios";
 import { SyntheticEvent } from "react";
 import Comment from "../../components/comment";
-import CommentHeader from "../../components/commentbboxheader";
+import CommentHeader from "../../components/comment_box_header";
 import Input from "../../components/input";
 import { servicesPath } from "../../config/app_config";
 import { postData } from "../../services/app_services";
-import { RightBarAction } from "../videoslide";
+import { RightBarAction } from "../video_slide";
 
 type Props = {
   video_id: string;

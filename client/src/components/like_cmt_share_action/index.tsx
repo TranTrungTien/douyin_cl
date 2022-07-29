@@ -1,6 +1,6 @@
 import axios from "axios";
 import { useState } from "react";
-import { RightBarAction } from "../../layouts/videoslide";
+import { RightBarAction } from "../../layouts/video_slide";
 
 type Props = {
   onOpenRightBar?: (action: RightBarAction) => void;

@@ -1,15 +1,15 @@
 import axios from "axios";
 import { useEffect, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
-import LikeFooter from "../../components/likefooter";
-import VideoBadge from "../../components/videobadge";
-import VideoCard from "../../components/videocard";
-import VideoCardFooter from "../../components/videocardfooter";
-import VideoContainer from "../../components/videocontainer";
+import LikeFooter from "../../components/like_footer";
+import VideoBadge from "../../components/video_badge";
+import VideoCard from "../../components/video_card";
 import { servicesPath } from "../../config/app_config";
 import { axiosConfigHeaders } from "../../config/axios-config";
 import { useFetch } from "../../hooks/useFetch";
 import { IVideo } from "../../interfaces/video.interface";
+import VideoCardFooter from "../video_card_footer_container";
+import VideoContainer from "../video_container";
 
 type Props = {
   cursor: number;
@@ -80,7 +80,7 @@ const UserVideoContainer = ({
         alert(err);
         stopFetchingMoreVideo();
       });
-  }, [author_id, cursor]);
+  }, [author_id, cursor, stopFetchingMoreVideo]);
   const onChangeViewOpt = (fromOwnVideo: number) => {
     if (!fromOwnVideo && !viewOpt.viewOwn) {
       setViewOpt({ viewOwn: true, viewLiked: false });

@@ -1,4 +1,4 @@
-import LikeCmtShare from "../../components/likecmtshareaction";
+import LikeCmtShare from "../../components/like_cmt_share_action";
 import { IVideo } from "../../interfaces/video.interface";
 
 type Props = {

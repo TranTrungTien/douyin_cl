@@ -1,5 +1,5 @@
 import { ReactNode } from "react";
-import { RightBarAction } from "../../layouts/videoslide";
+import { RightBarAction } from "../../layouts/video_slide";
 
 type Props = {
   children?: ReactNode[] | ReactNode;

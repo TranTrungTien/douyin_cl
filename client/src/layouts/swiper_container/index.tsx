@@ -8,7 +8,7 @@ import { servicesPath } from "../../config/app_config";
 import { axiosConfigHeaders } from "../../config/axios-config";
 import { useFetchSuspense } from "../../hooks/useFetchSuspense";
 import { IVideo } from "../../interfaces/video.interface";
-import { VideoSlide } from "../../layouts";
+import { VideoSlide } from "..";
 SwiperCore.use([Virtual]);
 
 const SwiperWrapper = () => {

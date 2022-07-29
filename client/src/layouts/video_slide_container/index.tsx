@@ -1,7 +1,7 @@
 import { Suspense } from "react";
 import { Loading } from "../../components";
 import Modal from "../../components/modal";
-import SwiperWrapper from "../../components/swiper-wrapper";
+import SwiperWrapper from "../swiper_container";
 import ErrorBoundary from "../../utils/error-boundaries";
 type Props = {};
 const VideoSlideContainer = (props: Props) => {

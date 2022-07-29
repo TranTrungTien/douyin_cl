@@ -5,9 +5,9 @@ import { BackgroundVideo, Loading, Video } from "../../components";
 import Modal from "../../components/modal";
 import { IVideo } from "../../interfaces/video.interface";
 import ErrorBoundary from "../../utils/error-boundaries";
-import CommentContainer from "../commentcontainer";
-import RightContainer from "../rightcontainer";
-import UserContainer from "../usercontainer";
+import CommentContainer from "../comment_container";
+import RightContainer from "../right_container";
+import UserContainer from "../user_container";
 
 type Props = {
   avatar_thumb: string;

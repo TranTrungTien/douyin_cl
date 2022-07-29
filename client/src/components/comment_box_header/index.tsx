@@ -1,4 +1,4 @@
-import { RightBarAction } from "../../layouts/videoslide";
+import { RightBarAction } from "../../layouts/video_slide";
 
 type Props = {
   handleCloseComment: (action: RightBarAction) => void;
