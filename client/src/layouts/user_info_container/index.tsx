@@ -1,6 +1,6 @@
-import AvatarCardButton from "../../components/avatarcardbutton";
+import AvatarCardButton from "../../components/avatar_card_button";
 import Button from "../../components/button";
-import VerificationMark from "../../components/verificationmark";
+import VerificationMark from "../../components/verification_mark";
 
 type Props = {
   avatar_thumb_url: string;

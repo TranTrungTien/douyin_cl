@@ -1,4 +1,3 @@
-import axios from "axios";
 import { MouseEvent, ReactNode, SyntheticEvent, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import { Button, SelectFile } from "../../components";

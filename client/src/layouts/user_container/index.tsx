@@ -1,15 +1,15 @@
 import axios from "axios";
 import { UIEvent, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import LikeFooter from "../../components/likefooter";
-import UserBoxHeader from "../../components/userboxheader";
-import VideoBadge from "../../components/videobadge";
-import VideoCard from "../../components/videocard";
-import VideoCardFooter from "../../components/videocardfooter";
-import VideoContainer from "../../components/videocontainer";
+import LikeFooter from "../../components/like_footer";
+import UserBoxHeader from "../../components/user_box_header";
+import VideoBadge from "../../components/video_badge";
+import VideoCard from "../../components/video_card";
+import VideoCardFooter from "../video_card_footer_container";
+import VideoContainer from "../video_container";
 import { servicesPath } from "../../config/app_config";
 import { IVideo } from "../../interfaces/video.interface";
-import { RightBarAction } from "../videoslide";
+import { RightBarAction } from "../video_slide";
 type Props = {
   author_id: string;
   uid: string;

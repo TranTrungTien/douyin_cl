@@ -1,8 +1,8 @@
 import { MouseEvent, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useAppSelector } from "../../app/hooks";
-import AvatarCardButton from "../avatarcardbutton";
-import BasicInfo from "../basic-info";
+import AvatarCardButton from "../avatar_card_button";
+import BasicInfo from "../basic_info";
 import Button from "../button";
 import Login from "../login";
 import Modal from "../modal";

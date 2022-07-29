@@ -1,4 +1,4 @@
-import SubRegisterOrLogin from "../sub-login";
+import SubRegisterOrLogin from "../sub_login";
 
 type Props = {
   onVerifyEmail: (emailVerified: string, code: string | null) => void;

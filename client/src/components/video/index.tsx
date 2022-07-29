@@ -1,16 +1,16 @@
 import { useEffect, useMemo, useRef } from "react";
 import { axiosConfigHeaders } from "../../config/axios-config";
 import { useFetchSuspense } from "../../hooks/useFetchSuspense";
-import { RightBarAction } from "../../layouts/videoslide";
+import { RightBarAction } from "../../layouts/video_slide";
 import { toggleFullScreen } from "../../utils/fullscreen";
 import { timeFormat } from "../../utils/timeFormat";
-import AvatarCardButton from "../avatarcardbutton";
-import BottomVideoAction from "../bottomvideoaction";
-import LikeCmtShare from "../likecmtshareaction";
-import NextVideoButton from "../nextvideobutton";
+import AvatarCardButton from "../avatar_card_button";
+import BottomVideoAction from "../bottom_video_action";
+import LikeCmtShare from "../like_cmt_share_action";
+import NextVideoButton from "../next_video_button";
 import Plus from "../plus";
-import ProgressBar from "../progressbar";
-import RightVideoAction from "../rightvideoaction";
+import ProgressBar from "../progress_bar";
+import RightVideoAction from "../../layouts/right_video_action_container";
 
 //  useMemo(() => {
 //    return axiosConfigHeaders(

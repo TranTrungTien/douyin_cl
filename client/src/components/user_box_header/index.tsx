@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
-import { RightBarAction } from "../../layouts/videoslide";
-import AvatarCard from "../avatarcardbutton";
+import { RightBarAction } from "../../layouts/video_slide";
+import AvatarCard from "../avatar_card_button";
 import Button from "../button";
 
 type Props = {
