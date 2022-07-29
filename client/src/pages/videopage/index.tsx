@@ -27,6 +27,7 @@ import ErrorBoundary from "../../utils/error-boundaries";
 import { axiosConfigHeaders } from "../../config/axios-config";
 import { useFetch } from "../../hooks/useFetch";
 import { IVideo } from "../../interfaces/video.interface";
+import { servicesPath } from "../../config/app_config";
 
 type Props = {};
 
@@ -34,13 +35,19 @@ const VideoPage = (props: Props) => {
   const [isPlay, setIsPlay] = useState(true);
   const { video_id, video_idf } = useParams();
   const mediaHeader = useMemo(() => {
-    return axiosConfigHeaders("json", "application/json", "application/json", {
-      video_id,
-    });
+    return axiosConfigHeaders(
+      "GET",
+      "json",
+      "application/json",
+      "application/json",
+      {
+        video_id,
+      }
+    );
   }, [video_id]);
   console.log(video_id);
   const video = useFetch<{ message: string; doc: IVideo }>(
-    "media/get-meta-data",
+    servicesPath.GET_METADATA,
     mediaHeader
   );
   const onPlayOrPause = (

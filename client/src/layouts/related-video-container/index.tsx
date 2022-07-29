@@ -1,5 +1,6 @@
 import { useMemo } from "react";
 import { RelatedVideo } from "../../components";
+import { servicesPath } from "../../config/app_config";
 import { axiosConfigHeaders } from "../../config/axios-config";
 import { useFetchSuspense } from "../../hooks/useFetchSuspense";
 import { IVideo } from "../../interfaces/video.interface";
@@ -10,6 +11,7 @@ type Props = {
 const RelatedVideoContainer = ({ id }: Props) => {
   const header = useMemo(() => {
     return axiosConfigHeaders(
+      "GET",
       "application/json",
       "application/json",
       "application/json",
@@ -21,7 +23,7 @@ const RelatedVideoContainer = ({ id }: Props) => {
   const relatedVideo = useFetchSuspense<{
     message: string;
     doc: IVideo[];
-  }>("recommendation/related", header);
+  }>(servicesPath.GET_RELATED_RECOMMENDED, header);
   console.log(relatedVideo);
 
   return (

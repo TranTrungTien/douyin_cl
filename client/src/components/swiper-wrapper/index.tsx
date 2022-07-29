@@ -4,6 +4,7 @@ import "swiper/css";
 import "swiper/css/bundle";
 import "swiper/css/virtual";
 import { Swiper, SwiperSlide } from "swiper/react";
+import { servicesPath } from "../../config/app_config";
 import { axiosConfigHeaders } from "../../config/axios-config";
 import { useFetchSuspense } from "../../hooks/useFetchSuspense";
 import { IVideo } from "../../interfaces/video.interface";
@@ -14,6 +15,7 @@ const SwiperWrapper = () => {
   const [start, setStart] = useState(false);
   const metaHeader = useMemo(() => {
     return axiosConfigHeaders(
+      "GET",
       "json",
       "application/json",
       "application/json",
@@ -21,7 +23,7 @@ const SwiperWrapper = () => {
     );
   }, []);
   const videos = useFetchSuspense<{ message: string; list: IVideo[] }>(
-    "recommendation/new",
+    servicesPath.GET_NEW_RECOMMENDED,
     metaHeader
   );
   const onStart = () => {

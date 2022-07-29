@@ -6,6 +6,7 @@ import VideoBadge from "../../components/videobadge";
 import VideoCard from "../../components/videocard";
 import VideoCardFooter from "../../components/videocardfooter";
 import VideoContainer from "../../components/videocontainer";
+import { servicesPath } from "../../config/app_config";
 import { axiosConfigHeaders } from "../../config/axios-config";
 import { useFetch } from "../../hooks/useFetch";
 import { IVideo } from "../../interfaces/video.interface";
@@ -30,20 +31,26 @@ const UserVideoContainer = ({
     list: IVideo[];
   }>(null);
   const jsonHeader = useMemo(() => {
-    return axiosConfigHeaders("json", "application/json", "application/json", {
-      author_id: author_id,
-    });
+    return axiosConfigHeaders(
+      "GET",
+      "json",
+      "application/json",
+      "application/json",
+      {
+        author_id: author_id,
+      }
+    );
   }, [author_id]);
   const count = useFetch<{
     message: string;
     ownVideoTotal: number;
     likedVideoTotal: number;
-  } | null>("media/get-count", jsonHeader);
+  } | null>(servicesPath.GET_COUNT, jsonHeader);
 
   useEffect(() => {
     axios
       .get<{ message: string; video_count: number; list: IVideo[] }>(
-        "media/get-video-by-user",
+        servicesPath.GET_VIDEO_BY_USER,
         {
           headers: {
             Accept: "application/json",

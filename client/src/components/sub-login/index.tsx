@@ -1,7 +1,10 @@
 import axios, { AxiosResponse } from "axios";
 import { MouseEvent, useRef } from "react";
 import { useAppDispatch } from "../../app/hooks";
+import { servicesPath } from "../../config/app_config";
+import { useFetch } from "../../hooks/useFetch";
 import { IUser } from "../../interfaces/user.interface";
+import { postData } from "../../services/app_services";
 import { saveUser } from "../../slice/user.slice";
 
 type Props = {
@@ -14,16 +17,7 @@ const SubRegisterOrLogin = ({ onVerifyEmail }: Props) => {
   const onSendCode = (e: MouseEvent<HTMLButtonElement>) => {
     const email = emailRef.current?.value;
     if (!email) return;
-    axios
-      .post(
-        "user/send-mail",
-        { email },
-        {
-          headers: {
-            "content-type": "application/json",
-          },
-        }
-      )
+    postData(servicesPath.SEND_EMAIL, { email })
       .then((_) => alert("Successfully !!! Please check your email"))
       .catch(console.log);
   };
@@ -32,51 +26,36 @@ const SubRegisterOrLogin = ({ onVerifyEmail }: Props) => {
     else {
       const code = codeRef.current.value;
       const email = emailRef.current.value;
-      axios
-        .post<
-          any,
-          AxiosResponse<
-            {
-              message: string;
-              userEmail: string;
-              secretCode: string | null;
-              userExisted: boolean;
-              code: string | null;
-            },
-            any
-          >
-        >(
-          "user/verify-email",
-          { code, existedEmail: email },
-          {
-            headers: {
-              "content-type": "application/json",
-            },
-          }
-        )
-        .then((data) => {
-          const { userEmail, secretCode, userExisted, code } = data.data;
+      postData<{
+        message: string;
+        userEmail: string;
+        secretCode: string | null;
+        userExisted: boolean;
+        code: string | null;
+      }>(servicesPath.VERIFY_EMAIL, { code, existedEmail: email })
+        .then((res) => {
+          const { userEmail, secretCode, userExisted, code } = res.data;
 
           if (userEmail && !userExisted && !secretCode)
             onVerifyEmail(userEmail, code);
           else if (userEmail && userExisted && secretCode) {
-            axios
-              .post<any, AxiosResponse<{ message: string; doc: IUser }, any>>(
-                "user/login-without-password",
-                { email: userEmail, secretCode },
-                {
-                  headers: {
-                    "content-type": "application/json",
-                  },
-                  withCredentials: true,
-                }
-              )
+            postData<{ message: string; doc: IUser }>(
+              servicesPath.LOGIN_WITHOUT_PASSWORD,
+              {
+                email: userEmail,
+                secretCode,
+              },
+              true
+            )
               .then((data) => {
                 dispatch(saveUser(data.data.doc));
+              })
+              .catch((err) => {
+                throw err;
               });
           }
         })
-        .catch(console.log);
+        .catch(alert);
     }
   };
   return (

@@ -7,6 +7,7 @@ import VideoBadge from "../../components/videobadge";
 import VideoCard from "../../components/videocard";
 import VideoCardFooter from "../../components/videocardfooter";
 import VideoContainer from "../../components/videocontainer";
+import { servicesPath } from "../../config/app_config";
 import { IVideo } from "../../interfaces/video.interface";
 import { RightBarAction } from "../videoslide";
 type Props = {
@@ -31,7 +32,7 @@ const UserContainer = ({
   useEffect(() => {
     axios
       .get<{ message: string; video_count: number; list: IVideo[] }>(
-        "media/get-video-by-user",
+        servicesPath.GET_VIDEO_BY_USER,
         {
           headers: {
             Accept: "application/json",
