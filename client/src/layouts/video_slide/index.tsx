@@ -85,6 +85,7 @@ const VideoSlide = ({
       else setIsPlay((pre) => !pre);
     }
   };
+
   return (
     <div className="flex justify-between items-center w-full h-full rounded-md">
       <section
@@ -105,6 +106,7 @@ const VideoSlide = ({
               }
             >
               <Video
+                author_uid={video.author_id.uid}
                 nickname={video.author_id.nickname}
                 video_addr={video.play_addr.url_list[0]}
                 video_desc={video.desc}

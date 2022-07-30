@@ -17,6 +17,7 @@ const UserInfoContainer = ({ avatar_thumb_url, nickname, user_id }: Props) => {
           image={avatar_thumb_url}
           height="h-62px"
           width="w-62px"
+          title={nickname}
           hint="User Cover"
         />
         <div className="text-white opacity-90 leading-5 flex justify-center items-center laptop:space-x-6 desktop:space-x-16">
