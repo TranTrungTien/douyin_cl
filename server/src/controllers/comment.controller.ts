@@ -23,10 +23,10 @@ const createComment = (req: Request, res: Response) => {
   }
 
   const comment = new commentModel(cmt);
-  comment.save((err) => {
+  comment.save((err, doc) => {
     if (err)
       return res.status(500).send({ message: "Error saving comment", err });
-    else res.status(200).send({ message: "Comment saved" });
+    else res.status(200).send({ message: "Comment saved", doc });
   });
 };
 const deleteComment = (req: Request, res: Response) => {
@@ -48,7 +48,22 @@ const deleteComment = (req: Request, res: Response) => {
     }
   );
 };
+
+const getCommentOfVideo = (req: Request, res: Response) => {
+  const video_id = req.query.video_id as string;
+  console.log({ video_id });
+  commentModel
+    .find({ video_id: video_id }, null, null)
+    .populate("author_id")
+    .populate("video_id")
+    .exec((err, list) => {
+      if (err)
+        return res.status(500).send({ message: "Error getting video", err });
+      else return res.status(200).send({ message: "Video found", list });
+    });
+};
 export default {
+  getCommentOfVideo,
   createComment,
   deleteComment,
 };

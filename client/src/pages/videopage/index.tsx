@@ -142,19 +142,12 @@ const VideoPage = (props: Props) => {
                   <div className="w-full h-px bg-darkslategray flex-1"></div>
                 </div>
                 <div className="w-full mt-6">
-                  <Comment styleArray="px-0" />
-                  <Comment styleArray="px-0" />
-                  <Comment styleArray="px-0" />
-                  <Comment styleArray="px-0" />
-                  <Comment styleArray="px-0" />
-                  <Comment styleArray="px-0" />
-                  <Comment styleArray="px-0" />
-                  <Comment styleArray="px-0" />
-                  <Comment styleArray="px-0" />
-                  <Comment styleArray="px-0" />
-                  <Comment styleArray="px-0" />
-                  <Comment styleArray="px-0" />
-                  <Comment styleArray="px-0" />
+                  <Comment
+                    styleArray="px-3"
+                    uid=""
+                    datePosted=""
+                    content="ffffffffffffffffff"
+                  />
                 </div>
               </div>
             </SideContainer>

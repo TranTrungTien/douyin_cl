@@ -20,7 +20,7 @@ const getUserInfo = async () => {
 export function* fetchUser(): any {
   try {
     let response = yield call(() => getUserInfo());
-    yield put(getUserInfoSuccessfully(response.data));
+    yield put(getUserInfoSuccessfully(response.data.doc));
   } catch (e: any) {
     yield put({ type: getUserInfoFailed.type, e });
   }
