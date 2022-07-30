@@ -10,6 +10,7 @@ export const servicesPath = {
   VERIFY_EMAIL: "user/verify-email",
   LOGIN_WITHOUT_PASSWORD: "user/login-without-password",
   POST_COMMENT: "comment/create-comment",
+  GET_ALL_COMMENTS_OF_VIDEO: "comment/",
   POST_METADATA: "media/upload-meta-data",
   POST_FORMDATA: "media/upload-file",
   GET_NEW_RECOMMENDED: "recommendation/new",

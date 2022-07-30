@@ -1,4 +1,3 @@
-import { comment } from "./comment";
 import { IMusic } from "./music";
 import { IUser } from "./user.interface";
 

@@ -1,37 +1,54 @@
 import { useState } from "react";
+import { convertDate } from "../../utils/covert_date";
+import AvatarCardLink from "../avatar_card_link";
 import Heart from "../heart";
 import Input from "../input";
 
 type Props = {
+  nickname?: string;
+  datePosted?: string;
   styleArray?: string;
+  content: string;
+  image?: string;
+  uid: string;
 };
 
-const Comment = ({ styleArray }: Props) => {
+const Comment = ({
+  styleArray,
+  image,
+  datePosted,
+  content,
+  nickname = "ღ᭄余生ꦿ࿐",
+  uid,
+}: Props) => {
   const [isReply, setIsReply] = useState(false);
+
   return (
     <div className={`w-full h-auto text-white ${styleArray}`}>
       <div className="w-full flex justify-start items-start space-x-2 border-b border-darkslategray py-3">
         {/* User image */}
-        <div className="w-10 h-10">
-          <img
-            src="https://images.statusfacebook.com/profile_pictures/unique-dp/unique-profile-pictures-for-whatsapp-01.jpg"
-            alt="User"
-            className="w-full h-full object-cover object-center rounded-full"
-          />
-        </div>
+        <AvatarCardLink
+          width="w-10"
+          height="h-10"
+          href={`user/${uid}`}
+          image={image}
+          firstNickNameCharacter={nickname[0]}
+          title={nickname}
+          hint={"Cover"}
+        />
         {/* Content */}
         <div className="flex-1 flex-col justify-start items-start space-y-2">
           <div className="flex justify-start items-center space-x-2">
             <h4 className="text-inherit font-normal text-[13px] leading-5 opacity-70">
-              ღ᭄余生ꦿ࿐
+              {nickname}
             </h4>
             <span className="text-inherit font-normal text-xs leading-[21px] opacity-50">
-              22020.09.21
+              {convertDate(datePosted)}
             </span>
           </div>
           {/* Text msg */}
           <p className="text-sm text-inherit font-normal leading-6 opacity-90">
-            fhjafhjajkfakjfkajfhfajjfhajjhfkajfa
+            {content}
           </p>
           {/* Action: Like, Reply */}
           <div className="text-xs font-medium leading-5 text-inherit opacity-70  flex justify-start items-center space-x-5">

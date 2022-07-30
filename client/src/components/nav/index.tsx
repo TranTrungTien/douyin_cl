@@ -27,6 +27,7 @@ const Nav = (props: Props) => {
     if (user.data) navigate("/upload");
     else setSignIn(true);
   };
+
   return (
     <ul className="flex justify-between items-center">
       <li className="opacity-80 hover:opacity-100 cursor-pointer desktop:block laptop:hidden ">
@@ -38,9 +39,10 @@ const Nav = (props: Props) => {
       {user.data && (
         <li className="opacity-80 hover:opacity-100 cursor-pointer ml-8">
           <AvatarCardButton
-            firstNickNameCharacter={user.data.nickname[0]}
+            firstNickNameCharacter={"T"}
             hint={user.data.nickname}
-            image="https://thumbs.dreamstime.com/z/astronaut-outer-space-porthole-background-earth-elements-image-furnished-nasa-astronaut-outer-131582688.jpg"
+            image={user.data.avatar_thumb.url_list[0]}
+            title={user.data.nickname}
           />
         </li>
       )}
