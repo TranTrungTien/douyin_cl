@@ -4,6 +4,7 @@ import { RightBarAction } from "../../layouts/video_slide";
 type Props = {
   children?: ReactNode[] | ReactNode;
   width?: string;
+  title?: string;
   height?: string;
   image: string;
   hint?: string;
@@ -14,6 +15,7 @@ type Props = {
 };
 //
 const AvatarCardButton = ({
+  title,
   firstNickNameCharacter,
   children,
   width = "w-10",
@@ -34,7 +36,7 @@ const AvatarCardButton = ({
     >
       <button
         type="button"
-        title={hint}
+        title={title}
         className={`${width} ${height} ${borderRadius}`}
         onClick={onOpenRightBar}
       >

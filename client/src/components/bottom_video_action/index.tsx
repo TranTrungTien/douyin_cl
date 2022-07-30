@@ -4,6 +4,7 @@ import { timeFormat } from "../../utils/timeFormat";
 import "./style.css";
 
 type Props = {
+  author_uid?: string;
   video_idf: string;
   video_id: string;
   video_desc: string;
@@ -21,6 +22,7 @@ type Props = {
 const BottomVideoAction = forwardRef<HTMLSpanElement, Props>(
   (
     {
+      author_uid,
       video_desc,
       video_duration,
       video_id,
@@ -94,9 +96,11 @@ const BottomVideoAction = forwardRef<HTMLSpanElement, Props>(
           {/* User name and description */}
           {!fromVideoPage && (
             <div className="flex flex-col items-start w-[95%] h-auto text-white ml-4 mb-4">
-              <h3 className="font-medium leading-[26px] text-[18px]">
-                @{nickname}
-              </h3>
+              <Link to={`/user/${author_uid}`} target="_blank">
+                <h3 className="font-medium leading-[26px] text-[18px]">
+                  @{nickname}
+                </h3>
+              </Link>
               <p className="font-normal leading-[22px] text-sm opacity-60">
                 {video_desc}
               </p>

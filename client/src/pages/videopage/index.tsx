@@ -1,5 +1,5 @@
 import { MouseEvent, Suspense, useMemo, useState } from "react";
-import { useParams } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import {
   AvatarCardLink,
   BackgroundVideo,
@@ -163,15 +163,19 @@ const VideoPage = (props: Props) => {
                 <div className="flex justify-between items-center space-x-2 w-full border-b border-darkslategray pb-5">
                   <div className="flex justify-start items-center space-x-2">
                     <AvatarCardLink
+                      title={video?.doc.author_id.nickname}
                       height="h-62px"
                       width="w-62px"
-                      image="https://images.statusfacebook.com/profile_pictures/unique-dp/unique-profile-pictures-for-whatsapp-01.jpg"
-                      href="/user/abc"
+                      image={video?.doc.author_id.avatar_thumb.url_list[0]}
+                      firstNickNameCharacter={video?.doc.author_id.nickname[0]}
+                      href={`/user/${video?.doc.author_id.uid}`}
                     />
                     <div className="flex flex-col justify-start items-start space-y-1 text-white">
-                      <h4 className="font-medium text-sm opacity-90 leading-[22px] truncate">
-                        猫七baby🍓
-                      </h4>
+                      <Link to={`/user/${video?.doc.author_id.uid}`}>
+                        <h4 className="font-medium text-sm opacity-90 leading-[22px] truncate">
+                          {video?.doc.author_id.nickname}
+                        </h4>
+                      </Link>
                       <div className="flex justify-center desktop:flex-row laptop:flex-col laptop:items-start desktop:items-center desktop:space-x-2 ">
                         <div className="flex justify-center items-center space-x-px leading-5 text-xs">
                           <span className="font-medium opacity-50 ">粉丝</span>

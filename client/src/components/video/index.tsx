@@ -22,6 +22,7 @@ import RightVideoAction from "../../layouts/right_video_action_container";
 //  }, []);
 
 type Props = {
+  author_uid?: string;
   video_addr: string;
   video_idf: string;
   video_id: string;
@@ -38,6 +39,7 @@ type Props = {
 };
 
 const Video = ({
+  author_uid,
   video_addr,
   nickname,
   video_desc,
@@ -175,6 +177,7 @@ const Video = ({
       )}
       {/* Action's video */}
       <BottomVideoAction
+        author_uid={author_uid}
         handleToggleFullscreenMode={onToggleFullscreenMode}
         nickname={nickname}
         video_desc={video_desc}
