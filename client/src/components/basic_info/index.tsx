@@ -1,8 +1,8 @@
 import axios, { AxiosResponse } from "axios";
 import { SyntheticEvent } from "react";
-import { useAppDispatch } from "../../app/hooks";
+import { useAppDispatch } from "../../redux/app/hooks";
 import { IUser } from "../../interfaces/user.interface";
-import { saveUser } from "../../slice/user.slice";
+import { getUserInfoSuccessfully } from "../../redux/slice/user.slice";
 
 type Props = {
   emailVerified: string;
@@ -43,7 +43,9 @@ const BasicInfo = ({ emailVerified, code }: Props) => {
                 withCredentials: true,
               }
             )
-            .then((userLogin) => dispatch(saveUser(userLogin.data.doc)));
+            .then((userLogin) =>
+              dispatch(getUserInfoSuccessfully(userLogin.data.doc))
+            );
         })
         .catch(console.error);
     }

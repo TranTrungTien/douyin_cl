@@ -1,9 +1,9 @@
 import { MouseEvent, useRef } from "react";
-import { useAppDispatch } from "../../app/hooks";
+import { useAppDispatch } from "../../redux/app/hooks";
 import { servicesPath } from "../../config/app_config";
 import { IUser } from "../../interfaces/user.interface";
 import { postData } from "../../services/app_services";
-import { saveUser } from "../../slice/user.slice";
+import { getUserInfoSuccessfully } from "../../redux/slice/user.slice";
 
 type Props = {
   onVerifyEmail: (emailVerified: string, code: string | null) => void;
@@ -46,7 +46,7 @@ const SubRegisterOrLogin = ({ onVerifyEmail }: Props) => {
               true
             )
               .then((data) => {
-                dispatch(saveUser(data.data.doc));
+                dispatch(getUserInfoSuccessfully(data.data.doc));
               })
               .catch((err) => {
                 throw err;

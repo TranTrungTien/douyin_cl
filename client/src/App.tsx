@@ -1,9 +1,10 @@
 import { useEffect } from "react";
 import "./App.css";
-import { useAppDispatch } from "./app/hooks";
+import { useAppDispatch } from "./redux/app/hooks";
 import { setDefaultSettings } from "./config/app_config";
 import Routers from "./routers";
-import { fetchUserAsync } from "./slice/user.slice";
+import { getUserInfoRequested } from "./redux/slice/user.slice";
+// import { fetchUserAsync } from "./redux/slice/user.slice";
 
 setDefaultSettings();
 
@@ -11,7 +12,7 @@ function App() {
   const dispatch = useAppDispatch();
   useEffect(() => {
     const fetchUser = () => {
-      dispatch(fetchUserAsync());
+      dispatch(getUserInfoRequested());
     };
     fetchUser();
   }, [dispatch]);

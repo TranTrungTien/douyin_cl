@@ -1,6 +1,6 @@
 import { MouseEvent, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { useAppSelector } from "../../app/hooks";
+import { useAppSelector } from "../../redux/app/hooks";
 import AvatarCardButton from "../avatar_card_button";
 import BasicInfo from "../basic_info";
 import Button from "../button";
