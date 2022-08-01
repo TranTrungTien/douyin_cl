@@ -16,6 +16,19 @@ import {
 
 type Props = {};
 
+export interface ICursorState {
+  viewOwn: {
+    isCurrent: boolean;
+    cursorPosition: number;
+    reachToEnd: boolean;
+  };
+  viewLiked: {
+    isCurrent: boolean;
+    cursorPosition: number;
+    reachToEnd: boolean;
+  };
+}
+
 const UserPage = (props: Props) => {
   const { user_id } = useParams();
   const jsonHeader = useMemo(() => {
@@ -33,32 +46,78 @@ const UserPage = (props: Props) => {
     servicesPath.GET_USER_INFO,
     jsonHeader
   );
-  const [cursorState, setCursorState] = useState({
-    cursorPosition: 0,
-    reachToEnd: false,
+  const [cursorState, setCursorState] = useState<ICursorState>({
+    viewOwn: {
+      isCurrent: true,
+      cursorPosition: 0,
+      reachToEnd: false,
+    },
+    viewLiked: {
+      isCurrent: false,
+      cursorPosition: 0,
+      reachToEnd: false,
+    },
   });
   const onScroll = (e: UIEvent<HTMLDivElement>) => {
     const isScrollToBottom =
       e.currentTarget.scrollHeight -
       window.innerHeight -
       e.currentTarget.scrollTop;
-    if (isScrollToBottom === 0 && !cursorState.reachToEnd) {
-      setCursorState((preState) => {
-        return {
-          cursorPosition: preState.cursorPosition + 1,
-          reachToEnd: false,
-        };
-      });
+
+    if (isScrollToBottom === 0) {
+      if (cursorState.viewOwn.isCurrent) {
+        if (!cursorState.viewOwn.reachToEnd) {
+          setCursorState((preState) => {
+            return {
+              ...preState,
+              viewOwn: {
+                cursorPosition: preState.viewOwn.cursorPosition + 1,
+                isCurrent: true,
+                reachToEnd: false,
+              },
+            };
+          });
+        }
+      } else if (!cursorState.viewLiked.isCurrent) {
+        if (!cursorState.viewLiked.reachToEnd) {
+          setCursorState((preState) => {
+            return {
+              ...preState,
+              viewLiked: {
+                cursorPosition: preState.viewOwn.cursorPosition + 1,
+                isCurrent: true,
+                reachToEnd: false,
+              },
+            };
+          });
+        }
+      }
     }
   };
   const stopFetchingMoreVideo = () => {
-    if (!cursorState.reachToEnd)
-      setCursorState((preState) => {
-        return {
-          cursorPosition: cursorState.cursorPosition,
-          reachToEnd: true,
-        };
-      });
+    if (cursorState.viewOwn.isCurrent) {
+      if (!cursorState.viewOwn.reachToEnd)
+        setCursorState((preState) => {
+          return {
+            ...preState,
+            viewOwn: {
+              ...preState.viewOwn,
+              reachToEnd: true,
+            },
+          };
+        });
+    } else if (cursorState.viewLiked.isCurrent) {
+      if (!cursorState.viewLiked.reachToEnd)
+        setCursorState((preState) => {
+          return {
+            ...preState,
+            viewLiked: {
+              ...preState.viewLiked,
+              reachToEnd: true,
+            },
+          };
+        });
+    }
   };
   return (
     <section className="w-full flex flex-col justify-start items-start h-screen">
@@ -89,7 +148,7 @@ const UserPage = (props: Props) => {
               <UserVideoContainer
                 viewLikedAllowed={user.doc.show_favorite_list}
                 stopFetchingMoreVideo={stopFetchingMoreVideo}
-                cursor={cursorState.cursorPosition}
+                cursor={cursorState}
                 author_id={user.doc._id}
               />
             )}

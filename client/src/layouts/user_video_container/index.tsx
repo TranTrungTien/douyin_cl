@@ -1,5 +1,5 @@
 import axios from "axios";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import LikeFooter from "../../components/like_footer";
 import VideoBadge from "../../components/video_badge";
@@ -7,12 +7,15 @@ import VideoCard from "../../components/video_card";
 import { servicesPath } from "../../config/app_config";
 import { axiosConfigHeaders } from "../../config/axios-config";
 import { useFetch } from "../../hooks/useFetch";
+import { IYourVideoLiked } from "../../interfaces/liked_video.interface";
 import { IVideo } from "../../interfaces/video.interface";
+import { ICursorState } from "../../pages/userpage";
+import { useAppSelector } from "../../redux/app/hooks";
 import VideoCardFooter from "../video_card_footer_container";
 import VideoContainer from "../video_container";
 
 type Props = {
-  cursor: number;
+  cursor: ICursorState;
   author_id: string;
   viewLikedAllowed: boolean;
   stopFetchingMoreVideo: () => void;
@@ -25,10 +28,19 @@ const UserVideoContainer = ({
   stopFetchingMoreVideo,
 }: Props) => {
   console.log({ cursor });
+  const currentCursorPosition = useRef({
+    viewOwn: -1,
+    viewLiked: -1,
+  });
+  const my_id = useAppSelector((state) => state.user.data?._id);
   const [viewOpt, setViewOpt] = useState({ viewOwn: true, viewLiked: false });
   const [ownVideos, setOwnVideos] = useState<null | {
     message: string;
     list: IVideo[];
+  }>(null);
+  const [likedVideos, setLikedVideos] = useState<null | {
+    message: string;
+    list: IYourVideoLiked[];
   }>(null);
   const jsonHeader = useMemo(() => {
     return axiosConfigHeaders(
@@ -48,65 +60,129 @@ const UserVideoContainer = ({
   } | null>(servicesPath.GET_COUNT, jsonHeader);
 
   useEffect(() => {
-    axios
-      .get<{ message: string; video_count: number; list: IVideo[] }>(
-        servicesPath.GET_VIDEO_BY_USER,
-        {
-          headers: {
-            Accept: "application/json",
-            "Content-Type": "application/json",
-          },
-          params: {
-            author_id: author_id,
-            cursor: cursor,
-          },
-        }
-      )
-      .then((data) => {
-        console.log(data.data.list);
-        const d = data.data;
-        setOwnVideos((preState) => {
-          if (!preState) {
-            return d;
-          } else {
-            return {
-              ...preState,
-              list: [...preState.list, ...d.list],
-            };
+    if (
+      viewOpt.viewOwn &&
+      currentCursorPosition.current.viewOwn !== cursor.viewOwn.cursorPosition
+    ) {
+      currentCursorPosition.current.viewOwn = cursor.viewOwn.cursorPosition;
+      axios
+        .get<{ message: string; list: IVideo[] }>(
+          servicesPath.GET_VIDEO_BY_USER,
+          {
+            headers: {
+              Accept: "application/json",
+              "Content-Type": "application/json",
+            },
+            params: {
+              author_id: author_id,
+              cursor: cursor.viewOwn.cursorPosition,
+            },
           }
+        )
+        .then((data) => {
+          console.log(data.data.list);
+          const d = data.data;
+          setOwnVideos((preState) => {
+            if (!preState) {
+              return d;
+            } else {
+              return {
+                ...preState,
+                list: [...preState.list, ...d.list],
+              };
+            }
+          });
+        })
+        .catch((err) => {
+          alert(err);
+          stopFetchingMoreVideo();
         });
-      })
-      .catch((err) => {
-        alert(err);
-        stopFetchingMoreVideo();
-      });
-  }, [author_id, cursor, stopFetchingMoreVideo]);
-  const onChangeViewOpt = (fromOwnVideo: number) => {
-    if (!fromOwnVideo && !viewOpt.viewOwn) {
+    } else if (
+      viewOpt.viewLiked &&
+      currentCursorPosition.current.viewLiked !==
+        cursor.viewLiked.cursorPosition
+    ) {
+      currentCursorPosition.current.viewLiked = cursor.viewLiked.cursorPosition;
+
+      axios
+        .get<{ message: string; list: IYourVideoLiked[] }>(
+          servicesPath.GET_ALL_VIDEO_LIKED_BY_USER,
+          {
+            headers: {
+              Accept: "application/json",
+              "Content-Type": "application/json",
+            },
+            params: {
+              author_id: author_id,
+              cursor: cursor.viewLiked.cursorPosition,
+            },
+          }
+        )
+        .then((data) => {
+          console.log(data.data.list);
+          const d = data.data;
+          setLikedVideos((preState) => {
+            if (!preState) {
+              return d;
+            } else {
+              return {
+                ...preState,
+                list: [...preState.list, ...d.list],
+              };
+            }
+          });
+        })
+        .catch((err) => {
+          alert(err);
+          stopFetchingMoreVideo();
+        });
+    }
+  }, [
+    author_id,
+    cursor,
+    stopFetchingMoreVideo,
+    viewOpt.viewOwn,
+    viewOpt.viewLiked,
+  ]);
+  const onChangeViewOpt = (viewOwn: boolean) => {
+    if (viewOwn && !viewOpt.viewOwn) {
       setViewOpt({ viewOwn: true, viewLiked: false });
-    } else if ((fromOwnVideo && viewOpt.viewOwn, viewLikedAllowed)) {
+    } else if (
+      !viewOwn &&
+      viewOpt.viewOwn &&
+      (viewLikedAllowed || author_id === my_id)
+    ) {
       setViewOpt({ viewOwn: false, viewLiked: true });
     }
   };
+  console.log(viewOpt);
   return (
     <div className="extra-desktop:px-12 over-desktop:px-16 py-8 space-y-6">
       <header className="laptop:px-3 desktop:px-5 extra-desktop:px-0 flex justify-start items-center space-x-10 leading-[26px] font-medium text-[18px] opacity-90">
         <button
-          onClick={() => onChangeViewOpt(0)}
-          className="flex justify-start items-center space-x-2"
+          onClick={() => onChangeViewOpt(true)}
+          className={`${
+            viewOpt.viewOwn
+              ? "text-white opacity-100"
+              : "text-gray-400 opacity-80"
+          } flex justify-start items-center space-x-2`}
         >
-          <span className="">作品</span>
+          <span className={``}>作品</span>
           {count && <span>{count.ownVideoTotal}</span>}
         </button>
         <button
-          onClick={() => onChangeViewOpt(1)}
-          className={`flex justify-start items-end space-x-2 opacity-70 ${
-            viewLikedAllowed && "cursor-not-allowed"
-          }`}
+          onClick={() => onChangeViewOpt(false)}
+          className={`flex justify-start items-end space-x-2 ${
+            viewLikedAllowed && "cursor-not-allowed opacity-70"
+          } ${
+            viewOpt.viewLiked
+              ? "text-white opacity-100"
+              : "text-gray-400 opacity-80"
+          } `}
         >
           <span className="">喜欢</span>
           {count && <span>{count.likedVideoTotal}</span>}
-          {!viewLikedAllowed && (
+          {!viewLikedAllowed && author_id !== my_id && (
             <div>
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -128,27 +204,49 @@ const UserVideoContainer = ({
           px="laptop:px-10 desktop:px-5 extra-desktop:px-0"
           gridCol="laptop:grid-cols-2 desktop:grid-cols-3"
         >
-          {ownVideos &&
-            ownVideos.list.map((video, index) => {
-              return (
-                <Link
-                  target="_blank"
-                  to={`/video/${video._id}/${video.id_f}`}
-                  key={video._id}
-                  className="block w-full  extra-desktop:h-full"
-                >
-                  <VideoCard
-                    styleArray="laptop:h-[320px] desktop:h-[280px] extra-desktop:h-[328px] overflow-hidden"
-                    cover_image={video.origin_cover.url_list[0]}
+          {viewOpt.viewOwn
+            ? ownVideos &&
+              ownVideos.list.map((video, index) => {
+                return (
+                  <Link
+                    target="_blank"
+                    to={`/video/${video._id}/${video.id_f}`}
+                    key={video._id}
+                    className="block w-full  extra-desktop:h-full"
                   >
-                    <VideoBadge pinned={true} text="置顶" />
-                    <VideoCardFooter px="px-4" pb="pb-2">
-                      <LikeFooter />
-                    </VideoCardFooter>
-                  </VideoCard>
-                </Link>
-              );
-            })}
+                    <VideoCard
+                      styleArray="laptop:h-[320px] desktop:h-[280px] extra-desktop:h-[328px] overflow-hidden"
+                      cover_image={video.origin_cover.url_list[0]}
+                    >
+                      <VideoBadge pinned={true} text="置顶" />
+                      <VideoCardFooter px="px-4" pb="pb-2">
+                        <LikeFooter />
+                      </VideoCardFooter>
+                    </VideoCard>
+                  </Link>
+                );
+              })
+            : likedVideos &&
+              likedVideos.list.map((video, index) => {
+                return (
+                  <Link
+                    target="_blank"
+                    to={`/video/${video.video_id._id}/${video.video_id.id_f}`}
+                    key={video._id}
+                    className="block w-full  extra-desktop:h-full"
+                  >
+                    <VideoCard
+                      styleArray="laptop:h-[320px] desktop:h-[280px] extra-desktop:h-[328px] overflow-hidden"
+                      cover_image={video.video_id.origin_cover.url_list[0]}
+                    >
+                      <VideoBadge pinned={true} text="置顶" />
+                      <VideoCardFooter px="px-4" pb="pb-2">
+                        <LikeFooter />
+                      </VideoCardFooter>
+                    </VideoCard>
+                  </Link>
+                );
+              })}
         </VideoContainer>
       </div>
     </div>

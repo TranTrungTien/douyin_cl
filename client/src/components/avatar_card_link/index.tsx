@@ -1,4 +1,5 @@
 import { ReactNode } from "react";
+import { Link } from "react-router-dom";
 
 type Props = {
   children?: ReactNode[] | ReactNode;
@@ -11,9 +12,11 @@ type Props = {
   styleArray?: string;
   href: string;
   title?: string;
+  target?: string;
 };
 
 const AvatarCardLink = ({
+  target,
   children,
   title,
   width = "w-10",
@@ -30,7 +33,7 @@ const AvatarCardLink = ({
       title={title}
       className={`${width} ${height} ${borderRadius} ${styleArray} relative rounded-full overflow-hidden`}
     >
-      <a href={href}>
+      <Link target={target} to={href}>
         {image ? (
           <img
             src={image}
@@ -44,7 +47,7 @@ const AvatarCardLink = ({
             </span>
           </div>
         )}
-      </a>
+      </Link>
       {Array.isArray(children) ? children.map((child) => child) : children}
     </div>
   );

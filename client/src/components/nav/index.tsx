@@ -2,6 +2,7 @@ import { MouseEvent, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useAppSelector } from "../../redux/app/hooks";
 import AvatarCardButton from "../avatar_card_button";
+import AvatarCardLink from "../avatar_card_link";
 import BasicInfo from "../basic_info";
 import Button from "../button";
 import Login from "../login";
@@ -38,8 +39,10 @@ const Nav = (props: Props) => {
       </li>
       {user.data && (
         <li className="opacity-80 hover:opacity-100 cursor-pointer ml-8">
-          <AvatarCardButton
-            firstNickNameCharacter={"T"}
+          <AvatarCardLink
+            target="_blank"
+            href={`user/${user.data.uid}`}
+            firstNickNameCharacter={user.data.nickname[0]}
             hint={user.data.nickname}
             image={user.data.avatar_thumb.url_list[0]}
             title={user.data.nickname}
