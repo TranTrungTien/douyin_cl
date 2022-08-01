@@ -19,4 +19,5 @@ export const servicesPath = {
   GET_COUNT: "media/get-count",
   GET_METADATA: "media/get-meta-data",
   GET_RELATED_RECOMMENDED: "recommendation/related",
+  GET_ALL_VIDEO_LIKED_BY_USER: "media/get-video-liked-by-user",
 };

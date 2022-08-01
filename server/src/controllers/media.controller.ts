@@ -200,6 +200,26 @@ function getAllVideoByUser(req: Request, res: Response) {
   );
 }
 
+function getAllLikedVideoByUser(req: Request, res: Response) {
+  const author_id = req.query.author_id as string;
+  const cursor = req.query.cursor as string;
+  LikedModel.find({ author_id: author_id }, null, {
+    skip: Number(cursor) * 10,
+    limit: 10,
+  })
+    .populate("author_id")
+    .populate("video_id")
+    .exec((err, list) => {
+      if (err)
+        return res.status(500).send({ err, message: "Something went wrong" });
+      else {
+        if (list.length <= 0)
+          return res.status(404).send({ err, message: "No videos found" });
+        else return res.status(200).send({ message: "Found", list });
+      }
+    });
+}
+
 function getTotalDocuments(req: Request, res: Response) {
   const author_id = req.query.author_id as string;
   VideoModel.countDocuments(
@@ -237,6 +257,7 @@ function getAvatarThumbnail(req: Request, res: Response) {
 const MediaController = {
   getAvatarThumbnail,
   getAllVideoByUser,
+  getAllLikedVideoByUser,
   getVideoCover,
   getVideoStream,
   uploadFile,
