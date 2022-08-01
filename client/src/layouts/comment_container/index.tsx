@@ -1,11 +1,9 @@
 import axios from "axios";
-import { SyntheticEvent, useEffect, useMemo, useState } from "react";
+import { SyntheticEvent, useEffect, useState } from "react";
 import Comment from "../../components/comment";
 import CommentHeader from "../../components/comment_box_header";
 import Input from "../../components/input";
 import { servicesPath } from "../../config/app_config";
-import { axiosConfigHeaders } from "../../config/axios-config";
-import { useFetch } from "../../hooks/useFetch";
 import { IComment } from "../../interfaces/comment";
 import { useAppSelector } from "../../redux/app/hooks";
 import { postData } from "../../services/app_services";
@@ -99,6 +97,8 @@ const CommentContainer = ({
         {comments && comments.list.length
           ? comments.list.map((c, index) => (
               <Comment
+                comment_id={c._id}
+                video_id={video_id}
                 nickname={c.author_id.nickname}
                 image={c.author_id.avatar_thumb.url_list[0]}
                 key={index}
@@ -106,39 +106,56 @@ const CommentContainer = ({
                 uid={c.author_id.uid}
                 datePosted={c.createdAt}
                 content={c.text}
+                likedCount={c.like_count}
+                replyCount={c.reply_count}
               />
             ))
           : null}
-        <Comment
+        {/* <Comment
+          video_id=""
           styleArray={!fromVideoPage ? `px-3` : "px-0"}
           uid="fake"
           datePosted={new Date().toISOString()}
           content={"ffffffffffffffff"}
+          likedCount={100}
+          replyCount={0}
         />
         <Comment
+          video_id=""
           styleArray={!fromVideoPage ? `px-3` : "px-0"}
           uid="fake"
           datePosted={new Date().toISOString()}
           content={"ffffffffffffffff"}
+          likedCount={100}
+          replyCount={0}
         />
         <Comment
+          video_id=""
           styleArray={!fromVideoPage ? `px-3` : "px-0"}
           uid="fake"
           datePosted={new Date().toISOString()}
           content={"ffffffffffffffff"}
+          likedCount={100}
+          replyCount={0}
         />
         <Comment
+          video_id=""
           styleArray={!fromVideoPage ? `px-3` : "px-0"}
           uid="fake"
           datePosted={new Date().toISOString()}
           content={"ffffffffffffffff"}
+          likedCount={100}
+          replyCount={0}
         />
         <Comment
+          video_id=""
           styleArray={!fromVideoPage ? `px-3` : "px-0"}
           uid="fake"
           datePosted={new Date().toISOString()}
           content={"ffffffffffffffff"}
-        />
+          likedCount={100}
+          replyCount={0}
+        /> */}
       </div>
     </>
   );

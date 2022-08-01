@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import commentModel from "../models/comment.model";
+import CommentModel from "../models/comment.model";
 
 const createComment = (req: Request, res: Response) => {
   const video_id = req.body.video_id as string;
@@ -22,16 +22,40 @@ const createComment = (req: Request, res: Response) => {
     };
   }
 
-  const comment = new commentModel(cmt);
+  const comment = new CommentModel(cmt);
   comment.save((err, doc) => {
     if (err)
       return res.status(500).send({ message: "Error saving comment", err });
-    else res.status(200).send({ message: "Comment saved", doc });
+    else {
+      if (reply_comment_id) {
+        CommentModel.findOneAndUpdate(
+          {
+            video_id: video_id,
+            _id: reply_comment_id,
+          },
+          {
+            $inc: {
+              reply_count: 1,
+            },
+          },
+          null,
+          (err, _) => {
+            if (err)
+              return res
+                .status(500)
+                .send({ message: "Error update reply count for comment", err });
+            else {
+              res.status(200).send({ message: "Comment saved", doc });
+            }
+          }
+        );
+      } else res.status(200).send({ message: "Comment saved", doc });
+    }
   });
 };
 const deleteComment = (req: Request, res: Response) => {
   const comment_id = req.body.comment_id;
-  commentModel.findByIdAndUpdate(
+  CommentModel.findByIdAndUpdate(
     comment_id,
     { delete_comment: true },
     null,
@@ -51,19 +75,50 @@ const deleteComment = (req: Request, res: Response) => {
 
 const getCommentOfVideo = (req: Request, res: Response) => {
   const video_id = req.query.video_id as string;
-  console.log({ video_id });
-  commentModel
-    .find({ video_id: video_id }, null, null)
+  CommentModel.find(
+    { video_id: video_id, reply_comment_id: { $exists: false } },
+    null,
+    null
+  )
     .populate("author_id")
-    .populate("video_id")
     .exec((err, list) => {
       if (err)
         return res.status(500).send({ message: "Error getting video", err });
-      else return res.status(200).send({ message: "Video found", list });
+      else return res.status(200).send({ message: "Comments found", list });
     });
 };
+
+const getReplyComments = (req: Request, res: Response) => {
+  const video_id = req.query.video_id as string;
+  const reply_comment_id = req.query.reply_comment_id as string;
+  const cursor = req.query.cursor as string;
+  CommentModel.find(
+    {
+      reply_comment_id: reply_comment_id,
+      video_id: video_id,
+    },
+    null,
+    {
+      skip: Number(cursor) * 10,
+      limit: 10,
+    }
+  )
+    .populate("author_id")
+    .populate("reply_comment_id")
+    .exec((err, list) => {
+      if (err)
+        return res.status(500).send({ err, message: "Something went wrong" });
+      else {
+        if (list.length <= 0)
+          return res.status(404).send({ err, message: "No comment found" });
+        else return res.status(200).send({ message: "Found comments", list });
+      }
+    });
+};
+
 export default {
   getCommentOfVideo,
+  getReplyComments,
   createComment,
   deleteComment,
 };

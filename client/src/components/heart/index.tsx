@@ -1,8 +1,9 @@
 type Props = {
+  likedCount?: number;
   styleArray?: string;
 };
 
-const Heart = ({ styleArray }: Props) => {
+const Heart = ({ likedCount, styleArray }: Props) => {
   return (
     <button
       className={`${styleArray} flex justify-start items-center space-x-px hover:text-fresh_red`}
@@ -21,7 +22,7 @@ const Heart = ({ styleArray }: Props) => {
           fillOpacity="0.9"
         ></path>
       </svg>
-      <span>123w</span>
+      <span>{likedCount && likedCount + "w"}</span>
     </button>
   );
 };
