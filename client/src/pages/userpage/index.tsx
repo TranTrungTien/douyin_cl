@@ -143,7 +143,7 @@ const UserPage = (props: Props) => {
               />
             )}
           </SideContainer>
-          <SideContainer styleArray="text-white shadow-[-18px_0px_80px_#000] h-max">
+          <SideContainer styleArray="over-desktop:w-[900px] text-white shadow-[-18px_0px_80px_#000] h-max">
             {user?.doc && (
               <UserVideoContainer
                 viewLikedAllowed={user.doc.show_favorite_list}

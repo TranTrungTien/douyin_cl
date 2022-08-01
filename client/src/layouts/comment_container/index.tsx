@@ -13,10 +13,15 @@ import { RightBarAction } from "../video_slide";
 
 type Props = {
   video_id: string;
-  handleCloseComment: (action: RightBarAction) => void;
+  fromVideoPage?: boolean;
+  handleCloseComment?: (action: RightBarAction) => void;
 };
 
-const CommentContainer = ({ handleCloseComment, video_id }: Props) => {
+const CommentContainer = ({
+  handleCloseComment,
+  video_id,
+  fromVideoPage,
+}: Props) => {
   const user = useAppSelector((state) => state.user);
   const [comments, setComments] = useState<{
     message: string;
@@ -81,8 +86,13 @@ const CommentContainer = ({ handleCloseComment, video_id }: Props) => {
   };
   return (
     <>
-      <div className="shadow-md w-full px-3 pb-2">
-        <CommentHeader handleCloseComment={handleCloseComment} />
+      <div
+        className={`shadow-md w-full ${fromVideoPage ? "px-0" : "px-3"} pb-2`}
+      >
+        <CommentHeader
+          handleCloseComment={handleCloseComment && handleCloseComment}
+          fromVideoPage={fromVideoPage}
+        />
         {user.data && <Input onSubmit={onSubmit} />}
       </div>
       <div className="w-full h-auto overflow-auto hidden-scrollbar">
@@ -92,7 +102,7 @@ const CommentContainer = ({ handleCloseComment, video_id }: Props) => {
                 nickname={c.author_id.nickname}
                 image={c.author_id.avatar_thumb.url_list[0]}
                 key={index}
-                styleArray="px-3"
+                styleArray={!fromVideoPage ? `px-3` : "px-0"}
                 uid={c.author_id.uid}
                 datePosted={c.createdAt}
                 content={c.text}
@@ -100,31 +110,31 @@ const CommentContainer = ({ handleCloseComment, video_id }: Props) => {
             ))
           : null}
         <Comment
-          styleArray="px-3"
+          styleArray={!fromVideoPage ? `px-3` : "px-0"}
           uid="fake"
           datePosted={new Date().toISOString()}
           content={"ffffffffffffffff"}
         />
         <Comment
-          styleArray="px-3"
+          styleArray={!fromVideoPage ? `px-3` : "px-0"}
           uid="fake"
           datePosted={new Date().toISOString()}
           content={"ffffffffffffffff"}
         />
         <Comment
-          styleArray="px-3"
+          styleArray={!fromVideoPage ? `px-3` : "px-0"}
           uid="fake"
           datePosted={new Date().toISOString()}
           content={"ffffffffffffffff"}
         />
         <Comment
-          styleArray="px-3"
+          styleArray={!fromVideoPage ? `px-3` : "px-0"}
           uid="fake"
           datePosted={new Date().toISOString()}
           content={"ffffffffffffffff"}
         />
         <Comment
-          styleArray="px-3"
+          styleArray={!fromVideoPage ? `px-3` : "px-0"}
           uid="fake"
           datePosted={new Date().toISOString()}
           content={"ffffffffffffffff"}

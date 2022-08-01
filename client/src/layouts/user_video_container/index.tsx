@@ -173,7 +173,7 @@ const UserVideoContainer = ({
         <button
           onClick={() => onChangeViewOpt(false)}
           className={`flex justify-start items-end space-x-2 ${
-            viewLikedAllowed && "cursor-not-allowed opacity-70"
+            !viewLikedAllowed && "cursor-not-allowed opacity-70"
           } ${
             viewOpt.viewLiked
               ? "text-white opacity-100"
