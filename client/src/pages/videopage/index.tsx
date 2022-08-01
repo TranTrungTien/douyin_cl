@@ -14,6 +14,7 @@ import {
 import Modal from "../../components/modal";
 import { dataType } from "../../constants/type";
 import {
+  CommentContainer,
   HeaderContainer,
   LeftHeaderContainer,
   PageContainer,
@@ -142,12 +143,12 @@ const VideoPage = (props: Props) => {
                   <div className="w-full h-px bg-darkslategray flex-1"></div>
                 </div>
                 <div className="w-full mt-6">
-                  <Comment
-                    styleArray="px-3"
-                    uid=""
-                    datePosted=""
-                    content="ffffffffffffffffff"
-                  />
+                  {video_id && (
+                    <CommentContainer
+                      video_id={video_id}
+                      fromVideoPage={true}
+                    />
+                  )}
                 </div>
               </div>
             </SideContainer>
