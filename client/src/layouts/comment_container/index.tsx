@@ -5,6 +5,7 @@ import CommentHeader from "../../components/comment_box_header";
 import Input from "../../components/input";
 import { servicesPath } from "../../config/app_config";
 import { IComment } from "../../interfaces/comment";
+import { ICommentLiked } from "../../interfaces/liked_video.interface";
 import { useAppSelector } from "../../redux/app/hooks";
 import { postData } from "../../services/app_services";
 import { RightBarAction } from "../video_slide";
@@ -45,6 +46,32 @@ const CommentContainer = ({
       .catch(alert);
   }, [video_id]);
   console.log({ comments });
+
+  const [likedComments, setLikedComments] = useState<{
+    message: string;
+    list: ICommentLiked[];
+  } | null>(null);
+
+  useEffect(() => {
+    if (user.data) {
+      axios
+        .get<{ message: string; list: ICommentLiked[] }>(
+          servicesPath.GET_ALL_LIKED_COMMENT_OF_VIDEO_BY_AUTHOR,
+          {
+            headers: {
+              "Content-Type": "application/json",
+            },
+            withCredentials: true,
+            params: {
+              video_id: video_id,
+            },
+          }
+        )
+        .then((res) => setLikedComments(res.data))
+        .catch((err) => console.log(err));
+    }
+  }, [user.data, video_id]);
+
   const onSubmit = (e: SyntheticEvent) => {
     e.preventDefault();
     const target = e.target as typeof e.target & {
@@ -95,21 +122,29 @@ const CommentContainer = ({
       </div>
       <div className="w-full h-auto overflow-auto hidden-scrollbar">
         {comments && comments.list.length
-          ? comments.list.map((c, index) => (
-              <Comment
-                comment_id={c._id}
-                video_id={video_id}
-                nickname={c.author_id.nickname}
-                image={c.author_id.avatar_thumb.url_list[0]}
-                key={index}
-                styleArray={!fromVideoPage ? `px-3` : "px-0"}
-                uid={c.author_id.uid}
-                datePosted={c.createdAt}
-                content={c.text}
-                likedCount={c.like_count}
-                replyCount={c.reply_count}
-              />
-            ))
+          ? comments.list.map((c, index) => {
+              console.log({ likedComments });
+
+              const isLiked = likedComments?.list.find((l) => {
+                return l.comment_id._id === c._id;
+              });
+              return (
+                <Comment
+                  isLiked={isLiked ? true : false}
+                  comment_id={c._id}
+                  video_id={video_id}
+                  nickname={c.author_id.nickname}
+                  image={c.author_id.avatar_thumb.url_list[0]}
+                  key={index}
+                  styleArray={!fromVideoPage ? `px-3` : "px-0"}
+                  uid={c.author_id.uid}
+                  datePosted={c.createdAt}
+                  content={c.text}
+                  likedCount={c.like_count}
+                  replyCount={c.reply_count}
+                />
+              );
+            })
           : null}
         {/* <Comment
           video_id=""

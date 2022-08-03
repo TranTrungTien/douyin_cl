@@ -1,7 +1,8 @@
 import axios from "axios";
-import { memo, SyntheticEvent, useEffect, useState } from "react";
+import { memo, MouseEvent, SyntheticEvent, useEffect, useState } from "react";
 import { servicesPath } from "../../config/app_config";
 import { IComment } from "../../interfaces/comment";
+import { ICommentLiked } from "../../interfaces/liked_video.interface";
 import { useAppSelector } from "../../redux/app/hooks";
 import { postData } from "../../services/app_services";
 import { convertDate } from "../../utils/covert_date";
@@ -20,6 +21,7 @@ type Props = {
   replyCount?: number;
   video_id: string;
   comment_id?: string;
+  isLiked?: boolean;
 };
 
 const Comment = ({
@@ -33,6 +35,7 @@ const Comment = ({
   content,
   nickname = "ღ᭄余生ꦿ࿐",
   uid,
+  isLiked,
 }: Props) => {
   const [isReply, setIsReply] = useState(false);
   const user = useAppSelector((state) => state.user);
@@ -44,6 +47,10 @@ const Comment = ({
     isShow: false,
     cursor: 0,
   });
+  const [likedCommentInComments, setLikedCommentInComments] = useState<{
+    message: string;
+    list: ICommentLiked[];
+  } | null>(null);
   useEffect(() => {
     if (
       typeof replyCount === "number" &&
@@ -65,10 +72,32 @@ const Comment = ({
             cursor: 0,
           },
         })
-        .then((res) => setReplyComments(res.data))
+        .then((res) => {
+          setReplyComments(res.data);
+          axios
+            .get<{
+              message: string;
+              list: ICommentLiked[];
+            }>(servicesPath.GET_ALL_LIKED_COMMENT_IN_OTHER_COMMENT, {
+              headers: {
+                "Content-Type": "application/json",
+              },
+              params: {
+                video_id: video_id,
+                reply_comment_id: comment_id,
+              },
+              withCredentials: true,
+            })
+            .then((res2) => {
+              setLikedCommentInComments(res2.data);
+            })
+            .catch((err) => {
+              throw err;
+            });
+        })
         .catch(alert);
     }
-  }, [replyCount, showReply.isShow, video_id]);
+  }, [replyCount, showReply.isShow, video_id, comment_id]);
   const onSubmit = (event: SyntheticEvent) => {
     event.preventDefault();
     const target = event.target as typeof event.target & {
@@ -115,6 +144,46 @@ const Comment = ({
       };
     });
   };
+  const onLikeComment = (
+    event: MouseEvent<HTMLButtonElement>,
+    like: boolean
+  ) => {
+    console.log({ like });
+
+    if (like) {
+      axios
+        .post(
+          servicesPath.POST_lIKED_COMMENT,
+          {
+            video_id: video_id,
+            comment_id: comment_id,
+          },
+          {
+            headers: {
+              "Content-Type": "application/json",
+            },
+            withCredentials: true,
+          }
+        )
+        .then((response) => console.log(response.data))
+        .catch((err) => console.log(err));
+    } else {
+      axios
+        .delete(servicesPath.DEL_lIKED_COMMENT, {
+          headers: {
+            "Content-Type": "application/json",
+          },
+          params: {
+            video_id: video_id,
+            comment_id: comment_id,
+          },
+          withCredentials: true,
+        })
+        .then((response) => console.log(response.data))
+        .catch((err) => console.log(err));
+    }
+  };
+
   return (
     <div className={`w-full h-auto text-white ${styleArray}`}>
       <div className="w-full flex justify-start items-start space-x-2 border-b border-darkslategray py-3">
@@ -144,7 +213,11 @@ const Comment = ({
           </p>
           {/* Action: Like, Reply */}
           <div className="text-xs font-medium leading-5 text-inherit opacity-70  flex justify-start items-center space-x-5">
-            <Heart likedCount={likedCount} />
+            <Heart
+              liked={isLiked}
+              likedCount={likedCount}
+              onClick={onLikeComment}
+            />
             <button
               onClick={() => setIsReply(!isReply)}
               className="flex justify-start items-center space-x-px hover:text-fresh_red"
@@ -197,21 +270,28 @@ const Comment = ({
           )}
           {replyComments &&
             showReply.isShow &&
-            replyComments.list.map((c, index) => (
-              <Comment
-                comment_id={c._id}
-                video_id={video_id}
-                nickname={c.author_id.nickname}
-                image={c.author_id.avatar_thumb.url_list[0]}
-                key={index}
-                styleArray={!true ? `px-3` : "px-0"}
-                uid={c.author_id.uid}
-                datePosted={c.createdAt}
-                content={c.text}
-                likedCount={c.like_count}
-                replyCount={c.reply_count}
-              />
-            ))}
+            replyComments.list.map((c, index) => {
+              const isLiked = likedCommentInComments?.list.find((l) => {
+                return l.comment_id._id === c._id;
+              });
+              console.log({ isLiked });
+              return (
+                <Comment
+                  isLiked={isLiked ? true : false}
+                  comment_id={c._id}
+                  video_id={video_id}
+                  nickname={c.author_id.nickname}
+                  image={c.author_id.avatar_thumb.url_list[0]}
+                  key={index}
+                  styleArray={!true ? `px-3` : "px-0"}
+                  uid={c.author_id.uid}
+                  datePosted={c.createdAt}
+                  content={c.text}
+                  likedCount={c.like_count}
+                  replyCount={c.reply_count}
+                />
+              );
+            })}
         </div>
       </div>
     </div>

@@ -15,6 +15,7 @@ import LikeRouter from "./routers/liked.route";
 import ShareRouter from "./routers/shared.route";
 import CoverRouter from "./routers/cover.route";
 import CommentRouter from "./routers/comment.route";
+import LikedCommentRouter from "./routers/liked_comment.route";
 
 DBConnect()
   .then((_) => {
@@ -31,7 +32,7 @@ DBConnect()
         app.use(
           cors({
             origin: true,
-            methods: "*",
+            methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
             credentials: true,
           })
         );
@@ -47,6 +48,7 @@ DBConnect()
         app.use("/api/v1/image", CoverRouter);
         app.use("/api/v1/user-actions", ShareRouter);
         app.use("/api/v1/comment", CommentRouter);
+        app.use("/api/v1/comment/liked-comments", LikedCommentRouter);
 
         app.get("/", (req: Request, res: Response) => {
           res.send("run on https ......");

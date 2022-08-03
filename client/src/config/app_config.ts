@@ -1,4 +1,4 @@
-import axios, { AxiosRequestConfig } from "axios";
+import axios from "axios";
 
 export const setDefaultSettings = () => {
   localStorage.setItem("volume", String(0.1));
@@ -21,4 +21,9 @@ export const servicesPath = {
   GET_RELATED_RECOMMENDED: "recommendation/related",
   GET_ALL_VIDEO_LIKED_BY_USER: "media/get-video-liked-by-user",
   GET_REPLY_OF_COMMENT: "comment/reply",
+  GET_ALL_LIKED_COMMENT_OF_VIDEO_BY_AUTHOR: "comment/liked-comments",
+  POST_lIKED_COMMENT: "comment/liked-comments/create-liked-comment",
+  DEL_lIKED_COMMENT: "comment/liked-comments/delete-liked-comment",
+  GET_ALL_LIKED_COMMENT_IN_OTHER_COMMENT:
+    "comment/liked-comments/in-other-comment",
 };
