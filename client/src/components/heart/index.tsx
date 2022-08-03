@@ -1,11 +1,25 @@
+import { MouseEvent, useState } from "react";
+
 type Props = {
+  likedCount?: number;
   styleArray?: string;
+  liked?: boolean;
+  onClick?: (event: MouseEvent<HTMLButtonElement>, liked: boolean) => void;
 };
 
-const Heart = ({ styleArray }: Props) => {
+const Heart = ({ likedCount, styleArray, liked, onClick }: Props) => {
+  const [isLiked, setIsLiked] = useState(liked);
+
+  const onHandleLiked = (event: MouseEvent<HTMLButtonElement>) => {
+    onClick && onClick(event, !isLiked);
+    setIsLiked(!isLiked);
+  };
   return (
     <button
-      className={`${styleArray} flex justify-start items-center space-x-px hover:text-fresh_red`}
+      onClick={onHandleLiked}
+      className={`${styleArray} flex justify-start items-center space-x-px hover:text-fresh_red ${
+        isLiked && "text-fresh_red"
+      }`}
     >
       <svg
         width="20"
@@ -21,7 +35,7 @@ const Heart = ({ styleArray }: Props) => {
           fillOpacity="0.9"
         ></path>
       </svg>
-      <span>123w</span>
+      <span>{likedCount && likedCount + "w"}</span>
     </button>
   );
 };

@@ -2,6 +2,7 @@ import { IUser } from "./user.interface";
 import { IVideo } from "./video.interface";
 
 export interface IComment {
+  _id?: string;
   author_id: IUser;
   video_id: IVideo;
   text: string;

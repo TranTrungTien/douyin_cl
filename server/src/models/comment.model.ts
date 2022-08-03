@@ -11,6 +11,10 @@ const commentSchema = new mongoose.Schema<IComment>(
       type: Schema.Types.ObjectId,
       ref: "Video",
     },
+    reply_comment_id: {
+      type: Schema.Types.ObjectId,
+      ref: "Comment",
+    },
     like_count: {
       type: Number,
       default: 0,

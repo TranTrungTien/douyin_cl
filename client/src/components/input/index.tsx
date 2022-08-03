@@ -10,7 +10,7 @@ const Input = ({ onSubmit }: Props) => {
         <input
           type="text"
           className="w-full bg-darkslategray px-4 py-3 rounded-sm border border-darkslategray2 text-gray-300 text-sm font-medium outline-none"
-          autoComplete="false"
+          autoComplete="off"
           name="comment"
           id="comment"
           placeholder="评论 ..."
