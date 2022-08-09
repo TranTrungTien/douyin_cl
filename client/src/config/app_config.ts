@@ -26,4 +26,7 @@ export const servicesPath = {
   DEL_lIKED_COMMENT: "comment/liked-comments/delete-liked-comment",
   GET_ALL_LIKED_COMMENT_IN_OTHER_COMMENT:
     "comment/liked-comments/in-other-comment",
+  FOLLOW_USER: "following/create-following",
+  CHECK_FOLLOWING: "following/check-following",
+  DEL_FOLLOWING: "following/delete-following",
 };

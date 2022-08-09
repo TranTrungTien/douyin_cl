@@ -1,16 +1,24 @@
+import axios from "axios";
 import { Link } from "react-router-dom";
+import { servicesPath } from "../../config/app_config";
 import { RightBarAction } from "../../layouts/video_slide";
 import AvatarCard from "../avatar_card_button";
 import Button from "../button";
 
 type Props = {
+  isFollow?: boolean;
+  my_id?: string;
   avatar_thumb: string;
   nickname: string;
   uid: string;
+  user_id: string;
   handleCloseUserBox: (action: RightBarAction) => void;
 };
 
 const UserBoxHeader = ({
+  my_id,
+  user_id,
+  isFollow,
   avatar_thumb,
   nickname,
   uid,
@@ -18,6 +26,25 @@ const UserBoxHeader = ({
 }: Props) => {
   const onCloseUser = () => {
     handleCloseUserBox({ comment: false, isOpen: false, user: false });
+  };
+  const handleFollow = () => {
+    if (my_id && user_id) {
+      axios
+        .post(
+          servicesPath.FOLLOW_USER,
+          {
+            follow_id: user_id,
+          },
+          {
+            headers: {
+              "Content-Type": "application/json",
+            },
+            withCredentials: true,
+          }
+        )
+        .then()
+        .catch(alert);
+    }
   };
   return (
     <header className="laptop:px-2 desktop:px-3 py-3 extra-desktop:px-4 w-full h-auto sticky top-0 left-0">
@@ -63,17 +90,19 @@ const UserBoxHeader = ({
           </div>
         </div>
         <div className="flex justify-center text-white items-center desktop:space-x-3 laptop:space-x-2">
-          <Button
-            onClick={() => {}}
-            borderRadius="rounded"
-            fontSize="text-sm"
-            backgroundColor="bg-fresh_red"
-            height="h-8"
-            px="px-5"
-            width="auto"
-            styleArray="font-normal"
-            text="关注"
-          />
+          {!isFollow && (
+            <Button
+              onClick={handleFollow}
+              borderRadius="rounded"
+              fontSize="text-sm"
+              backgroundColor="bg-fresh_red"
+              height="h-8"
+              px="px-5"
+              width="auto"
+              styleArray="font-normal"
+              text="关注"
+            />
+          )}
           <div className="flex justify-start items-center">
             <button className="laptop:hidden desktop:block text-white opacity-50 hover:opacity-100">
               <svg

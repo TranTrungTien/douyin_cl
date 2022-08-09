@@ -6,3 +6,14 @@ export const useAppDispatch = () => useDispatch<AppDispatch>();
 export const useAppSelector: TypedUseSelectorHook<RootState> = useSelector;
 
 export const useSelectorUser = (state: RootState) => state.user.data;
+
+export const isFollowUser = (
+  state: RootState,
+  author_id?: string,
+  follow_id?: string
+) =>
+  author_id &&
+  follow_id &&
+  state.following.list?.some(
+    (follow) => follow.follow === follow_id && follow.author_id === author_id
+  );

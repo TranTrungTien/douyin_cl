@@ -1,10 +1,7 @@
 import { MouseEvent, Suspense, useMemo, useState } from "react";
-import { Link, useParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import {
-  AvatarCardLink,
   BackgroundVideo,
-  Button,
-  Comment,
   Loading,
   Logo,
   Nav,
@@ -25,10 +22,11 @@ import {
 } from "../../layouts";
 import ErrorBoundary from "../../utils/error-boundaries";
 
+import VideoPageUserBox from "../../components/video_page_user_box";
+import { servicesPath } from "../../config/app_config";
 import { axiosConfigHeaders } from "../../config/axios-config";
 import { useFetch } from "../../hooks/useFetch";
 import { IVideo } from "../../interfaces/video.interface";
-import { servicesPath } from "../../config/app_config";
 
 type Props = {};
 
@@ -154,46 +152,14 @@ const VideoPage = (props: Props) => {
             </SideContainer>
             <SideContainer width="w-auto" styleArray="flex-1">
               <RelatedContainer>
-                <div className="flex justify-between items-center space-x-2 w-full border-b border-darkslategray pb-5">
-                  <div className="flex justify-start items-center space-x-2">
-                    <AvatarCardLink
-                      title={video?.doc.author_id.nickname}
-                      height="h-62px"
-                      width="w-62px"
-                      image={video?.doc.author_id.avatar_thumb.url_list[0]}
-                      firstNickNameCharacter={video?.doc.author_id.nickname[0]}
-                      href={`/user/${video?.doc.author_id.uid}`}
-                    />
-                    <div className="flex flex-col justify-start items-start space-y-1 text-white">
-                      <Link to={`/user/${video?.doc.author_id.uid}`}>
-                        <h4 className="font-medium text-sm opacity-90 leading-[22px] truncate">
-                          {video?.doc.author_id.nickname}
-                        </h4>
-                      </Link>
-                      <div className="flex justify-center desktop:flex-row laptop:flex-col laptop:items-start desktop:items-center desktop:space-x-2 ">
-                        <div className="flex justify-center items-center space-x-px leading-5 text-xs">
-                          <span className="font-medium opacity-50 ">粉丝</span>
-                          <span className="font-semibold opacity-90 ">
-                            34.1w
-                          </span>
-                        </div>
-                        <div className="flex justify-center items-center space-x-px text-xs leading-5">
-                          <span className="font-medium opacity-50 ">获赞</span>
-                          <span className="font-semibold text-xs opacity-90">
-                            344.4w
-                          </span>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                  <Button
-                    onClick={() => {}}
-                    text="关注"
-                    width="w-[68px]"
-                    height="h-8"
-                    borderRadius="rounded"
+                {video && (
+                  <VideoPageUserBox
+                    user_id={video.doc.author_id._id}
+                    uid={video.doc.author_id.uid}
+                    imageLink={video.doc.author_id.avatar_thumb.url_list[0]}
+                    nickName={video.doc.author_id.nickname}
                   />
-                </div>
+                )}
                 <div className="flex justify-start flex-col items-start text-white mt-10">
                   <h4 className="text-[18px] opacity-90 font-medium leading-[26px]">
                     推荐视频

@@ -4,6 +4,7 @@ import { useSwiper, useSwiperSlide } from "swiper/react";
 import { BackgroundVideo, Loading, Video } from "../../components";
 import Modal from "../../components/modal";
 import { IVideo } from "../../interfaces/video.interface";
+import { isFollowUser, useAppSelector } from "../../redux/app/hooks";
 import ErrorBoundary from "../../utils/error-boundaries";
 import CommentContainer from "../comment_container";
 import RightContainer from "../right_container";
@@ -86,6 +87,11 @@ const VideoSlide = ({
     }
   };
 
+  const my_id = useAppSelector((state) => state.user.data?._id);
+  const isFollow = useAppSelector((state) =>
+    isFollowUser(state, my_id, video.author_id._id)
+  ) as boolean | undefined;
+
   return (
     <div className="flex justify-between items-center w-full h-full rounded-md">
       <section
@@ -106,6 +112,8 @@ const VideoSlide = ({
               }
             >
               <Video
+                my_id={my_id}
+                author_id={video.author_id._id}
                 author_uid={video.author_id.uid}
                 nickname={video.author_id.nickname}
                 video_addr={video.play_addr.url_list[0]}
@@ -129,7 +137,10 @@ const VideoSlide = ({
         <RightContainer>
           {openRightBar.user ? (
             <UserContainer
+              my_id={my_id}
+              isFollow={isFollow}
               uid={video.author_id.uid}
+              user_id={video.author_id._id}
               author_id={video.author_id._id}
               avatar_thumb={avatar_thumb}
               nickname={nickname}
