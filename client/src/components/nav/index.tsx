@@ -1,7 +1,7 @@
 import { MouseEvent, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { useAppSelector } from "../../redux/app/hooks";
-import AvatarCardButton from "../avatar_card_button";
+import { useAppDispatch, useAppSelector } from "../../redux/app/hooks";
+import { setIsLogin } from "../../redux/slice/login_slice";
 import AvatarCardLink from "../avatar_card_link";
 import BasicInfo from "../basic_info";
 import Button from "../button";
@@ -12,9 +12,9 @@ type Props = {};
 
 const Nav = (props: Props) => {
   const user = useAppSelector((state) => state.user);
+  const login = useAppSelector((state) => state.login);
   const navigate = useNavigate();
-  console.log({ user });
-  const [signIn, setSignIn] = useState(false);
+  const dispatch = useAppDispatch();
   const [emailVerified, setEmailVerified] = useState<{
     emailVerified: string;
     code: string;
@@ -26,9 +26,8 @@ const Nav = (props: Props) => {
   const onLoginChecking = (e: MouseEvent<HTMLAnchorElement>) => {
     e.preventDefault();
     if (user.data) navigate("/upload");
-    else setSignIn(true);
+    else dispatch(setIsLogin(true));
   };
-
   return (
     <ul className="flex justify-between items-center">
       <li className="opacity-80 hover:opacity-100 cursor-pointer desktop:block laptop:hidden ">
@@ -65,7 +64,7 @@ const Nav = (props: Props) => {
         <li className="ml-8">
           <Button
             onClick={() => {
-              setSignIn(true);
+              dispatch(setIsLogin(true));
             }}
             text="登录"
             backgroundColor="bg-fresh_red"
@@ -77,7 +76,7 @@ const Nav = (props: Props) => {
           />
         </li>
       )}
-      {signIn && !user.data && (
+      {login.isLogin && !user.data && (
         <Modal>
           {emailVerified?.emailVerified && emailVerified?.code ? (
             <BasicInfo
@@ -87,7 +86,7 @@ const Nav = (props: Props) => {
           ) : (
             <Login
               onVerifyEmail={onVerifyEmail}
-              onCloseLogin={() => setSignIn(false)}
+              onCloseLogin={() => dispatch(setIsLogin(false))}
             />
           )}
         </Modal>

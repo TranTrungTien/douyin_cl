@@ -5,6 +5,8 @@ import { axiosConfigHeaders } from "../../config/axios-config";
 import { useFetchSuspense } from "../../hooks/useFetchSuspense";
 import RightVideoAction from "../../layouts/right_video_action_container";
 import { RightBarAction } from "../../layouts/video_slide";
+import { useAppDispatch } from "../../redux/app/hooks";
+import { setIsLogin } from "../../redux/slice/login_slice";
 import { toggleFullScreen } from "../../utils/fullscreen";
 import { timeFormat } from "../../utils/timeFormat";
 import AvatarCardButton from "../avatar_card_button";
@@ -62,6 +64,7 @@ const Video = ({
   onChangeVideo,
   onOpenRightBar,
 }: Props) => {
+  const dispatch = useAppDispatch();
   const videoRef = useRef<HTMLVideoElement>(null);
   console.log("video rerender");
   const progressBarRef = useRef<HTMLDivElement>(null);
@@ -171,6 +174,8 @@ const Video = ({
         )
         .then()
         .catch(alert);
+    } else {
+      dispatch(setIsLogin(true));
     }
   };
   return (
