@@ -4,6 +4,6 @@ import { verifyToken } from "../middlewares/verifytoken";
 const router = express.Router();
 
 router.post("/create-liked", verifyToken, likedController.createLiked);
-router.delete("/delete-liked", likedController.deleteLiked);
+router.delete("/delete-liked", verifyToken, likedController.deleteLiked);
 
 export default router;

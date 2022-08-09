@@ -11,14 +11,20 @@ import { servicesPath } from "../../config/app_config";
 import { IVideo } from "../../interfaces/video.interface";
 import { RightBarAction } from "../video_slide";
 type Props = {
+  isFollow?: boolean;
+  my_id?: string;
   author_id: string;
   uid: string;
+  user_id: string;
   avatar_thumb: string;
   nickname: string;
   handleCloseUserBox: (action: RightBarAction) => void;
 };
 const UserContainer = ({
+  my_id,
+  isFollow,
   uid,
+  user_id,
   author_id,
   avatar_thumb,
   nickname,
@@ -74,6 +80,9 @@ const UserContainer = ({
   return (
     <section className="w-full h-full overflow-hidden">
       <UserBoxHeader
+        my_id={my_id}
+        isFollow={isFollow}
+        user_id={user_id}
         uid={uid}
         avatar_thumb={avatar_thumb}
         nickname={nickname}

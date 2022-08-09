@@ -1,6 +1,9 @@
+import axios from "axios";
 import { useEffect, useMemo, useRef } from "react";
+import { servicesPath } from "../../config/app_config";
 import { axiosConfigHeaders } from "../../config/axios-config";
 import { useFetchSuspense } from "../../hooks/useFetchSuspense";
+import RightVideoAction from "../../layouts/right_video_action_container";
 import { RightBarAction } from "../../layouts/video_slide";
 import { toggleFullScreen } from "../../utils/fullscreen";
 import { timeFormat } from "../../utils/timeFormat";
@@ -10,7 +13,6 @@ import LikeCmtShare from "../like_cmt_share_action";
 import NextVideoButton from "../next_video_button";
 import Plus from "../plus";
 import ProgressBar from "../progress_bar";
-import RightVideoAction from "../../layouts/right_video_action_container";
 
 //  useMemo(() => {
 //    return axiosConfigHeaders(
@@ -23,6 +25,9 @@ import RightVideoAction from "../../layouts/right_video_action_container";
 
 type Props = {
   author_uid?: string;
+  author_id?: string;
+  isFollow?: boolean;
+  my_id?: string;
   video_addr: string;
   video_idf: string;
   video_id: string;
@@ -39,6 +44,9 @@ type Props = {
 };
 
 const Video = ({
+  isFollow,
+  author_id,
+  my_id,
   author_uid,
   video_addr,
   nickname,
@@ -145,6 +153,26 @@ const Video = ({
     const player = document.querySelector("#fullscreen") as HTMLElement;
     toggleFullScreen(player);
   };
+
+  const handleFollow = () => {
+    if (my_id && author_id) {
+      axios
+        .post(
+          servicesPath.FOLLOW_USER,
+          {
+            follow_id: author_id,
+          },
+          {
+            headers: {
+              "Content-Type": "application/json",
+            },
+            withCredentials: true,
+          }
+        )
+        .then()
+        .catch(alert);
+    }
+  };
   return (
     <>
       {/* Video */}
@@ -211,7 +239,7 @@ const Video = ({
             width="w-10"
             hint="User Cover"
           >
-            <Plus />
+            {!isFollow && <Plus onClick={handleFollow} />}
           </AvatarCardButton>
           {/* like share, cmt,.,,, */}
           <LikeCmtShare video_id={video_id} onOpenRightBar={onOpenRightBar} />

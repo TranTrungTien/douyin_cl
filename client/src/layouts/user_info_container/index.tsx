@@ -1,6 +1,11 @@
+import axios from "axios";
+import { useState } from "react";
+import followingIcon from "../../assets/icons/following_icon.svg";
 import AvatarCardButton from "../../components/avatar_card_button";
 import Button from "../../components/button";
 import VerificationMark from "../../components/verification_mark";
+import { servicesPath } from "../../config/app_config";
+import { isFollowUser, useAppSelector } from "../../redux/app/hooks";
 
 type Props = {
   avatar_thumb_url: string;
@@ -9,6 +14,47 @@ type Props = {
 };
 
 const UserInfoContainer = ({ avatar_thumb_url, nickname, user_id }: Props) => {
+  const my_id = useAppSelector((state) => state.user.data?._id);
+  const isFollow = useAppSelector((state) =>
+    isFollowUser(state, my_id, user_id)
+  );
+  const [isFollowing, setIsFollowing] = useState(isFollow);
+  const onFollow = () => {
+    if (my_id) {
+      if (isFollowing) {
+        console.log("clicked ...");
+        axios
+          .delete(servicesPath.DEL_FOLLOWING, {
+            headers: {
+              "Content-Type": "application/json",
+            },
+            params: {
+              follow_id: user_id,
+            },
+            withCredentials: true,
+          })
+          .then((_) => setIsFollowing(false))
+          .catch(alert);
+      } else {
+        axios
+          .post(
+            servicesPath.FOLLOW_USER,
+            {
+              follow_id: user_id,
+            },
+            {
+              headers: {
+                "Content-Type": "application/json",
+              },
+              withCredentials: true,
+            }
+          )
+          .then((_) => setIsFollowing(true))
+          .catch(alert);
+      }
+    }
+  };
+
   return (
     <div className="laptop:max-w-[320px] desktop:max-w-[350px] extra-desktop:max-w-[400px] ml-auto px-3  space-y-4">
       <header className="flex justify-start items-center laptop:space-x-9">
@@ -55,8 +101,21 @@ const UserInfoContainer = ({ avatar_thumb_url, nickname, user_id }: Props) => {
         </div>
       </div>
       <div className="flex justify-start items-center space-x-3">
-        <Button text="关注" onClick={() => {}} />
-        <button className="w-9 h-9 grid place-content-center border border-darkslategray2 rounded bg-darkslategray3">
+        <Button
+          title={isFollowing ? "" : "关注"}
+          icon={isFollowing && <img src={followingIcon} alt="following" />}
+          text={isFollowing ? "" : "关注"}
+          onClick={onFollow}
+          width={isFollowing ? "w-36px" : undefined}
+          height={isFollowing ? "h-36px" : undefined}
+          backgroundColor={isFollowing ? "bg-darkslategray3" : "bg-fresh_red"}
+          styleArray={
+            isFollowing
+              ? `border-darkslategray2 border flex justify-center items-center`
+              : ""
+          }
+        />
+        <button className="w-9 h-9 grid place-content-center  border border-darkslategray2 rounded bg-darkslategray3">
           <svg
             width="12"
             height="4"

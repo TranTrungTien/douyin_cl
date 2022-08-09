@@ -1,17 +1,19 @@
 import express from "express";
-import followingController from "../controllers/following.controller";
+import FollowingController from "../controllers/following.controller";
 import { verifyToken } from "../middlewares/verifytoken";
 const router = express.Router();
 
 router.post(
   "/create-following",
   verifyToken,
-  followingController.createFollowing
+  FollowingController.createFollowing
 );
+router.get("/check-following", verifyToken, FollowingController.checkFollowing);
+router.get("/", verifyToken, FollowingController.getAllFollowing);
 router.delete(
   "/delete-following",
   verifyToken,
-  followingController.deleteFollowing
+  FollowingController.deleteFollowing
 );
 
 export default router;

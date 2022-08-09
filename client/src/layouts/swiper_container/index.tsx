@@ -4,11 +4,11 @@ import "swiper/css";
 import "swiper/css/bundle";
 import "swiper/css/virtual";
 import { Swiper, SwiperSlide } from "swiper/react";
+import { VideoSlide } from "..";
 import { servicesPath } from "../../config/app_config";
 import { axiosConfigHeaders } from "../../config/axios-config";
 import { useFetchSuspense } from "../../hooks/useFetchSuspense";
 import { IVideo } from "../../interfaces/video.interface";
-import { VideoSlide } from "..";
 SwiperCore.use([Virtual]);
 
 const SwiperWrapper = () => {
