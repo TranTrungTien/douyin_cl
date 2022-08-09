@@ -3,7 +3,8 @@ import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { servicesPath } from "../../config/app_config";
 import { IFollowing } from "../../interfaces/following";
-import { useAppSelector } from "../../redux/app/hooks";
+import { useAppDispatch, useAppSelector } from "../../redux/app/hooks";
+import { setIsLogin } from "../../redux/slice/login_slice";
 import AvatarCardLink from "../avatar_card_link";
 import Button from "../button";
 
@@ -16,7 +17,7 @@ type Props = {
 
 const VideoPageUserBox = ({ nickName, imageLink, uid, user_id }: Props) => {
   const my_id = useAppSelector((state) => state.user.data?._id);
-
+  const dispatch = useAppDispatch();
   const [isFollowing, setIsFollowing] = useState(false);
   useEffect(() => {
     if (my_id) {
@@ -72,6 +73,8 @@ const VideoPageUserBox = ({ nickName, imageLink, uid, user_id }: Props) => {
           .then((_) => setIsFollowing(true))
           .catch(alert);
       }
+    } else {
+      dispatch(setIsLogin(true));
     }
   };
   console.log({ isFollowing });

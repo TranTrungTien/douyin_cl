@@ -2,6 +2,8 @@ import axios from "axios";
 import { Link } from "react-router-dom";
 import { servicesPath } from "../../config/app_config";
 import { RightBarAction } from "../../layouts/video_slide";
+import { useAppDispatch } from "../../redux/app/hooks";
+import { setIsLogin } from "../../redux/slice/login_slice";
 import AvatarCard from "../avatar_card_button";
 import Button from "../button";
 
@@ -24,6 +26,7 @@ const UserBoxHeader = ({
   uid,
   handleCloseUserBox,
 }: Props) => {
+  const dispatch = useAppDispatch();
   const onCloseUser = () => {
     handleCloseUserBox({ comment: false, isOpen: false, user: false });
   };
@@ -44,6 +47,8 @@ const UserBoxHeader = ({
         )
         .then()
         .catch(alert);
+    } else {
+      dispatch(setIsLogin(true));
     }
   };
   return (

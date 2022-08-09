@@ -5,7 +5,12 @@ import AvatarCardButton from "../../components/avatar_card_button";
 import Button from "../../components/button";
 import VerificationMark from "../../components/verification_mark";
 import { servicesPath } from "../../config/app_config";
-import { isFollowUser, useAppSelector } from "../../redux/app/hooks";
+import {
+  isFollowUser,
+  useAppDispatch,
+  useAppSelector,
+} from "../../redux/app/hooks";
+import { setIsLogin } from "../../redux/slice/login_slice";
 
 type Props = {
   avatar_thumb_url: string;
@@ -15,6 +20,7 @@ type Props = {
 
 const UserInfoContainer = ({ avatar_thumb_url, nickname, user_id }: Props) => {
   const my_id = useAppSelector((state) => state.user.data?._id);
+  const dispatch = useAppDispatch();
   const isFollow = useAppSelector((state) =>
     isFollowUser(state, my_id, user_id)
   );
@@ -52,7 +58,7 @@ const UserInfoContainer = ({ avatar_thumb_url, nickname, user_id }: Props) => {
           .then((_) => setIsFollowing(true))
           .catch(alert);
       }
-    }
+    } else dispatch(setIsLogin(true));
   };
 
   return (
