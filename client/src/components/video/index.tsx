@@ -237,7 +237,7 @@ const Video = ({
           <NextVideoButton handleChangeVideo={onChangeVideo} />
           <AvatarCardButton
             firstNickNameCharacter={nickname[0]}
-            image={avatar_thumb && `${servicesPath.BASE_URL}/${avatar_thumb}`}
+            image={avatar_thumb}
             borderRadius="rounded-full"
             handleOpenRightBar={onOpenRightBar}
             height="h-10"

@@ -66,9 +66,7 @@ const UserInfoContainer = ({ avatar_thumb_url, nickname, user_id }: Props) => {
       <header className="flex justify-start items-center laptop:space-x-9">
         <AvatarCardButton
           firstNickNameCharacter={nickname[0]}
-          image={
-            avatar_thumb_url && `${servicesPath.BASE_URL}/${avatar_thumb_url}`
-          }
+          image={avatar_thumb_url}
           height="h-62px"
           width="w-62px"
           title={nickname}
@@ -109,20 +107,22 @@ const UserInfoContainer = ({ avatar_thumb_url, nickname, user_id }: Props) => {
         </div>
       </div>
       <div className="flex justify-start items-center space-x-3">
-        <Button
-          title={isFollowing ? "" : "关注"}
-          icon={isFollowing && <img src={followingIcon} alt="following" />}
-          text={isFollowing ? "" : "关注"}
-          onClick={onFollow}
-          width={isFollowing ? "w-36px" : undefined}
-          height={isFollowing ? "h-36px" : undefined}
-          backgroundColor={isFollowing ? "bg-darkslategray3" : "bg-fresh_red"}
-          styleArray={
-            isFollowing
-              ? `border-darkslategray2 border flex justify-center items-center`
-              : ""
-          }
-        />
+        {my_id !== user_id && (
+          <Button
+            title={isFollowing ? "" : "关注"}
+            icon={isFollowing && <img src={followingIcon} alt="following" />}
+            text={isFollowing ? "" : "关注"}
+            onClick={onFollow}
+            width={isFollowing ? "w-36px" : undefined}
+            height={isFollowing ? "h-36px" : undefined}
+            backgroundColor={isFollowing ? "bg-darkslategray3" : "bg-fresh_red"}
+            styleArray={
+              isFollowing
+                ? `border-darkslategray2 border flex justify-center items-center`
+                : ""
+            }
+          />
+        )}
         <button className="w-9 h-9 grid place-content-center  border border-darkslategray2 rounded bg-darkslategray3">
           <svg
             width="12"
