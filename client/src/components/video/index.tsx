@@ -74,7 +74,7 @@ const Video = ({
   const mediaHeader = useMemo(() => {
     return axiosConfigHeaders("GET", "blob", "video/mp4", "video/mp4", null);
   }, []);
-  const videoBlob = useFetchSuspense<Blob>(video_addr, mediaHeader);
+  const videoBlob = useFetchSuspense<Blob>("/" + video_addr, mediaHeader);
 
   useEffect(() => {
     let videoRefCl: HTMLVideoElement | null = null;
@@ -237,7 +237,7 @@ const Video = ({
           <NextVideoButton handleChangeVideo={onChangeVideo} />
           <AvatarCardButton
             firstNickNameCharacter={nickname[0]}
-            image={avatar_thumb}
+            image={avatar_thumb && `${servicesPath.BASE_URL}/${avatar_thumb}`}
             borderRadius="rounded-full"
             handleOpenRightBar={onOpenRightBar}
             height="h-10"

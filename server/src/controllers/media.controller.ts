@@ -82,9 +82,9 @@ function uploadMetaData(req: Request, res: Response) {
     duration: number;
   };
 
-  const url = `http://localhost:3001/api/v1/media/play?video_id_f=${video_id_f}&mimeType=${videoMetaData.type}&size=${videoMetaData.size}`;
-  const coverUrl = `http://localhost:3001/api/v1/image/cover?cover_id_f=${cover_id_f}`;
-  const musicUrl = `http://localhost:3001/api/v1/music/play?music_id_f=${music_id_f}`;
+  const url = `api/v1/media/play?video_id_f=${video_id_f}&mimeType=${videoMetaData.type}&size=${videoMetaData.size}`;
+  const coverUrl = `api/v1/image/cover?cover_id_f=${cover_id_f}`;
+  const musicUrl = `api/v1/music/play?music_id_f=${music_id_f}`;
 
   const music = new MusicModel({
     id_f: music_id_f,
@@ -158,6 +158,8 @@ function getVideoCover(req: Request, res: Response) {
     const coverP = `${coverPath}/${cover_id_f}.png`;
     if (fs.existsSync(coverP)) {
       fs.createReadStream(coverP).pipe(res);
+    } else {
+      res.status(404).send({ message: "video cover not found" });
     }
   } catch (error) {
     return res.status(500).send({ message: "Successfully", error });

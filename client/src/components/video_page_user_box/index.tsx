@@ -86,7 +86,7 @@ const VideoPageUserBox = ({ nickName, imageLink, uid, user_id }: Props) => {
           title={nickName}
           height="h-62px"
           width="w-62px"
-          image={imageLink}
+          image={imageLink && `${servicesPath.BASE_URL}/${imageLink}`}
           firstNickNameCharacter={nickName[0]}
           href={`/user/${uid}`}
         />

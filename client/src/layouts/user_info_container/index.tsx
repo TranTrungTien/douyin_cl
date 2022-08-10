@@ -66,7 +66,9 @@ const UserInfoContainer = ({ avatar_thumb_url, nickname, user_id }: Props) => {
       <header className="flex justify-start items-center laptop:space-x-9">
         <AvatarCardButton
           firstNickNameCharacter={nickname[0]}
-          image={avatar_thumb_url}
+          image={
+            avatar_thumb_url && `${servicesPath.BASE_URL}/${avatar_thumb_url}`
+          }
           height="h-62px"
           width="w-62px"
           title={nickname}

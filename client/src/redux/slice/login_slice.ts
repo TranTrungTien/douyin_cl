@@ -1,8 +1,4 @@
-import { createSlice, PayloadAction, SerializedError } from "@reduxjs/toolkit";
-import { IFollowing } from "../../interfaces/following";
-import { IUser } from "../../interfaces/user.interface";
-
-type IStatus = "idle" | "loading" | "complete";
+import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 type IInitialState = {
   isLogin: boolean;
