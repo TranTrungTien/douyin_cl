@@ -59,7 +59,7 @@ const UserBoxHeader = ({
             firstNickNameCharacter={nickname[0]}
             hint="User Cover"
             borderRadius="full"
-            image={avatar_thumb && `${servicesPath.BASE_URL}/${avatar_thumb}`}
+            image={avatar_thumb}
           />
           <div className="text-white flex flex-col justify-start items-start space-y-2 flex-1 desktop:mt-0">
             <div className="flex justify-center items-center space-x-1 hover:text-fresh_red ">

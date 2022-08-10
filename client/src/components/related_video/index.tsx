@@ -14,7 +14,7 @@ const RelatedVideo = ({ video_cover, nickname, desc }: Props) => {
   return (
     <div className="flex justify-start items-start laptop:flex-col desktop:flex-row laptop:space-y-2 desktop:space-x-2 w-full h-full">
       <VideoCard
-        cover_image={video_cover && `${servicesPath.BASE_URL}/${video_cover}`}
+        cover_image={video_cover}
         styleArray="laptop:self-start laptop:w-[200px] laptop:h-[120px] desktop:w-[110px] desktop:h-[80px] extra-desktop:w-[120px] extra-desktop:h-[90px]"
       >
         <VideoCardFooter>

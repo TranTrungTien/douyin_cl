@@ -3,7 +3,11 @@ import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { servicesPath } from "../../config/app_config";
 import { IFollowing } from "../../interfaces/following";
-import { useAppDispatch, useAppSelector } from "../../redux/app/hooks";
+import {
+  isFollowUser,
+  useAppDispatch,
+  useAppSelector,
+} from "../../redux/app/hooks";
 import { setIsLogin } from "../../redux/slice/login_slice";
 import AvatarCardLink from "../avatar_card_link";
 import Button from "../button";
@@ -17,29 +21,10 @@ type Props = {
 
 const VideoPageUserBox = ({ nickName, imageLink, uid, user_id }: Props) => {
   const my_id = useAppSelector((state) => state.user.data?._id);
+  const isFollowing = useAppSelector((state) =>
+    isFollowUser(state, my_id, user_id)
+  );
   const dispatch = useAppDispatch();
-  const [isFollowing, setIsFollowing] = useState(false);
-  useEffect(() => {
-    if (my_id) {
-      axios
-        .get<{ message: string; doc: IFollowing }>(
-          servicesPath.CHECK_FOLLOWING,
-          {
-            headers: {
-              "Content-Type": "application/json",
-            },
-            params: {
-              follow_id: user_id,
-            },
-            withCredentials: true,
-          }
-        )
-        .then((res) => {
-          if (res.data?.doc) setIsFollowing(true);
-        })
-        .catch((err) => console.log(err));
-    }
-  }, [my_id, user_id]);
   const onFollow = () => {
     if (my_id) {
       if (isFollowing) {
@@ -54,8 +39,8 @@ const VideoPageUserBox = ({ nickName, imageLink, uid, user_id }: Props) => {
             },
             withCredentials: true,
           })
-          .then((_) => setIsFollowing(false))
-          .catch(alert);
+          .then(console.log)
+          .catch(console.log);
       } else {
         axios
           .post(
@@ -70,15 +55,13 @@ const VideoPageUserBox = ({ nickName, imageLink, uid, user_id }: Props) => {
               withCredentials: true,
             }
           )
-          .then((_) => setIsFollowing(true))
-          .catch(alert);
+          .then(console.log)
+          .catch(console.log);
       }
     } else {
       dispatch(setIsLogin(true));
     }
   };
-  console.log({ isFollowing });
-
   return (
     <div className="flex justify-between items-center space-x-2 w-full border-b border-darkslategray pb-5">
       <div className="flex justify-start items-center space-x-2">
@@ -86,7 +69,7 @@ const VideoPageUserBox = ({ nickName, imageLink, uid, user_id }: Props) => {
           title={nickName}
           height="h-62px"
           width="w-62px"
-          image={imageLink && `${servicesPath.BASE_URL}/${imageLink}`}
+          image={imageLink}
           firstNickNameCharacter={nickName[0]}
           href={`/user/${uid}`}
         />

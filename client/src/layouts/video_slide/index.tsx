@@ -113,6 +113,7 @@ const VideoSlide = ({
             >
               <Video
                 my_id={my_id}
+                isFollow={isFollow}
                 author_id={video.author_id._id}
                 author_uid={video.author_id.uid}
                 nickname={video.author_id.nickname}

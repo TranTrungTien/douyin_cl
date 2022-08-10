@@ -1,7 +1,8 @@
 import axios from "axios";
 export const servicesPath = {
   BASE_URL: process.env.REACT_APP_BASE_URL,
-  GET_MY_INFO: "api/v1/user",
+  GET_ALL_FOLLOWING: "/api/v1/following",
+  GET_MY_INFO: "/api/v1/user",
   SEND_EMAIL: "/api/v1/user/send-mail",
   VERIFY_EMAIL: "/api/v1/user/verify-email",
   LOGIN_WITHOUT_PASSWORD: "/api/v1/user/login-without-password",

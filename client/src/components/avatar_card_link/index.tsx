@@ -1,5 +1,6 @@
 import { ReactNode } from "react";
 import { Link } from "react-router-dom";
+import { servicesPath } from "../../config/app_config";
 
 type Props = {
   children?: ReactNode[] | ReactNode;
@@ -36,7 +37,12 @@ const AvatarCardLink = ({
       <Link target={target} to={href}>
         {image ? (
           <img
-            src={image}
+            src={`${servicesPath.BASE_URL}/${image}`}
+            onError={({ currentTarget }) => {
+              currentTarget.onerror = null; // prevents looping
+              currentTarget.src =
+                "https://64.media.tumblr.com/72973457b8e180f1e2a6aff1d90ab638/c7f57df796d723d6-93/s1280x1920/447817b9a0e6a23eaeb830e5ee37cf2379d16efa.jpg";
+            }}
             alt={hint}
             className="w-full h-full object-cover object-center block"
           />

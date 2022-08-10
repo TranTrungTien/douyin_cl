@@ -173,7 +173,9 @@ const UserVideoContainer = ({
         <button
           onClick={() => onChangeViewOpt(false)}
           className={`flex justify-start items-end space-x-2 ${
-            !viewLikedAllowed && "cursor-not-allowed opacity-70"
+            !viewLikedAllowed &&
+            author_id !== my_id &&
+            "cursor-not-allowed opacity-70"
           } ${
             viewOpt.viewLiked
               ? "text-white opacity-100"
@@ -216,10 +218,7 @@ const UserVideoContainer = ({
                   >
                     <VideoCard
                       styleArray="laptop:h-[320px] desktop:h-[280px] extra-desktop:h-[328px] overflow-hidden"
-                      cover_image={
-                        video.origin_cover.url_list[0] &&
-                        `${servicesPath.BASE_URL}/${video.origin_cover.url_list[0]}`
-                      }
+                      cover_image={video.origin_cover.url_list[0]}
                     >
                       <VideoBadge pinned={true} text="置顶" />
                       <VideoCardFooter px="px-4" pb="pb-2">
