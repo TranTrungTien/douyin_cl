@@ -216,7 +216,10 @@ const UserVideoContainer = ({
                   >
                     <VideoCard
                       styleArray="laptop:h-[320px] desktop:h-[280px] extra-desktop:h-[328px] overflow-hidden"
-                      cover_image={video.origin_cover.url_list[0]}
+                      cover_image={
+                        video.origin_cover.url_list[0] &&
+                        `${servicesPath.BASE_URL}/${video.origin_cover.url_list[0]}`
+                      }
                     >
                       <VideoBadge pinned={true} text="置顶" />
                       <VideoCardFooter px="px-4" pb="pb-2">

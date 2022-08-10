@@ -1,9 +1,13 @@
 import axios from "axios";
 import { useState } from "react";
 import { RightBarAction } from "../../layouts/video_slide";
+import { useAppDispatch } from "../../redux/app/hooks";
+import { setIsLogin } from "../../redux/slice/login_slice";
 
 type Props = {
   onOpenRightBar?: (action: RightBarAction) => void;
+  my_id?: string;
+  liked?: boolean;
   styleArrayInner?: string;
   styleArray?: string;
   widthSvg?: string;
@@ -11,6 +15,8 @@ type Props = {
   video_id: string;
 };
 const LikeCmtShare = ({
+  liked,
+  my_id,
   video_id,
   onOpenRightBar,
   styleArrayInner,
@@ -18,31 +24,36 @@ const LikeCmtShare = ({
   widthSvg = "36",
   heightSvg = "36",
 }: Props) => {
-  const [like, setLike] = useState(false);
+  const [like, setLike] = useState(liked);
+  const dispatch = useAppDispatch();
   const onLikeVideo = () => {
-    let option = {
-      headers: {
-        "Content-Type": "application/json",
-      },
-      withCredentials: true,
-    };
-    if (!like) {
-      axios
-        .post("user-actions/create-liked", { video_id: video_id }, option)
-        .catch(console.error);
+    if (my_id) {
+      let option = {
+        headers: {
+          "Content-Type": "application/json",
+        },
+        withCredentials: true,
+      };
+      if (!like) {
+        axios
+          .post("user-actions/create-liked", { video_id: video_id }, option)
+          .catch(console.error);
+      } else {
+        axios
+          .delete("user-actions/delete-liked", {
+            headers: {
+              "Content-Type": "application/json",
+            },
+            params: {
+              video_id: video_id,
+            },
+          })
+          .catch(console.error);
+      }
+      setLike(!like);
     } else {
-      axios
-        .delete("user-actions/delete-liked", {
-          headers: {
-            "Content-Type": "application/json",
-          },
-          params: {
-            video_id: video_id,
-          },
-        })
-        .catch(console.error);
+      dispatch(setIsLogin(true));
     }
-    setLike(!like);
   };
   return (
     <div className={`${styleArray}`}>

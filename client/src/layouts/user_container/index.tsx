@@ -109,7 +109,10 @@ const UserContainer = ({
                   to={`/video/${video._id}/${video.id_f}`}
                 >
                   <VideoCard
-                    cover_image={video.origin_cover.url_list[0]}
+                    cover_image={
+                      video.origin_cover.url_list[0] &&
+                      `${servicesPath.BASE_URL}/${video.origin_cover.url_list[0]}`
+                    }
                     styleArray="mx-auto laptop:max-w-auto laptop:max-h-[160px] extra-desktop:max-h-[170px] h-full"
                   >
                     <VideoBadge pinned={true} text="置顶" />

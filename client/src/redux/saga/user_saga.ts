@@ -1,20 +1,23 @@
-import { useFetch } from "../../hooks/useFetch";
+import axios from "axios";
+import { call, put, takeEvery } from "redux-saga/effects";
+import { servicesPath } from "../../config/app_config";
 import { IUser } from "../../interfaces/user.interface";
 import {
   getUserInfoFailed,
   getUserInfoRequested,
   getUserInfoSuccessfully,
 } from "../slice/user.slice";
-import { call, put, takeEvery } from "redux-saga/effects";
-import axios, { AxiosError } from "axios";
 
 const getUserInfo = async () => {
-  return await axios.get<{ message: string; doc: IUser }>("user/", {
-    headers: {
-      "Content-Type": "application/json",
-    },
-    withCredentials: true,
-  });
+  return await axios.get<{ message: string; doc: IUser }>(
+    servicesPath.GET_MY_INFO,
+    {
+      headers: {
+        "Content-Type": "application/json",
+      },
+      withCredentials: true,
+    }
+  );
 };
 
 export function* fetchUser(): any {
