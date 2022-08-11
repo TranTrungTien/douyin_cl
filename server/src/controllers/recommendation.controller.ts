@@ -10,13 +10,17 @@ function getRecommendationDef(req: Request, res: Response) {
       if (err) res.status(500).send({ message: "Error", err });
       else {
         if (!list) return res.status(404).send({ message: "List not found" });
-        else res.status(200).send({ message: "Successfully", list });
+        else
+          res
+            .status(200)
+            .send({ message: "Successfully", list: list.reverse() });
       }
     });
 }
 
 function getRecommendationFromVideo(req: Request, res: Response) {
   const videoId = req.query.videoId as string;
+  const limit = parseInt(req.query.limit as string) ?? 15;
   const data = JSON.parse(
     fs.readFileSync(metaPath + "/video_id_desc.json", "utf8") + "]"
   ) as {
@@ -35,7 +39,11 @@ function getRecommendationFromVideo(req: Request, res: Response) {
   const videoIdList = indexes?.map((idx, _) => {
     return data[idx].video_id;
   });
-  VideoModel.find({ id_f: { $in: videoIdList } }, { __v: 0, _id: 0 }, null)
+  VideoModel.find(
+    { id_f: { $in: videoIdList } },
+    { __v: 0, _id: 0 },
+    { limit: limit }
+  )
     .populate("author_id")
     .exec((err, doc) => {
       if (err) return res.status(500).send(err);

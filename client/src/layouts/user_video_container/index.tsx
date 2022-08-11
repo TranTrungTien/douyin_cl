@@ -76,6 +76,7 @@ const UserVideoContainer = ({
             params: {
               author_id: author_id,
               cursor: cursor.viewOwn.cursorPosition,
+              limit: 15,
             },
           }
         )

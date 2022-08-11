@@ -186,10 +186,12 @@ function getVideoInfo(req: Request, res: Response) {
 function getAllVideoByUser(req: Request, res: Response) {
   const author_id = req.query.author_id as string;
   const cursor = req.query.cursor as string;
+  const limit = parseInt(req.query.limit as string) ?? 15;
+
   VideoModel.find(
     { author_id: author_id },
     null,
-    { skip: Number(cursor) * 10, limit: 10 },
+    { skip: Number(cursor) * limit, limit: limit },
     (err, list) => {
       if (err)
         return res.status(500).send({ err, message: "Something went wrong" });
@@ -205,9 +207,10 @@ function getAllVideoByUser(req: Request, res: Response) {
 function getAllLikedVideoByUser(req: Request, res: Response) {
   const author_id = req.query.author_id as string;
   const cursor = req.query.cursor as string;
+  const limit = parseInt(req.query.limit as string) ?? 15;
   LikedModel.find({ author_id: author_id }, null, {
-    skip: Number(cursor) * 10,
-    limit: 10,
+    skip: Number(cursor) * limit,
+    limit: limit,
   })
     .populate("author_id")
     .populate("video_id")
