@@ -17,6 +17,7 @@ const RelatedVideoContainer = ({ id }: Props) => {
       "application/json",
       {
         videoId: `${id}`,
+        limit: 15,
       }
     );
   }, [id]);

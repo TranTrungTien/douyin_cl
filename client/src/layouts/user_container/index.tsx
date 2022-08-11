@@ -47,6 +47,7 @@ const UserContainer = ({
           params: {
             author_id: author_id,
             cursor: cursor,
+            limit: 15,
           },
         }
       )
