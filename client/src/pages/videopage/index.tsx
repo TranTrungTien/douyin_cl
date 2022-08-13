@@ -23,7 +23,7 @@ import {
 import ErrorBoundary from "../../utils/error-boundaries";
 
 import VideoPageUserBox from "../../components/video_page_user_box";
-import { servicesPath } from "../../config/app_config";
+import { servicesPath } from "../../services/services_path";
 import { axiosConfigHeaders } from "../../config/axios-config";
 import { useFetch } from "../../hooks/useFetch";
 import { IVideo } from "../../interfaces/video.interface";

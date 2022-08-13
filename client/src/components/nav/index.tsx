@@ -1,6 +1,5 @@
 import { MouseEvent, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { servicesPath } from "../../config/app_config";
 import { useAppDispatch, useAppSelector } from "../../redux/app/hooks";
 import { setIsLogin } from "../../redux/slice/login_slice";
 import AvatarCardLink from "../avatar_card_link";

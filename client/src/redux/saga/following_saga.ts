@@ -1,7 +1,7 @@
-import axios from "axios";
 import { call, put, takeEvery } from "redux-saga/effects";
-import { servicesPath } from "../../config/app_config";
 import { IFollowing } from "../../interfaces/following";
+import { getData } from "../../services/app_services";
+import { servicesPath } from "../../services/services_path";
 import {
   getAllFollowingFailed,
   getAllFollowingRequested,
@@ -9,14 +9,10 @@ import {
 } from "../slice/following_slice";
 
 const getAllFollowing = async () => {
-  return await axios.get<{ message: string; list: IFollowing }>(
+  return getData<{ message: string; list: IFollowing }>(
     servicesPath.GET_ALL_FOLLOWING,
-    {
-      headers: {
-        "Content-Type": "application/json",
-      },
-      withCredentials: true,
-    }
+    null,
+    true
   );
 };
 

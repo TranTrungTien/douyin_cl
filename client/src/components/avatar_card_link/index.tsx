@@ -1,6 +1,6 @@
 import { ReactNode } from "react";
 import { Link } from "react-router-dom";
-import { servicesPath } from "../../config/app_config";
+import { servicesPath } from "../../services/services_path";
 
 type Props = {
   children?: ReactNode[] | ReactNode;

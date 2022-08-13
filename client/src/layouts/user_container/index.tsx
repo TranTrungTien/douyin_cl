@@ -1,14 +1,14 @@
-import axios from "axios";
 import { UIEvent, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import LikeFooter from "../../components/like_footer";
 import UserBoxHeader from "../../components/user_box_header";
 import VideoBadge from "../../components/video_badge";
 import VideoCard from "../../components/video_card";
+import { IVideo } from "../../interfaces/video.interface";
+import { getData } from "../../services/app_services";
+import { servicesPath } from "../../services/services_path";
 import VideoCardFooter from "../video_card_footer_container";
 import VideoContainer from "../video_container";
-import { servicesPath } from "../../config/app_config";
-import { IVideo } from "../../interfaces/video.interface";
 import { RightBarAction } from "../video_slide";
 type Props = {
   isFollow?: boolean;
@@ -36,24 +36,18 @@ const UserContainer = ({
   }>(null);
   const [cursor, setCursor] = useState(0);
   useEffect(() => {
-    axios
-      .get<{ message: string; video_count: number; list: IVideo[] }>(
-        servicesPath.GET_VIDEO_BY_USER,
-        {
-          headers: {
-            Accept: "application/json",
-            "Content-Type": "application/json",
-          },
-          params: {
-            author_id: author_id,
-            cursor: cursor,
-            limit: 15,
-          },
-        }
-      )
-      .then((data) => {
-        console.log(data.data.list);
-        const d = data.data;
+    const fetchVideo = async () => {
+      const videoRes = await getData<{
+        message: string;
+        video_count: number;
+        list: IVideo[];
+      }>(servicesPath.GET_VIDEO_BY_USER, {
+        author_id: author_id,
+        cursor: cursor,
+        limit: 15,
+      }).catch(console.error);
+      if (videoRes && videoRes.data) {
+        const d = videoRes.data;
         setOwnVideos((preState) => {
           if (!preState) {
             return d;
@@ -64,8 +58,11 @@ const UserContainer = ({
             };
           }
         });
-      })
-      .catch(alert);
+      }
+    };
+    if (author_id) {
+      fetchVideo();
+    }
   }, [author_id, cursor]);
 
   const onScroll = (e: UIEvent<HTMLDivElement>) => {

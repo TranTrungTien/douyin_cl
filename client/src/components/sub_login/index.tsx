@@ -1,9 +1,9 @@
 import { MouseEvent, useRef } from "react";
 import { useAppDispatch } from "../../redux/app/hooks";
-import { servicesPath } from "../../config/app_config";
+import { servicesPath } from "../../services/services_path";
 import { IUser } from "../../interfaces/user.interface";
 import { postData } from "../../services/app_services";
-import { getUserInfoSuccessfully } from "../../redux/slice/user.slice";
+import { getUserInfoSuccessfully } from "../../redux/slice/user_slice";
 
 type Props = {
   onVerifyEmail: (emailVerified: string, code: string | null) => void;
@@ -19,41 +19,38 @@ const SubRegisterOrLogin = ({ onVerifyEmail }: Props) => {
       .then((_) => alert("Successfully !!! Please check your email"))
       .catch(console.log);
   };
-  const onSubmit = () => {
+  const onSubmit = async () => {
     if (!codeRef.current?.value || !emailRef.current?.value) return;
     else {
       const code = codeRef.current.value;
       const email = emailRef.current.value;
-      postData<{
+      const registerRes = await postData<{
         message: string;
         userEmail: string;
         secretCode: string | null;
         userExisted: boolean;
         code: string | null;
-      }>(servicesPath.VERIFY_EMAIL, { code, existedEmail: email })
-        .then((res) => {
-          const { userEmail, secretCode, userExisted, code } = res.data;
-
-          if (userEmail && !userExisted && !secretCode)
-            onVerifyEmail(userEmail, code);
-          else if (userEmail && userExisted && secretCode) {
-            postData<{ message: string; doc: IUser }>(
-              servicesPath.LOGIN_WITHOUT_PASSWORD,
-              {
-                email: userEmail,
-                secretCode,
-              },
-              true
-            )
-              .then((data) => {
-                dispatch(getUserInfoSuccessfully(data.data.doc));
-              })
-              .catch((err) => {
-                throw err;
-              });
-          }
-        })
-        .catch(alert);
+      }>(servicesPath.VERIFY_EMAIL, { code, existedEmail: email }).catch(
+        console.error
+      );
+      if (registerRes && registerRes.data) {
+        const { userEmail, secretCode, userExisted, code } = registerRes.data;
+        if (userEmail && !userExisted && !secretCode)
+          onVerifyEmail(userEmail, code);
+        else if (userEmail && userExisted && secretCode) {
+          const loginRes = await postData<{ message: string; doc: IUser }>(
+            servicesPath.LOGIN_WITHOUT_PASSWORD,
+            {
+              email: userEmail,
+              secretCode,
+            },
+            true
+          ).catch(console.error);
+          loginRes &&
+            loginRes.data &&
+            dispatch(getUserInfoSuccessfully(loginRes.data.doc));
+        }
+      }
     }
   };
   return (

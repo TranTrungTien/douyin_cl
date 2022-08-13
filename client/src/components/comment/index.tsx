@@ -1,10 +1,9 @@
-import axios from "axios";
 import { memo, MouseEvent, SyntheticEvent, useEffect, useState } from "react";
-import { servicesPath } from "../../config/app_config";
 import { IComment } from "../../interfaces/comment";
-import { ICommentLiked } from "../../interfaces/liked_video.interface";
+import { ILikedComment } from "../../interfaces/liked_video.interface";
 import { useAppSelector } from "../../redux/app/hooks";
-import { postData } from "../../services/app_services";
+import { deleteData, getData, postData } from "../../services/app_services";
+import { servicesPath } from "../../services/services_path";
 import { convertDate } from "../../utils/covert_date";
 import AvatarCardLink from "../avatar_card_link";
 import Heart from "../heart";
@@ -49,56 +48,46 @@ const Comment = ({
   });
   const [likedCommentInComments, setLikedCommentInComments] = useState<{
     message: string;
-    list: ICommentLiked[];
+    list: ILikedComment[];
   } | null>(null);
   useEffect(() => {
+    const fetchComment = async () => {
+      const commentRes = await getData<{
+        message: string;
+        list: IComment[];
+      }>(servicesPath.GET_REPLY_OF_COMMENT, {
+        video_id: video_id,
+        reply_comment_id: comment_id,
+        cursor: 0,
+      }).catch(console.error);
+      if (commentRes && commentRes.data) {
+        setReplyComments(commentRes.data);
+        const likedCommentInComments = await getData<{
+          message: string;
+          list: ILikedComment[];
+        }>(
+          servicesPath.GET_ALL_LIKED_COMMENT_IN_OTHER_COMMENT,
+          {
+            video_id: video_id,
+            reply_comment_id: comment_id,
+          },
+          true
+        ).catch(console.error);
+        if (likedCommentInComments && likedCommentInComments.data) {
+          setLikedCommentInComments(likedCommentInComments.data);
+        }
+      }
+    };
     if (
       typeof replyCount === "number" &&
       replyCount > 0 &&
       video_id &&
       showReply.isShow
     ) {
-      axios
-        .get<{
-          message: string;
-          list: IComment[];
-        }>(servicesPath.GET_REPLY_OF_COMMENT, {
-          headers: {
-            "Content-Type": "application/json",
-          },
-          params: {
-            video_id: video_id,
-            reply_comment_id: comment_id,
-            cursor: 0,
-          },
-        })
-        .then((res) => {
-          setReplyComments(res.data);
-          axios
-            .get<{
-              message: string;
-              list: ICommentLiked[];
-            }>(servicesPath.GET_ALL_LIKED_COMMENT_IN_OTHER_COMMENT, {
-              headers: {
-                "Content-Type": "application/json",
-              },
-              params: {
-                video_id: video_id,
-                reply_comment_id: comment_id,
-              },
-              withCredentials: true,
-            })
-            .then((res2) => {
-              setLikedCommentInComments(res2.data);
-            })
-            .catch((err) => {
-              throw err;
-            });
-        })
-        .catch(alert);
+      fetchComment();
     }
   }, [replyCount, showReply.isShow, video_id, comment_id]);
-  const onSubmit = (event: SyntheticEvent) => {
+  const onSubmit = async (event: SyntheticEvent) => {
     event.preventDefault();
     const target = event.target as typeof event.target & {
       comment: {
@@ -108,7 +97,8 @@ const Comment = ({
     };
     const text = target.comment.value;
     target.reset();
-    postData<{ message: string; doc: IComment }>(
+
+    const commentRes = await postData<{ message: string; doc: IComment }>(
       servicesPath.POST_COMMENT,
       {
         reply_comment_id: comment_id,
@@ -116,25 +106,22 @@ const Comment = ({
         text: text,
       },
       true
-    )
-      .then((res) => {
-        const newComment = res.data.doc;
-        user.data && (newComment.author_id = user.data);
-        console.log(newComment);
-        setReplyComments((state) => {
-          if (state)
-            return {
-              ...state,
-              list: [...state.list, newComment],
-            };
-          else
-            return {
-              message: res.data.message,
-              list: [newComment],
-            };
-        });
-      })
-      .catch(alert);
+    ).catch(console.error);
+    if (commentRes && commentRes.data) {
+      const newComment = commentRes.data.doc;
+      setReplyComments((state) => {
+        if (state)
+          return {
+            ...state,
+            list: [...state.list, newComment],
+          };
+        else
+          return {
+            message: commentRes.data.message,
+            list: [newComment],
+          };
+      });
+    }
   };
   const onShowReply = () => {
     setShowReply((preState) => {
@@ -144,43 +131,26 @@ const Comment = ({
       };
     });
   };
-  const onLikeComment = (
+  const onLikeComment = async (
     event: MouseEvent<HTMLButtonElement>,
     like: boolean
   ) => {
-    console.log({ like });
-
     if (like) {
-      axios
-        .post(
-          servicesPath.POST_lIKED_COMMENT,
-          {
-            video_id: video_id,
-            comment_id: comment_id,
-          },
-          {
-            headers: {
-              "Content-Type": "application/json",
-            },
-            withCredentials: true,
-          }
-        )
-        .then((response) => console.log(response.data))
-        .catch((err) => console.log(err));
+      const likeRes = await postData(
+        servicesPath.POST_lIKED_COMMENT,
+        {
+          video_id: video_id,
+          comment_id: comment_id,
+        },
+        true
+      ).catch(console.error);
+      likeRes && likeRes.data && console.log("commented");
     } else {
-      axios
-        .delete(servicesPath.DEL_lIKED_COMMENT, {
-          headers: {
-            "Content-Type": "application/json",
-          },
-          params: {
-            video_id: video_id,
-            comment_id: comment_id,
-          },
-          withCredentials: true,
-        })
-        .then((response) => console.log(response.data))
-        .catch((err) => console.log(err));
+      const deleteRes = await deleteData<any>(servicesPath.DEL_lIKED_COMMENT, {
+        video_id: video_id,
+        comment_id: comment_id,
+      }).catch(console.error);
+      deleteRes && deleteRes.data && console.log("del comment successfully");
     }
   };
 
@@ -282,7 +252,7 @@ const Comment = ({
                   video_id={video_id}
                   nickname={c.author_id.nickname}
                   image={c.author_id.avatar_thumb.url_list[0]}
-                  key={index}
+                  key={c._id}
                   styleArray={!true ? `px-3` : "px-0"}
                   uid={c.author_id.uid}
                   datePosted={c.createdAt}

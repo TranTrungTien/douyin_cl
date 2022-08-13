@@ -1,11 +1,10 @@
 import { useEffect } from "react";
-import "./App.css";
+import "./style/global.css";
 import { useAppDispatch, useAppSelector } from "./redux/app/hooks";
-import { setDefaultSettings } from "./config/app_config";
 import Routers from "./routers";
-import { getUserInfoRequested } from "./redux/slice/user.slice";
+import { getUserInfoRequested } from "./redux/slice/user_slice";
 import { getAllFollowingRequested } from "./redux/slice/following_slice";
-// import { fetchUserAsync } from "./redux/slice/user.slice";
+import { setDefaultSettings } from "./config/config";
 
 setDefaultSettings();
 

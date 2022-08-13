@@ -1,5 +1,5 @@
 import { ReactNode } from "react";
-import { servicesPath } from "../../config/app_config";
+import { servicesPath } from "../../services/services_path";
 import { RightBarAction } from "../../layouts/video_slide";
 
 type Props = {

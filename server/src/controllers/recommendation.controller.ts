@@ -1,8 +1,21 @@
 import { Request, Response } from "express";
 import * as fs from "fs";
 import { metaPath } from "../const/path";
+import { IVideo } from "../interface/video.interface";
 import VideoModel from "../models/video.model";
 import { RecommendationUtils } from "../utils/recommendation";
+
+///just for development
+
+const shuffleArray = (array: IVideo[]) => {
+  const listCopy = [...array];
+  for (let i = listCopy.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [listCopy[i], listCopy[j]] = [listCopy[j], listCopy[i]];
+  }
+  return listCopy;
+};
+
 function getRecommendationDef(req: Request, res: Response) {
   VideoModel.find({}, null, null)
     .populate("author_id")
@@ -13,7 +26,7 @@ function getRecommendationDef(req: Request, res: Response) {
         else
           res
             .status(200)
-            .send({ message: "Successfully", list: list.reverse() });
+            .send({ message: "Successfully", list: shuffleArray(list) });
       }
     });
 }

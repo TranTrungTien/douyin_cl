@@ -1,16 +1,16 @@
-import axios from "axios";
 import { useState } from "react";
 import followingIcon from "../../assets/icons/following_icon.svg";
 import AvatarCardButton from "../../components/avatar_card_button";
 import Button from "../../components/button";
 import VerificationMark from "../../components/verification_mark";
-import { servicesPath } from "../../config/app_config";
 import {
   isFollowUser,
   useAppDispatch,
   useAppSelector,
 } from "../../redux/app/hooks";
 import { setIsLogin } from "../../redux/slice/login_slice";
+import { deleteData, postData } from "../../services/app_services";
+import { servicesPath } from "../../services/services_path";
 
 type Props = {
   avatar_thumb_url: string;
@@ -25,38 +25,28 @@ const UserInfoContainer = ({ avatar_thumb_url, nickname, user_id }: Props) => {
     isFollowUser(state, my_id, user_id)
   );
   const [isFollowing, setIsFollowing] = useState(isFollow);
-  const onFollow = () => {
+  const onFollow = async () => {
     if (my_id) {
       if (isFollowing) {
-        console.log("clicked ...");
-        axios
-          .delete(servicesPath.DEL_FOLLOWING, {
-            headers: {
-              "Content-Type": "application/json",
-            },
-            params: {
-              follow_id: user_id,
-            },
-            withCredentials: true,
-          })
-          .then((_) => setIsFollowing(false))
-          .catch(alert);
+        const delFollowRes = await deleteData(servicesPath.DEL_FOLLOWING, {
+          follow_id: user_id,
+        });
+        if (delFollowRes && delFollowRes.data) {
+          console.log("del followed");
+          setIsFollowing(false);
+        }
       } else {
-        axios
-          .post(
-            servicesPath.FOLLOW_USER,
-            {
-              follow_id: user_id,
-            },
-            {
-              headers: {
-                "Content-Type": "application/json",
-              },
-              withCredentials: true,
-            }
-          )
-          .then((_) => setIsFollowing(true))
-          .catch(alert);
+        const followRes = await postData<any>(
+          servicesPath.FOLLOW_USER,
+          {
+            follow_id: user_id,
+          },
+          true
+        ).catch(console.error);
+        if (followRes && followRes.data) {
+          console.log("followed");
+          setIsFollowing(true);
+        }
       }
     } else dispatch(setIsLogin(true));
   };

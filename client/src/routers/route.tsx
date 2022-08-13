@@ -2,7 +2,7 @@ import { lazy, Suspense } from "react";
 import { Loading } from "../components";
 const HomePage = lazy(() => import("../pages/homepage"));
 const Lives = lazy(() => import("../pages/lives"));
-const UploadVideo = lazy(() => import("../pages/upload_video"));
+const UploadVideo = lazy(() => import("../pages/upload_videopage"));
 const UserPage = lazy(() => import("../pages/userpage"));
 const VideoPage = lazy(() => import("../pages/videopage"));
 

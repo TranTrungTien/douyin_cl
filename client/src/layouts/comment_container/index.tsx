@@ -1,13 +1,12 @@
-import axios from "axios";
 import { SyntheticEvent, useEffect, useState } from "react";
 import Comment from "../../components/comment";
 import CommentHeader from "../../components/comment_box_header";
 import Input from "../../components/input";
-import { servicesPath } from "../../config/app_config";
 import { IComment } from "../../interfaces/comment";
-import { ICommentLiked } from "../../interfaces/liked_video.interface";
+import { ILikedComment } from "../../interfaces/liked_video.interface";
 import { useAppSelector } from "../../redux/app/hooks";
-import { postData } from "../../services/app_services";
+import { getData, postData } from "../../services/app_services";
+import { servicesPath } from "../../services/services_path";
 import { RightBarAction } from "../video_slide";
 
 type Props = {
@@ -27,52 +26,47 @@ const CommentContainer = ({
     list: IComment[];
   } | null>(null);
   useEffect(() => {
-    const fetchComment = async () =>
-      await axios.get<{
+    const fetchComment = async () => {
+      const commentRes = await getData<{
         message: string;
         list: IComment[];
       }>(servicesPath.GET_ALL_COMMENTS_OF_VIDEO, {
-        headers: {
-          "Content-Type": "application/json",
-        },
-        params: {
-          video_id: video_id,
-        },
-      });
-    fetchComment()
-      .then((res) => {
-        setComments(res.data);
-      })
-      .catch(alert);
+        video_id: video_id,
+      }).catch(console.error);
+      if (commentRes && commentRes.data) {
+        setComments(commentRes.data);
+      }
+    };
+    if (video_id) {
+      fetchComment();
+    }
   }, [video_id]);
-  console.log({ comments });
 
   const [likedComments, setLikedComments] = useState<{
     message: string;
-    list: ICommentLiked[];
+    list: ILikedComment[];
   } | null>(null);
 
   useEffect(() => {
+    const fetchLikedComments = async () => {
+      const likedCommentsRes = await getData<{
+        message: string;
+        list: ILikedComment[];
+      }>(
+        servicesPath.GET_ALL_LIKED_COMMENT_OF_VIDEO_BY_AUTHOR,
+        { video_id: video_id },
+        true
+      ).catch(console.error);
+      if (likedCommentsRes && likedCommentsRes.data) {
+        setLikedComments(likedCommentsRes.data);
+      }
+    };
     if (user.data) {
-      axios
-        .get<{ message: string; list: ICommentLiked[] }>(
-          servicesPath.GET_ALL_LIKED_COMMENT_OF_VIDEO_BY_AUTHOR,
-          {
-            headers: {
-              "Content-Type": "application/json",
-            },
-            withCredentials: true,
-            params: {
-              video_id: video_id,
-            },
-          }
-        )
-        .then((res) => setLikedComments(res.data))
-        .catch((err) => console.log(err));
+      fetchLikedComments();
     }
   }, [user.data, video_id]);
 
-  const onSubmit = (e: SyntheticEvent) => {
+  const onSubmit = async (e: SyntheticEvent) => {
     e.preventDefault();
     const target = e.target as typeof e.target & {
       comment: {
@@ -82,32 +76,31 @@ const CommentContainer = ({
     };
     const text = target.comment.value;
     target.reset();
-    postData<{ message: string; doc: IComment }>(
+    const commentRes = await postData<{ message: string; doc: IComment }>(
       servicesPath.POST_COMMENT,
       {
         video_id: video_id,
         text: text,
       },
       true
-    )
-      .then((res) => {
-        const newComment = res.data.doc;
-        user.data && (newComment.author_id = user.data);
+    ).catch(alert);
+    if (commentRes && commentRes.data) {
+      const newComment = commentRes.data.doc;
+      user.data && (newComment.author_id = user.data);
 
-        setComments((state) => {
-          if (state)
-            return {
-              ...state,
-              list: [...state.list, newComment],
-            };
-          else
-            return {
-              message: res.data.message,
-              list: [newComment],
-            };
-        });
-      })
-      .catch(alert);
+      setComments((state) => {
+        if (state)
+          return {
+            ...state,
+            list: [...state.list, newComment],
+          };
+        else
+          return {
+            message: commentRes.data.message,
+            list: [newComment],
+          };
+      });
+    }
   };
   return (
     <>
@@ -135,7 +128,7 @@ const CommentContainer = ({
                   video_id={video_id}
                   nickname={c.author_id.nickname}
                   image={c.author_id.avatar_thumb.url_list[0]}
-                  key={index}
+                  key={c._id}
                   styleArray={!fromVideoPage ? `px-3` : "px-0"}
                   uid={c.author_id.uid}
                   datePosted={c.createdAt}

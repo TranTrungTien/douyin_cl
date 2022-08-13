@@ -1,8 +1,9 @@
-import axios from "axios";
 import { useState } from "react";
 import { RightBarAction } from "../../layouts/video_slide";
 import { useAppDispatch } from "../../redux/app/hooks";
 import { setIsLogin } from "../../redux/slice/login_slice";
+import { deleteData, postData } from "../../services/app_services";
+import { servicesPath } from "../../services/services_path";
 
 type Props = {
   onOpenRightBar?: (action: RightBarAction) => void;
@@ -26,29 +27,22 @@ const LikeCmtShare = ({
 }: Props) => {
   const [like, setLike] = useState(liked);
   const dispatch = useAppDispatch();
-  const onLikeVideo = () => {
+  const onLikeVideo = async () => {
     if (my_id) {
-      let option = {
-        headers: {
-          "Content-Type": "application/json",
-        },
-        withCredentials: true,
-      };
       if (!like) {
-        axios
-          .post("user-actions/create-liked", { video_id: video_id }, option)
-          .catch(console.error);
+        const likeRes = await postData(
+          servicesPath.POST_LIKE_VIDEO,
+          {
+            video_id: video_id,
+          },
+          true
+        ).catch(console.error);
+        likeRes && likeRes.data && console.log("liked video");
       } else {
-        axios
-          .delete("user-actions/delete-liked", {
-            headers: {
-              "Content-Type": "application/json",
-            },
-            params: {
-              video_id: video_id,
-            },
-          })
-          .catch(console.error);
+        const delRes = await deleteData(servicesPath.DEL_LIKE_VIDEO, {
+          video_id: video_id,
+        }).catch(console.error);
+        delRes && delRes.data && console.log("del like video successfully");
       }
       setLike(!like);
     } else {

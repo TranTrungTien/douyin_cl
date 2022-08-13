@@ -1,12 +1,12 @@
-import axios from "axios";
 import { useEffect, useMemo, useRef } from "react";
-import { servicesPath } from "../../config/app_config";
 import { axiosConfigHeaders } from "../../config/axios-config";
 import { useFetchSuspense } from "../../hooks/useFetchSuspense";
 import RightVideoAction from "../../layouts/right_video_action_container";
 import { RightBarAction } from "../../layouts/video_slide";
 import { useAppDispatch } from "../../redux/app/hooks";
 import { setIsLogin } from "../../redux/slice/login_slice";
+import { postData } from "../../services/app_services";
+import { servicesPath } from "../../services/services_path";
 import { toggleFullScreen } from "../../utils/fullscreen";
 import { timeFormat } from "../../utils/timeFormat";
 import AvatarCardButton from "../avatar_card_button";
@@ -15,15 +15,6 @@ import LikeCmtShare from "../like_cmt_share_action";
 import NextVideoButton from "../next_video_button";
 import Plus from "../plus";
 import ProgressBar from "../progress_bar";
-
-//  useMemo(() => {
-//    return axiosConfigHeaders(
-//      "blob",
-//      "application/json",
-//      "application/json",
-//      null
-//    );
-//  }, []);
 
 type Props = {
   author_uid?: string;
@@ -157,23 +148,16 @@ const Video = ({
     toggleFullScreen(player);
   };
 
-  const handleFollow = () => {
+  const handleFollow = async () => {
     if (my_id && author_id) {
-      axios
-        .post(
-          servicesPath.FOLLOW_USER,
-          {
-            follow_id: author_id,
-          },
-          {
-            headers: {
-              "Content-Type": "application/json",
-            },
-            withCredentials: true,
-          }
-        )
-        .then()
-        .catch(alert);
+      const followRes = await postData<any>(
+        servicesPath.FOLLOW_USER,
+        {
+          follow_id: author_id,
+        },
+        true
+      ).catch(console.error);
+      followRes && followRes.data && console.log("followed");
     } else {
       dispatch(setIsLogin(true));
     }

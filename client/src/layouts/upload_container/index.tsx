@@ -1,7 +1,7 @@
 import { MouseEvent, ReactNode, SyntheticEvent, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import { Button, SelectFile } from "../../components";
-import { servicesPath } from "../../config/app_config";
+import { servicesPath } from "../../services/services_path";
 import { postData } from "../../services/app_services";
 import "./style.css";
 
@@ -103,7 +103,7 @@ const UploadContainer = () => {
       : setOpenOption({ ...openOption, select: privateElem.id });
   };
 
-  const onSubmit = (e: SyntheticEvent) => {
+  const onSubmit = async (e: SyntheticEvent) => {
     e.preventDefault();
     if (!file || !videoCover) return;
 
@@ -115,47 +115,40 @@ const UploadContainer = () => {
       file.video,
       file.videoMetaData.name
     );
-    postData<{ id_f: string }>(
+    const fileRes = await postData<{ id_f: string }>(
       servicesPath.POST_FORMDATA,
       formData,
       true,
       "multipart/form-data"
-    )
-      .then((res) => {
-        const caption = textInputRef.current && textInputRef.current.innerText;
-        const whoCanView = openOption.select;
-        const copyrightCheck = target.copyrightCheck.checked;
+    ).catch(console.error);
+    if (fileRes && fileRes.data) {
+      const caption = textInputRef.current && textInputRef.current.innerText;
+      const whoCanView = openOption.select;
+      const copyrightCheck = target.copyrightCheck.checked;
 
-        const allowUserDo = {
-          cmt: target.cmt.checked,
-          duet: target.duet.checked,
-          stich: target.stich.checked,
-        };
-        const video_id_f = res.data.id_f;
-        const videoMetaData = file.videoMetaData;
-        postData(
-          servicesPath.POST_METADATA,
-          {
-            video_id_f,
-            cover_id_f: video_id_f + "_cover.png",
-            music_id_f: video_id_f + "_music.mp3",
-            caption,
-            whoCanView,
-            allowUserDo,
-            copyrightCheck,
-            videoMetaData,
-          },
-          true
-        )
-          .then((data) => {
-            console.log(data.data);
-            alert("Upload Successfully");
-          })
-          .catch((err) => {
-            throw err;
-          });
-      })
-      .catch(console.log);
+      const allowUserDo = {
+        cmt: target.cmt.checked,
+        duet: target.duet.checked,
+        stich: target.stich.checked,
+      };
+      const video_id_f = fileRes.data.id_f;
+      const videoMetaData = file.videoMetaData;
+      const metaRes = await postData(
+        servicesPath.POST_METADATA,
+        {
+          video_id_f,
+          cover_id_f: video_id_f + "_cover.png",
+          music_id_f: video_id_f + "_music.mp3",
+          caption,
+          whoCanView,
+          allowUserDo,
+          copyrightCheck,
+          videoMetaData,
+        },
+        true
+      ).catch(console.error);
+      metaRes && metaRes.data && console.log("upload metadata done");
+    }
   };
   return (
     <main className="py-4 h-[1000px] xl:w-[1100px] m-auto">
