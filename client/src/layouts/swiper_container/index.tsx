@@ -5,7 +5,7 @@ import "swiper/css/bundle";
 import "swiper/css/virtual";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { VideoSlide } from "..";
-import { servicesPath } from "../../config/app_config";
+import { servicesPath } from "../../services/services_path";
 import { axiosConfigHeaders } from "../../config/axios-config";
 import { useFetchSuspense } from "../../hooks/useFetchSuspense";
 import { IVideo } from "../../interfaces/video.interface";
@@ -45,7 +45,7 @@ const SwiperWrapper = () => {
         videos.list.map((video, index) => (
           <SwiperSlide
             className="w-full h-full rounded-md"
-            key={index}
+            key={video._id}
             virtualIndex={index}
           >
             <VideoSlide

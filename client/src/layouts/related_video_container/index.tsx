@@ -1,6 +1,6 @@
 import { useMemo } from "react";
 import { RelatedVideo } from "../../components";
-import { servicesPath } from "../../config/app_config";
+import { servicesPath } from "../../services/services_path";
 import { axiosConfigHeaders } from "../../config/axios-config";
 import { useFetchSuspense } from "../../hooks/useFetchSuspense";
 import { IVideo } from "../../interfaces/video.interface";
@@ -33,7 +33,7 @@ const RelatedVideoContainer = ({ id }: Props) => {
         relatedVideo.doc &&
         relatedVideo.doc.map((video, index) => (
           <RelatedVideo
-            key={index}
+            key={video._id}
             video_cover={video.origin_cover.url_list[0]}
             desc={video.desc}
             nickname={video.author_id.nickname}

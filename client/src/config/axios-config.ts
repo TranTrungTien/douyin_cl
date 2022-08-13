@@ -1,4 +1,5 @@
-import { AxiosRequestConfig } from "axios";
+import axios, { AxiosRequestConfig } from "axios";
+import { servicesPath } from "../services/services_path";
 
 export function axiosConfigHeaders(
   method: string,
@@ -17,3 +18,11 @@ export function axiosConfigHeaders(
     params: params,
   };
 }
+const axiosInitialize = axios.create({
+  baseURL: servicesPath.BASE_URL,
+  headers: {
+    "Content-Type": "application/json",
+  },
+});
+
+export default axiosInitialize;

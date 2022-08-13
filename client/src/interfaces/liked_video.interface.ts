@@ -10,7 +10,7 @@ export interface IYourVideoLiked {
   updatedAt?: string;
 }
 
-export interface ICommentLiked {
+export interface ILikedComment {
   _id?: string;
   author_id: IUser;
   video_id: IVideo;

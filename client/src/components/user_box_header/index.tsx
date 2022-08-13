@@ -1,9 +1,9 @@
-import axios from "axios";
 import { Link } from "react-router-dom";
-import { servicesPath } from "../../config/app_config";
 import { RightBarAction } from "../../layouts/video_slide";
 import { useAppDispatch } from "../../redux/app/hooks";
 import { setIsLogin } from "../../redux/slice/login_slice";
+import { postData } from "../../services/app_services";
+import { servicesPath } from "../../services/services_path";
 import AvatarCard from "../avatar_card_button";
 import Button from "../button";
 
@@ -30,23 +30,16 @@ const UserBoxHeader = ({
   const onCloseUser = () => {
     handleCloseUserBox({ comment: false, isOpen: false, user: false });
   };
-  const handleFollow = () => {
+  const handleFollow = async () => {
     if (my_id && user_id) {
-      axios
-        .post(
-          servicesPath.FOLLOW_USER,
-          {
-            follow_id: user_id,
-          },
-          {
-            headers: {
-              "Content-Type": "application/json",
-            },
-            withCredentials: true,
-          }
-        )
-        .then()
-        .catch(alert);
+      const followRes = await postData<any>(
+        servicesPath.FOLLOW_USER,
+        {
+          follow_id: user_id,
+        },
+        true
+      ).catch(console.error);
+      followRes && followRes.data && console.log("followed");
     } else {
       dispatch(setIsLogin(true));
     }

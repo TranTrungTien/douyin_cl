@@ -1,14 +1,12 @@
-import axios from "axios";
-import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { servicesPath } from "../../config/app_config";
-import { IFollowing } from "../../interfaces/following";
 import {
   isFollowUser,
   useAppDispatch,
   useAppSelector,
 } from "../../redux/app/hooks";
 import { setIsLogin } from "../../redux/slice/login_slice";
+import { deleteData, postData } from "../../services/app_services";
+import { servicesPath } from "../../services/services_path";
 import AvatarCardLink from "../avatar_card_link";
 import Button from "../button";
 
@@ -25,38 +23,22 @@ const VideoPageUserBox = ({ nickName, imageLink, uid, user_id }: Props) => {
     isFollowUser(state, my_id, user_id)
   );
   const dispatch = useAppDispatch();
-  const onFollow = () => {
+  const onFollow = async () => {
     if (my_id) {
       if (isFollowing) {
-        console.log("clicked ...");
-        axios
-          .delete(servicesPath.DEL_FOLLOWING, {
-            headers: {
-              "Content-Type": "application/json",
-            },
-            params: {
-              follow_id: user_id,
-            },
-            withCredentials: true,
-          })
-          .then(console.log)
-          .catch(console.log);
+        const delFollowingRes = await deleteData(servicesPath.DEL_FOLLOWING, {
+          follow_id: user_id,
+        });
+        delFollowingRes && delFollowingRes.data && console.log("unfollow");
       } else {
-        axios
-          .post(
-            servicesPath.FOLLOW_USER,
-            {
-              follow_id: user_id,
-            },
-            {
-              headers: {
-                "Content-Type": "application/json",
-              },
-              withCredentials: true,
-            }
-          )
-          .then(console.log)
-          .catch(console.log);
+        const followingRes = await postData<any>(
+          servicesPath.FOLLOW_USER,
+          {
+            follow_id: user_id,
+          },
+          true
+        ).catch(console.error);
+        followingRes && followingRes.data && console.log("followed");
       }
     } else {
       dispatch(setIsLogin(true));

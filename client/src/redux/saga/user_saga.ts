@@ -1,22 +1,18 @@
-import axios from "axios";
 import { call, put, takeEvery } from "redux-saga/effects";
-import { servicesPath } from "../../config/app_config";
 import { IUser } from "../../interfaces/user.interface";
+import { getData } from "../../services/app_services";
+import { servicesPath } from "../../services/services_path";
 import {
   getUserInfoFailed,
   getUserInfoRequested,
   getUserInfoSuccessfully,
-} from "../slice/user.slice";
+} from "../slice/user_slice";
 
 const getUserInfo = async () => {
-  return await axios.get<{ message: string; doc: IUser }>(
+  return getData<{ message: string; doc: IUser }>(
     servicesPath.GET_MY_INFO,
-    {
-      headers: {
-        "Content-Type": "application/json",
-      },
-      withCredentials: true,
-    }
+    null,
+    true
   );
 };
 

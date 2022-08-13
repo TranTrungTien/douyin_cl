@@ -1,16 +1,16 @@
-import axios from "axios";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import LikeFooter from "../../components/like_footer";
 import VideoBadge from "../../components/video_badge";
 import VideoCard from "../../components/video_card";
-import { servicesPath } from "../../config/app_config";
 import { axiosConfigHeaders } from "../../config/axios-config";
 import { useFetch } from "../../hooks/useFetch";
 import { IYourVideoLiked } from "../../interfaces/liked_video.interface";
 import { IVideo } from "../../interfaces/video.interface";
 import { ICursorState } from "../../pages/userpage";
 import { useAppSelector } from "../../redux/app/hooks";
+import { getData } from "../../services/app_services";
+import { servicesPath } from "../../services/services_path";
 import VideoCardFooter from "../video_card_footer_container";
 import VideoContainer from "../video_container";
 
@@ -60,83 +60,70 @@ const UserVideoContainer = ({
   } | null>(servicesPath.GET_COUNT, jsonHeader);
 
   useEffect(() => {
+    const fetchVideoOwn = async () => {
+      const videoRes = await getData<{ message: string; list: IVideo[] }>(
+        servicesPath.GET_VIDEO_BY_USER,
+        {
+          author_id: author_id,
+          cursor: cursor.viewOwn.cursorPosition,
+          limit: 15,
+        }
+      ).catch((err) => {
+        stopFetchingMoreVideo();
+      });
+      if (videoRes && videoRes.data) {
+        const d = videoRes.data;
+        setOwnVideos((preState) => {
+          if (!preState) {
+            return d;
+          } else {
+            return {
+              ...preState,
+              list: [...preState.list, ...d.list],
+            };
+          }
+        });
+      }
+    };
+
+    const fetchLikedVideo = async () => {
+      const videoRes = await getData<{
+        message: string;
+        list: IYourVideoLiked[];
+      }>(servicesPath.GET_ALL_VIDEO_LIKED_BY_USER, {
+        author_id: author_id,
+        cursor: cursor.viewLiked.cursorPosition,
+      }).catch((err) => {
+        console.error(err);
+        stopFetchingMoreVideo();
+      });
+      if (videoRes && videoRes.data) {
+        const d = videoRes.data;
+        setLikedVideos((preState) => {
+          if (!preState) {
+            return d;
+          } else {
+            return {
+              ...preState,
+              list: [...preState.list, ...d.list],
+            };
+          }
+        });
+      }
+    };
     if (
       viewOpt.viewOwn &&
       currentCursorPosition.current.viewOwn !== cursor.viewOwn.cursorPosition
     ) {
       currentCursorPosition.current.viewOwn = cursor.viewOwn.cursorPosition;
-      axios
-        .get<{ message: string; list: IVideo[] }>(
-          servicesPath.GET_VIDEO_BY_USER,
-          {
-            headers: {
-              Accept: "application/json",
-              "Content-Type": "application/json",
-            },
-            params: {
-              author_id: author_id,
-              cursor: cursor.viewOwn.cursorPosition,
-              limit: 15,
-            },
-          }
-        )
-        .then((data) => {
-          console.log(data.data.list);
-          const d = data.data;
-          setOwnVideos((preState) => {
-            if (!preState) {
-              return d;
-            } else {
-              return {
-                ...preState,
-                list: [...preState.list, ...d.list],
-              };
-            }
-          });
-        })
-        .catch((err) => {
-          alert(err);
-          stopFetchingMoreVideo();
-        });
+      fetchVideoOwn();
     } else if (
       viewOpt.viewLiked &&
       currentCursorPosition.current.viewLiked !==
         cursor.viewLiked.cursorPosition
     ) {
       currentCursorPosition.current.viewLiked = cursor.viewLiked.cursorPosition;
-
-      axios
-        .get<{ message: string; list: IYourVideoLiked[] }>(
-          servicesPath.GET_ALL_VIDEO_LIKED_BY_USER,
-          {
-            headers: {
-              Accept: "application/json",
-              "Content-Type": "application/json",
-            },
-            params: {
-              author_id: author_id,
-              cursor: cursor.viewLiked.cursorPosition,
-            },
-          }
-        )
-        .then((data) => {
-          console.log(data.data.list);
-          const d = data.data;
-          setLikedVideos((preState) => {
-            if (!preState) {
-              return d;
-            } else {
-              return {
-                ...preState,
-                list: [...preState.list, ...d.list],
-              };
-            }
-          });
-        })
-        .catch((err) => {
-          alert(err);
-          stopFetchingMoreVideo();
-        });
+      fetchLikedVideo();
     }
   }, [
     author_id,

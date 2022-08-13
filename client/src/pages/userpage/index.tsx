@@ -1,7 +1,7 @@
 import { UIEvent, useMemo, useState } from "react";
 import { useParams } from "react-router-dom";
 import { Logo, Nav, Search } from "../../components";
-import { servicesPath } from "../../config/app_config";
+import { servicesPath } from "../../services/services_path";
 import { axiosConfigHeaders } from "../../config/axios-config";
 import { useFetch } from "../../hooks/useFetch";
 import { IUser } from "../../interfaces/user.interface";

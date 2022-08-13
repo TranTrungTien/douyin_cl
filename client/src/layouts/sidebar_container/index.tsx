@@ -1,6 +1,6 @@
 import * as React from "react";
 import { Link, NavLink } from "react-router-dom";
-import { sidebarAction } from "../../constants/sidebar_action";
+import { sidebarAction } from "../../routers/sidebar_route";
 
 type Props = {};
 const SidebarContainer = (props: Props) => {

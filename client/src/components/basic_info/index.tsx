@@ -1,8 +1,9 @@
-import axios, { AxiosResponse } from "axios";
 import { SyntheticEvent } from "react";
-import { useAppDispatch } from "../../redux/app/hooks";
 import { IUser } from "../../interfaces/user.interface";
-import { getUserInfoSuccessfully } from "../../redux/slice/user.slice";
+import { useAppDispatch } from "../../redux/app/hooks";
+import { getUserInfoSuccessfully } from "../../redux/slice/user_slice";
+import { postData } from "../../services/app_services";
+import { servicesPath } from "../../services/services_path";
 
 type Props = {
   emailVerified: string;
@@ -10,7 +11,7 @@ type Props = {
 };
 const BasicInfo = ({ emailVerified, code }: Props) => {
   const dispatch = useAppDispatch();
-  const onSubmit = (e: SyntheticEvent) => {
+  const onSubmit = async (e: SyntheticEvent) => {
     e.preventDefault();
     const target = e.target as typeof e.target & {
       nickname: { value: string };
@@ -23,31 +24,19 @@ const BasicInfo = ({ emailVerified, code }: Props) => {
     if (!nickname || !email || !password) return;
     else {
       const user = { nickname: nickname, email: email, password: password };
-      axios
-        .post<any, AxiosResponse<{ message: string; doc: IUser }>>(
-          "user/save",
-          { user },
-          {
-            headers: { "Content-Type": "application/json" },
-          }
-        )
-        .then((user) => {
-          const email = user.data.doc.email;
-          const password = user.data.doc.password;
-          axios
-            .post<{ message: string; doc: IUser }>(
-              "user/login",
-              { email, password, code },
-              {
-                headers: { "Content-Type": "application/json" },
-                withCredentials: true,
-              }
-            )
-            .then((userLogin) =>
-              dispatch(getUserInfoSuccessfully(userLogin.data.doc))
-            );
-        })
-        .catch(console.error);
+      const userDataRes = await postData<{ message: string; doc: IUser }>(
+        servicesPath.CREATE_USER,
+        { user }
+      ).catch(console.error);
+      const emailRes = userDataRes && userDataRes.data.doc.email;
+      const passwordRes = userDataRes && userDataRes.data.doc.password;
+
+      const loginRes = await postData<{ message: string; doc: IUser }>(
+        servicesPath.LOGIN,
+        { emailRes, passwordRes, code },
+        true
+      ).catch(console.error);
+      loginRes && dispatch(getUserInfoSuccessfully(loginRes.data.doc));
     }
   };
   return (
