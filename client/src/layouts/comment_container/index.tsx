@@ -1,11 +1,12 @@
-import { SyntheticEvent, useEffect, useState } from "react";
+import { SyntheticEvent, useMemo } from "react";
 import Comment from "../../components/comment";
 import CommentHeader from "../../components/comment_box_header";
 import Input from "../../components/input";
+import { useFetchAppend } from "../../hooks/useFetchAppend";
 import { IComment } from "../../interfaces/comment";
 import { ILikedComment } from "../../interfaces/liked_video.interface";
 import { useAppSelector } from "../../redux/app/hooks";
-import { getData, postData } from "../../services/app_services";
+import { postData } from "../../services/app_services";
 import { servicesPath } from "../../services/services_path";
 import { RightBarAction } from "../video_slide";
 
@@ -21,50 +22,29 @@ const CommentContainer = ({
   fromVideoPage,
 }: Props) => {
   const user = useAppSelector((state) => state.user);
-  const [comments, setComments] = useState<{
-    message: string;
-    list: IComment[];
-  } | null>(null);
-  useEffect(() => {
-    const fetchComment = async () => {
-      const commentRes = await getData<{
-        message: string;
-        list: IComment[];
-      }>(servicesPath.GET_ALL_COMMENTS_OF_VIDEO, {
-        video_id: video_id,
-      }).catch(console.error);
-      if (commentRes && commentRes.data) {
-        setComments(commentRes.data);
-      }
+  const commentParams = useMemo(() => {
+    return {
+      video_id: video_id,
     };
-    if (video_id) {
-      fetchComment();
-    }
   }, [video_id]);
+  const { data: comments, setData: setComments } = useFetchAppend<IComment>(
+    servicesPath.GET_ALL_COMMENTS_OF_VIDEO,
+    commentParams,
+    undefined,
+    undefined,
+    video_id ? true : false
+  );
 
-  const [likedComments, setLikedComments] = useState<{
-    message: string;
-    list: ILikedComment[];
-  } | null>(null);
-
-  useEffect(() => {
-    const fetchLikedComments = async () => {
-      const likedCommentsRes = await getData<{
-        message: string;
-        list: ILikedComment[];
-      }>(
-        servicesPath.GET_ALL_LIKED_COMMENT_OF_VIDEO_BY_AUTHOR,
-        { video_id: video_id },
-        true
-      ).catch(console.error);
-      if (likedCommentsRes && likedCommentsRes.data) {
-        setLikedComments(likedCommentsRes.data);
-      }
-    };
-    if (user.data) {
-      fetchLikedComments();
-    }
-  }, [user.data, video_id]);
+  const likedCommentParams = useMemo(() => {
+    return { video_id: video_id };
+  }, [video_id]);
+  const { data: likedComments } = useFetchAppend<ILikedComment>(
+    servicesPath.GET_ALL_LIKED_COMMENT_OF_VIDEO_BY_AUTHOR,
+    likedCommentParams,
+    undefined,
+    undefined,
+    user.data?.uid ? true : false
+  );
 
   const onSubmit = async (e: SyntheticEvent) => {
     e.preventDefault();
@@ -116,8 +96,6 @@ const CommentContainer = ({
       <div className="w-full h-auto overflow-auto hidden-scrollbar">
         {comments && comments.list.length
           ? comments.list.map((c, index) => {
-              console.log({ likedComments });
-
               const isLiked = likedComments?.list.find((l) => {
                 return l.comment_id._id === c._id;
               });

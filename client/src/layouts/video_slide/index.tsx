@@ -40,7 +40,7 @@ const VideoSlide = ({
     user: false,
   });
 
-  const { isActive, isVisible } = swiperSlide;
+  const { isActive, isVisible, isNext, isPrev } = swiperSlide;
 
   const onOpenRightBar = (action: RightBarAction) => {
     console.log({ action });
@@ -86,6 +86,7 @@ const VideoSlide = ({
       else setIsPlay((pre) => !pre);
     }
   };
+  console.log({ isActive, isVisible, isPrev, isNext });
 
   const my_id = useAppSelector((state) => state.user.data?._id);
   const isFollow = useAppSelector((state) =>

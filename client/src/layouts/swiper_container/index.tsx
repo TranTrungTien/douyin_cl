@@ -1,30 +1,20 @@
-import { useMemo, useState } from "react";
+import { useState } from "react";
 import SwiperCore, { Virtual } from "swiper";
 import "swiper/css";
 import "swiper/css/bundle";
 import "swiper/css/virtual";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { VideoSlide } from "..";
-import { servicesPath } from "../../services/services_path";
-import { axiosConfigHeaders } from "../../config/axios-config";
 import { useFetchSuspense } from "../../hooks/useFetchSuspense";
 import { IVideo } from "../../interfaces/video.interface";
+import { servicesPath } from "../../services/services_path";
 SwiperCore.use([Virtual]);
 
 const SwiperWrapper = () => {
   const [start, setStart] = useState(false);
-  const metaHeader = useMemo(() => {
-    return axiosConfigHeaders(
-      "GET",
-      "json",
-      "application/json",
-      "application/json",
-      null
-    );
-  }, []);
   const videos = useFetchSuspense<{ message: string; list: IVideo[] }>(
     servicesPath.GET_NEW_RECOMMENDED,
-    metaHeader
+    null
   );
   const onStart = () => {
     if (!start) setStart(true);

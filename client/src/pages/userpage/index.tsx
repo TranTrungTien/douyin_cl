@@ -1,8 +1,6 @@
 import { UIEvent, useMemo, useState } from "react";
 import { useParams } from "react-router-dom";
 import { Logo, Nav, Search } from "../../components";
-import { servicesPath } from "../../services/services_path";
-import { axiosConfigHeaders } from "../../config/axios-config";
 import { useFetch } from "../../hooks/useFetch";
 import { IUser } from "../../interfaces/user.interface";
 import {
@@ -13,6 +11,7 @@ import {
   UserInfoContainer,
   UserVideoContainer,
 } from "../../layouts";
+import { servicesPath } from "../../services/services_path";
 
 type Props = {};
 
@@ -31,20 +30,14 @@ export interface ICursorState {
 
 const UserPage = (props: Props) => {
   const { user_id } = useParams();
-  const jsonHeader = useMemo(() => {
-    return axiosConfigHeaders(
-      "GET",
-      "json",
-      "application/json",
-      "application/json",
-      {
-        uid: user_id,
-      }
-    );
+  const userInfoParams = useMemo(() => {
+    return {
+      uid: user_id,
+    };
   }, [user_id]);
   const user = useFetch<null | { message: string; doc: IUser }>(
     servicesPath.GET_USER_INFO,
-    jsonHeader
+    userInfoParams
   );
   const [cursorState, setCursorState] = useState<ICursorState>({
     viewOwn: {

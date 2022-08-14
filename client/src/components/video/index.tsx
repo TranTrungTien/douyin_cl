@@ -1,5 +1,4 @@
-import { useEffect, useMemo, useRef } from "react";
-import { axiosConfigHeaders } from "../../config/axios-config";
+import { useEffect, useRef } from "react";
 import { useFetchSuspense } from "../../hooks/useFetchSuspense";
 import RightVideoAction from "../../layouts/right_video_action_container";
 import { RightBarAction } from "../../layouts/video_slide";
@@ -62,10 +61,13 @@ const Video = ({
   const progressRef = useRef<HTMLDivElement>(null);
   const timeCounterRef = useRef<HTMLSpanElement>(null);
   const progressContainerRef = useRef({ progressRef, progressBarRef });
-  const mediaHeader = useMemo(() => {
-    return axiosConfigHeaders("GET", "blob", "video/mp4", "video/mp4", null);
-  }, []);
-  const videoBlob = useFetchSuspense<Blob>("/" + video_addr, mediaHeader);
+  const videoBlob = useFetchSuspense<Blob>(
+    "/" + video_addr,
+    null,
+    false,
+    "blob",
+    "video/mp4"
+  );
 
   useEffect(() => {
     let videoRefCl: HTMLVideoElement | null = null;

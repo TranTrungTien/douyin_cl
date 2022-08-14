@@ -1,16 +1,36 @@
-import { AxiosRequestConfig } from "axios";
 import { useEffect, useState } from "react";
-import { fetchData } from "../utils/fetch-data";
+import { getData } from "../services/app_services";
 import { promiseWrapper } from "../utils/promise-wrapper";
 
-export function useFetchSuspense<T>(url: string, opts: AxiosRequestConfig) {
+export function useFetchSuspense<T>(
+  url: string,
+  params: any,
+  withCredentials: boolean = false,
+  responseType: "text" | "json" | "blob" | "arraybuffer" = "json",
+  contentType: string = "application/json"
+) {
   const [resource, setResource] = useState<{
     read: () => undefined | T;
   } | null>(null);
   useEffect(() => {
-    const _resource = promiseWrapper<T>(fetchData<T>(url, opts));
-    setResource(_resource);
-  }, [url, opts]);
+    const fetchData = async () => {
+      return await (
+        await getData<T>(
+          url,
+          params,
+          withCredentials,
+          responseType,
+          contentType
+        ).catch((err) => {
+          throw err;
+        })
+      ).data;
+    };
+    if (url) {
+      const _resource = promiseWrapper<T>(fetchData());
+      setResource(_resource);
+    }
+  }, [url, params, withCredentials, responseType, contentType]);
 
   return resource?.read();
 }
