@@ -1,15 +1,14 @@
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useMemo, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import LikeFooter from "../../components/like_footer";
 import VideoBadge from "../../components/video_badge";
 import VideoCard from "../../components/video_card";
-import { axiosConfigHeaders } from "../../config/axios-config";
 import { useFetch } from "../../hooks/useFetch";
+import { useFetchAppend } from "../../hooks/useFetchAppend";
 import { IYourVideoLiked } from "../../interfaces/liked_video.interface";
 import { IVideo } from "../../interfaces/video.interface";
 import { ICursorState } from "../../pages/userpage";
 import { useAppSelector } from "../../redux/app/hooks";
-import { getData } from "../../services/app_services";
 import { servicesPath } from "../../services/services_path";
 import VideoCardFooter from "../video_card_footer_container";
 import VideoContainer from "../video_container";
@@ -34,104 +33,55 @@ const UserVideoContainer = ({
   });
   const my_id = useAppSelector((state) => state.user.data?._id);
   const [viewOpt, setViewOpt] = useState({ viewOwn: true, viewLiked: false });
-  const [ownVideos, setOwnVideos] = useState<null | {
-    message: string;
-    list: IVideo[];
-  }>(null);
-  const [likedVideos, setLikedVideos] = useState<null | {
-    message: string;
-    list: IYourVideoLiked[];
-  }>(null);
-  const jsonHeader = useMemo(() => {
-    return axiosConfigHeaders(
-      "GET",
-      "json",
-      "application/json",
-      "application/json",
-      {
-        author_id: author_id,
-      }
-    );
+
+  const countParams = useMemo(() => {
+    return {
+      author_id: author_id,
+    };
   }, [author_id]);
+
   const count = useFetch<{
     message: string;
     ownVideoTotal: number;
     likedVideoTotal: number;
-  } | null>(servicesPath.GET_COUNT, jsonHeader);
-
-  useEffect(() => {
-    const fetchVideoOwn = async () => {
-      const videoRes = await getData<{ message: string; list: IVideo[] }>(
-        servicesPath.GET_VIDEO_BY_USER,
-        {
-          author_id: author_id,
-          cursor: cursor.viewOwn.cursorPosition,
-          limit: 15,
-        }
-      ).catch((err) => {
-        stopFetchingMoreVideo();
-      });
-      if (videoRes && videoRes.data) {
-        const d = videoRes.data;
-        setOwnVideos((preState) => {
-          if (!preState) {
-            return d;
-          } else {
-            return {
-              ...preState,
-              list: [...preState.list, ...d.list],
-            };
-          }
-        });
-      }
+  } | null>(servicesPath.GET_COUNT, countParams);
+  const ownVideosParams = useMemo(() => {
+    return {
+      author_id: author_id,
+      cursor: cursor.viewOwn.cursorPosition,
+      limit: 15,
     };
+  }, [author_id, cursor.viewOwn.cursorPosition]);
 
-    const fetchLikedVideo = async () => {
-      const videoRes = await getData<{
-        message: string;
-        list: IYourVideoLiked[];
-      }>(servicesPath.GET_ALL_VIDEO_LIKED_BY_USER, {
-        author_id: author_id,
-        cursor: cursor.viewLiked.cursorPosition,
-      }).catch((err) => {
-        console.error(err);
-        stopFetchingMoreVideo();
-      });
-      if (videoRes && videoRes.data) {
-        const d = videoRes.data;
-        setLikedVideos((preState) => {
-          if (!preState) {
-            return d;
-          } else {
-            return {
-              ...preState,
-              list: [...preState.list, ...d.list],
-            };
-          }
-        });
-      }
-    };
-    if (
-      viewOpt.viewOwn &&
+  const { data: ownVideos } = useFetchAppend<IVideo>(
+    servicesPath.GET_VIDEO_BY_USER,
+    ownVideosParams,
+    stopFetchingMoreVideo,
+    () =>
+      (currentCursorPosition.current.viewOwn = cursor.viewOwn.cursorPosition),
+    viewOpt.viewOwn &&
       currentCursorPosition.current.viewOwn !== cursor.viewOwn.cursorPosition
-    ) {
-      currentCursorPosition.current.viewOwn = cursor.viewOwn.cursorPosition;
-      fetchVideoOwn();
-    } else if (
-      viewOpt.viewLiked &&
+  );
+  const likedVideosParams = useMemo(() => {
+    return {
+      author_id: author_id,
+      cursor: cursor.viewLiked.cursorPosition,
+      limit: 15,
+    };
+  }, [author_id, cursor.viewLiked.cursorPosition]);
+
+  const { data: likedVideos } = useFetchAppend<IYourVideoLiked>(
+    servicesPath.GET_ALL_VIDEO_LIKED_BY_USER,
+    likedVideosParams,
+    stopFetchingMoreVideo,
+    () =>
+      (currentCursorPosition.current.viewLiked =
+        cursor.viewLiked.cursorPosition),
+    viewOpt.viewLiked &&
       currentCursorPosition.current.viewLiked !==
         cursor.viewLiked.cursorPosition
-    ) {
-      currentCursorPosition.current.viewLiked = cursor.viewLiked.cursorPosition;
-      fetchLikedVideo();
-    }
-  }, [
-    author_id,
-    cursor,
-    stopFetchingMoreVideo,
-    viewOpt.viewOwn,
-    viewOpt.viewLiked,
-  ]);
+  );
+
   const onChangeViewOpt = (viewOwn: boolean) => {
     if (viewOwn && !viewOpt.viewOwn) {
       setViewOpt({ viewOwn: true, viewLiked: false });

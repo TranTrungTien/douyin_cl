@@ -1,8 +1,9 @@
-import { memo, MouseEvent, SyntheticEvent, useEffect, useState } from "react";
+import { memo, MouseEvent, SyntheticEvent, useMemo, useState } from "react";
+import { useFetchAppend } from "../../hooks/useFetchAppend";
 import { IComment } from "../../interfaces/comment";
 import { ILikedComment } from "../../interfaces/liked_video.interface";
 import { useAppSelector } from "../../redux/app/hooks";
-import { deleteData, getData, postData } from "../../services/app_services";
+import { deleteData, postData } from "../../services/app_services";
 import { servicesPath } from "../../services/services_path";
 import { convertDate } from "../../utils/covert_date";
 import AvatarCardLink from "../avatar_card_link";
@@ -38,55 +39,46 @@ const Comment = ({
 }: Props) => {
   const [isReply, setIsReply] = useState(false);
   const user = useAppSelector((state) => state.user);
-  const [replyComments, setReplyComments] = useState<{
-    message: string;
-    list: IComment[];
-  } | null>(null);
   const [showReply, setShowReply] = useState({
     isShow: false,
     cursor: 0,
   });
-  const [likedCommentInComments, setLikedCommentInComments] = useState<{
-    message: string;
-    list: ILikedComment[];
-  } | null>(null);
-  useEffect(() => {
-    const fetchComment = async () => {
-      const commentRes = await getData<{
-        message: string;
-        list: IComment[];
-      }>(servicesPath.GET_REPLY_OF_COMMENT, {
-        video_id: video_id,
-        reply_comment_id: comment_id,
-        cursor: 0,
-      }).catch(console.error);
-      if (commentRes && commentRes.data) {
-        setReplyComments(commentRes.data);
-        const likedCommentInComments = await getData<{
-          message: string;
-          list: ILikedComment[];
-        }>(
-          servicesPath.GET_ALL_LIKED_COMMENT_IN_OTHER_COMMENT,
-          {
-            video_id: video_id,
-            reply_comment_id: comment_id,
-          },
-          true
-        ).catch(console.error);
-        if (likedCommentInComments && likedCommentInComments.data) {
-          setLikedCommentInComments(likedCommentInComments.data);
-        }
-      }
+
+  const commentParams = useMemo(() => {
+    return {
+      video_id: video_id,
+      reply_comment_id: comment_id,
+      cursor: 0,
     };
-    if (
+  }, [video_id, comment_id]);
+  const { data: replyComments, setData: setReplyComments } =
+    useFetchAppend<IComment>(
+      servicesPath.GET_REPLY_OF_COMMENT,
+      commentParams,
+      undefined,
+      undefined,
       typeof replyCount === "number" &&
-      replyCount > 0 &&
-      video_id &&
-      showReply.isShow
-    ) {
-      fetchComment();
-    }
-  }, [replyCount, showReply.isShow, video_id, comment_id]);
+        replyCount > 0 &&
+        video_id &&
+        showReply.isShow
+        ? true
+        : false
+    );
+  const likedCommentInCommentsParams = useMemo(() => {
+    return {
+      video_id: video_id,
+      reply_comment_id: comment_id,
+    };
+  }, [video_id, comment_id]);
+  const { data: likedCommentInComments } = useFetchAppend<ILikedComment>(
+    servicesPath.GET_ALL_LIKED_COMMENT_IN_OTHER_COMMENT,
+    likedCommentInCommentsParams,
+    undefined,
+    undefined,
+    user?.data?.uid && replyComments?.list.length ? true : false,
+    true
+  );
+
   const onSubmit = async (event: SyntheticEvent) => {
     event.preventDefault();
     const target = event.target as typeof event.target & {
@@ -244,7 +236,6 @@ const Comment = ({
               const isLiked = likedCommentInComments?.list.find((l) => {
                 return l.comment_id._id === c._id;
               });
-              console.log({ isLiked });
               return (
                 <Comment
                   isLiked={isLiked ? true : false}

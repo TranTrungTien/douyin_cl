@@ -1,22 +1,28 @@
 import { AxiosResponse } from "axios";
 import Axios from "../config/axios-config";
 
+export type ResponseType = "text" | "json" | "blob" | "arraybuffer";
+
 async function axiosAction<T>(
   url: string,
   method: string,
   data?: any,
   params?: any,
   withCredentials: boolean = false,
-  headerContentType: string = "application/json"
+  responseType: ResponseType = "json",
+  contentType: string = "application/json"
 ) {
   return (await Axios(url, {
     data: data,
     method: method,
     params: params,
+    responseType: responseType,
     headers: {
-      "Content-Type": headerContentType,
+      "Content-Type": contentType,
     },
     withCredentials: withCredentials,
+  }).catch((err) => {
+    throw err;
   })) as AxiosResponse<T>;
 }
 
@@ -24,7 +30,8 @@ export function postData<T>(
   url: string,
   data: any,
   withCredentials: boolean = false,
-  headerContentType: string = "application/json"
+  responseType: ResponseType = "json",
+  contentType: string = "application/json"
 ) {
   return axiosAction<T>(
     url,
@@ -32,7 +39,8 @@ export function postData<T>(
     data,
     null,
     withCredentials,
-    headerContentType
+    responseType,
+    contentType
   ).catch((err) => {
     throw err;
   });
@@ -41,7 +49,8 @@ export function postData<T>(
 export function deleteData<T>(
   url: string,
   params: any,
-  headerContentType: string = "application/json"
+  responseType: ResponseType = "json",
+  contentType: string = "application/json"
 ) {
   return axiosAction<T>(
     url,
@@ -49,7 +58,8 @@ export function deleteData<T>(
     null,
     params,
     true,
-    headerContentType
+    responseType,
+    contentType
   ).catch((err) => {
     throw err;
   });
@@ -59,7 +69,8 @@ export function getData<T>(
   url: string,
   params: any,
   withCredentials: boolean = false,
-  headerContentType: string = "application/json"
+  responseType: ResponseType = "json",
+  contentType: string = "application/json"
 ) {
   return axiosAction<T>(
     url,
@@ -67,6 +78,9 @@ export function getData<T>(
     null,
     params,
     withCredentials,
-    headerContentType
-  );
+    responseType,
+    contentType
+  ).catch((err) => {
+    throw err;
+  });
 }

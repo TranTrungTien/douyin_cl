@@ -14,27 +14,6 @@ const initialState: IInitialState = {
   data: null,
   error: null,
 };
-
-// export const fetchUserAsync = createAsyncThunk(
-//   "fetchUserAsync/user",
-//   async () => {
-//     try {
-//       const userData = await axios.get<{ message: string; doc: IUser }>(
-//         "user/",
-//         {
-//           headers: {
-//             "Content-Type": "application/json",
-//           },
-//           withCredentials: true,
-//         }
-//       );
-//       return userData.data.doc;
-//     } catch (error) {
-//       throw error;
-//     }
-//   }
-// );
-
 const userSlice = createSlice({
   name: "user",
   initialState: initialState,
@@ -68,31 +47,6 @@ const userSlice = createSlice({
       };
     },
   },
-  // extraReducers: (builder) => {
-  //   builder.addCase(fetchUserAsync.pending, (state) => {
-  //     return {
-  //       ...state,
-  //       status: "pending",
-  //     };
-  //   });
-  //   builder.addCase(
-  //     fetchUserAsync.fulfilled,
-  //     (_, { payload }: PayloadAction<IUser>) => {
-  //       return {
-  //         status: "done",
-  //         data: payload,
-  //         error: null,
-  //       };
-  //     }
-  //   );
-  //   builder.addCase(fetchUserAsync.rejected, (_, action) => {
-  //     return {
-  //       status: "error",
-  //       error: action.error,
-  //       data: null,
-  //     };
-  //   });
-  // },
 });
 
 export const {

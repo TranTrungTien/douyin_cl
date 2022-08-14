@@ -23,31 +23,23 @@ import {
 import ErrorBoundary from "../../utils/error-boundaries";
 
 import VideoPageUserBox from "../../components/video_page_user_box";
-import { servicesPath } from "../../services/services_path";
-import { axiosConfigHeaders } from "../../config/axios-config";
 import { useFetch } from "../../hooks/useFetch";
 import { IVideo } from "../../interfaces/video.interface";
+import { servicesPath } from "../../services/services_path";
 
 type Props = {};
 
 const VideoPage = (props: Props) => {
   const [isPlay, setIsPlay] = useState(true);
   const { video_id, video_idf } = useParams();
-  const mediaHeader = useMemo(() => {
-    return axiosConfigHeaders(
-      "GET",
-      "json",
-      "application/json",
-      "application/json",
-      {
-        video_id,
-      }
-    );
+  const videoParams = useMemo(() => {
+    return {
+      video_id,
+    };
   }, [video_id]);
-  console.log(video_id);
   const video = useFetch<{ message: string; doc: IVideo }>(
     servicesPath.GET_METADATA,
-    mediaHeader
+    videoParams
   );
   const onPlayOrPause = (
     e: MouseEvent<HTMLElement> & {

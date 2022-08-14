@@ -119,6 +119,7 @@ const UploadContainer = () => {
       servicesPath.POST_FORMDATA,
       formData,
       true,
+      "json",
       "multipart/form-data"
     ).catch(console.error);
     if (fileRes && fileRes.data) {

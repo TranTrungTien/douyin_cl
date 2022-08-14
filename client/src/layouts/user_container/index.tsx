@@ -1,11 +1,11 @@
-import { UIEvent, useEffect, useState } from "react";
+import { UIEvent, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 import LikeFooter from "../../components/like_footer";
 import UserBoxHeader from "../../components/user_box_header";
 import VideoBadge from "../../components/video_badge";
 import VideoCard from "../../components/video_card";
+import { useFetchAppend } from "../../hooks/useFetchAppend";
 import { IVideo } from "../../interfaces/video.interface";
-import { getData } from "../../services/app_services";
 import { servicesPath } from "../../services/services_path";
 import VideoCardFooter from "../video_card_footer_container";
 import VideoContainer from "../video_container";
@@ -30,40 +30,21 @@ const UserContainer = ({
   nickname,
   handleCloseUserBox,
 }: Props) => {
-  const [ownVideos, setOwnVideos] = useState<null | {
-    message: string;
-    list: IVideo[];
-  }>(null);
   const [cursor, setCursor] = useState(0);
-  useEffect(() => {
-    const fetchVideo = async () => {
-      const videoRes = await getData<{
-        message: string;
-        video_count: number;
-        list: IVideo[];
-      }>(servicesPath.GET_VIDEO_BY_USER, {
-        author_id: author_id,
-        cursor: cursor,
-        limit: 15,
-      }).catch(console.error);
-      if (videoRes && videoRes.data) {
-        const d = videoRes.data;
-        setOwnVideos((preState) => {
-          if (!preState) {
-            return d;
-          } else {
-            return {
-              ...preState,
-              list: [...preState.list, ...d.list],
-            };
-          }
-        });
-      }
+  const ownVideosParams = useMemo(() => {
+    return {
+      author_id: author_id,
+      cursor: cursor,
+      limit: 15,
     };
-    if (author_id) {
-      fetchVideo();
-    }
   }, [author_id, cursor]);
+  const { data: ownVideos } = useFetchAppend<IVideo>(
+    servicesPath.GET_VIDEO_BY_USER,
+    ownVideosParams,
+    undefined,
+    undefined,
+    author_id ? true : false
+  );
 
   const onScroll = (e: UIEvent<HTMLDivElement>) => {
     const toBottom =
