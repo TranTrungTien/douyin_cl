@@ -90,29 +90,38 @@ const Comment = ({
     const text = target.comment.value;
     target.reset();
 
-    const commentRes = await postData<{ message: string; doc: IComment }>(
-      servicesPath.POST_COMMENT,
-      {
-        reply_comment_id: comment_id,
-        video_id: video_id,
-        text: text,
-      },
-      true
-    ).catch(console.error);
-    if (commentRes && commentRes.data) {
-      const newComment = commentRes.data.doc;
-      setReplyComments((state) => {
-        if (state)
+    if (user.data) {
+      const commentRes = await postData<{ message: string; doc: IComment }>(
+        servicesPath.POST_COMMENT,
+        {
+          reply_comment_id: comment_id,
+          video_id: video_id,
+          text: text,
+        },
+        true
+      ).catch(console.error);
+      if (commentRes && commentRes.data) {
+        const newComment = commentRes.data.doc;
+        newComment.author_id = user.data;
+        setShowReply((prev) => {
           return {
-            ...state,
-            list: [...state.list, newComment],
+            ...prev,
+            isShow: true,
           };
-        else
-          return {
-            message: commentRes.data.message,
-            list: [newComment],
-          };
-      });
+        });
+        setReplyComments((state) => {
+          if (state)
+            return {
+              ...state,
+              list: [...state.list, newComment],
+            };
+          else
+            return {
+              message: commentRes.data.message,
+              list: [newComment],
+            };
+        });
+      }
     }
   };
   const onShowReply = () => {
