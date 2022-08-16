@@ -11,6 +11,10 @@ const followingSchema = new mongoose.Schema<IFollowing>(
       type: Schema.Types.ObjectId,
       ref: "User",
     },
+    isBlockedByAuthor: {
+      type: Boolean,
+      default: false,
+    },
   },
   { timestamps: true, validateBeforeSave: true }
 );

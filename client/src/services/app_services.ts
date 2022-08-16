@@ -12,6 +12,7 @@ async function axiosAction<T>(
   responseType: ResponseType = "json",
   contentType: string = "application/json"
 ) {
+  console.log({ withCredentials });
   return (await Axios(url, {
     data: data,
     method: method,
@@ -55,7 +56,7 @@ export function deleteData<T>(
   return axiosAction<T>(
     url,
     "DELETE",
-    null,
+    undefined,
     params,
     true,
     responseType,

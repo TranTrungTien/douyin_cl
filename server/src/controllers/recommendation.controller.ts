@@ -23,10 +23,7 @@ function getRecommendationDef(req: Request, res: Response) {
       if (err) res.status(500).send({ message: "Error", err });
       else {
         if (!list) return res.status(404).send({ message: "List not found" });
-        else
-          res
-            .status(200)
-            .send({ message: "Successfully", list: shuffleArray(list) });
+        else res.status(200).send({ message: "Successfully", list });
       }
     });
 }

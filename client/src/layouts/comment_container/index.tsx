@@ -43,7 +43,8 @@ const CommentContainer = ({
     likedCommentParams,
     undefined,
     undefined,
-    user.data?.uid ? true : false
+    user.data?.uid ? true : false,
+    true
   );
 
   const onSubmit = async (e: SyntheticEvent) => {

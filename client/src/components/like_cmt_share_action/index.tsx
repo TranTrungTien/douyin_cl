@@ -4,6 +4,8 @@ import { useAppDispatch } from "../../redux/app/hooks";
 import { setIsLogin } from "../../redux/slice/login_slice";
 import { deleteData, postData } from "../../services/app_services";
 import { servicesPath } from "../../services/services_path";
+import Button from "../button";
+import DeleteIcon from "../../assets/icons/delete_icon.svg";
 
 type Props = {
   onOpenRightBar?: (action: RightBarAction) => void;
@@ -48,6 +50,9 @@ const LikeCmtShare = ({
     } else {
       dispatch(setIsLogin(true));
     }
+  };
+  const handleOpenOptions = () => {
+    console.log("click");
   };
   return (
     <div className={`${styleArray}`}>
@@ -442,21 +447,30 @@ const LikeCmtShare = ({
         </div>
       </button>
       {/* report icon */}
-      <button
-        className={`${styleArrayInner} text-white opacity-80 hover:opacity-100`}
+
+      <Button
+        onClick={handleOpenOptions}
+        text=""
+        backgroundColor="bg-transparent"
+        width="w-auo"
+        height="h-auto"
+        styleArray={`${styleArrayInner} text-white opacity-80 hover:opacity-100 relative`}
+        icon={
+          <div>
+            <svg
+              width={`${widthSvg}`}
+              height={`${heightSvg}`}
+              className="fill-current"
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 36 36"
+            >
+              <path d="M13.556 17.778a1.778 1.778 0 11-3.556 0 1.778 1.778 0 013.556 0zM19.778 17.778a1.778 1.778 0 11-3.556 0 1.778 1.778 0 013.556 0zM24.222 19.556a1.778 1.778 0 100-3.556 1.778 1.778 0 000 3.556z"></path>
+            </svg>
+          </div>
+        }
       >
-        <div>
-          <svg
-            width={`${widthSvg}`}
-            height={`${heightSvg}`}
-            className="fill-current"
-            xmlns="http://www.w3.org/2000/svg"
-            viewBox="0 0 36 36"
-          >
-            <path d="M13.556 17.778a1.778 1.778 0 11-3.556 0 1.778 1.778 0 013.556 0zM19.778 17.778a1.778 1.778 0 11-3.556 0 1.778 1.778 0 013.556 0zM24.222 19.556a1.778 1.778 0 100-3.556 1.778 1.778 0 000 3.556z"></path>
-          </svg>
-        </div>
-      </button>
+        <div className="bg-white absolute bottom-full left-0"></div>
+      </Button>
     </div>
   );
 };

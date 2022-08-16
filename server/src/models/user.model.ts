@@ -29,10 +29,6 @@ const userSchema = new mongoose.Schema<IUser>(
         default: [],
       },
     },
-    favoriting_count: {
-      type: Number,
-      default: 0,
-    },
     follower_count: {
       type: Number,
       default: 0,

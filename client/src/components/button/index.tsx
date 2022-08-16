@@ -16,6 +16,7 @@ type Props = {
   type?: "button" | "submit" | "reset" | undefined;
   styleArray?: string;
   icon?: ReactNode;
+  children?: ReactNode;
   onClick?: (e: MouseEvent<HTMLButtonElement>) => void;
 };
 
@@ -33,6 +34,7 @@ const Button = ({
   icon,
   styleArray = "text-white",
   type = "button",
+  children,
   onClick,
 }: Props) => {
   return (
@@ -42,8 +44,11 @@ const Button = ({
       type={type}
       className={`${backgroundColor} ${height} ${width} ${fontSize} ${lineHeight} ${py} ${px} ${borderRadius} ${styleArray}`}
     >
-      {icon}
-      {text}
+      <div className={`${icon && "flex justify-start items-center space-x-3"}`}>
+        {icon}
+        <span> {text}</span>
+      </div>
+      {children}
     </button>
   );
 };

@@ -1,4 +1,4 @@
-import axios, { AxiosRequestConfig } from "axios";
+import axios from "axios";
 import { servicesPath } from "../services/services_path";
 
 const axiosInitialize = axios.create({
