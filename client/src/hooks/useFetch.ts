@@ -5,6 +5,7 @@ export function useFetch<T>(
   url: string,
   params: any,
   withCredentials: boolean = false,
+  conditionQuery: boolean = false,
   responseType: "text" | "json" | "blob" | "arraybuffer" = "json",
   headerContentType = "application/json"
 ) {
@@ -19,11 +20,18 @@ export function useFetch<T>(
         headerContentType
       ).catch(console.error);
     };
-    if (url) {
+    if (url && conditionQuery) {
       fetchData().then(
         (response) => response && response.data && setData(response.data)
       );
     }
-  }, [url, withCredentials, headerContentType, params, responseType]);
+  }, [
+    url,
+    withCredentials,
+    headerContentType,
+    params,
+    responseType,
+    conditionQuery,
+  ]);
   return data;
 }

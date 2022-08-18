@@ -1,12 +1,21 @@
 import LikeCmtShare from "../../components/like_cmt_share_action";
 import { IVideo } from "../../interfaces/video.interface";
+import { useAppSelector } from "../../redux/app/hooks";
 import "./style.css";
 
 type Props = {
+  myID?: string;
+  isLiked?: boolean;
+  authorVideoID?: string;
   video: IVideo;
 };
 
-const VideoHeaderContainer = ({ video }: Props) => {
+const VideoHeaderContainer = ({
+  myID,
+  isLiked,
+  authorVideoID,
+  video,
+}: Props) => {
   return (
     <header className="w-full h-auto pt-2 text-white mt-2">
       <div className="flex flex-col justify-start items-start space-y-px">
@@ -15,7 +24,10 @@ const VideoHeaderContainer = ({ video }: Props) => {
         </h1>
         <div className="flex justify-between items-center w-full">
           <LikeCmtShare
-            video_id={video._id}
+            authorVideoID={authorVideoID}
+            liked={isLiked}
+            myID={myID}
+            videoId={video._id}
             styleArray="flex justify-start items-center space-x-6"
             styleArrayInner="flex justify-center items-center space-x-2"
             widthSvg="32"

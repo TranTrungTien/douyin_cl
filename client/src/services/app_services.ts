@@ -55,7 +55,7 @@ export function deleteData<T>(
   return axiosAction<T>(
     url,
     "DELETE",
-    null,
+    undefined,
     params,
     true,
     responseType,

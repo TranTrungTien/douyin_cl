@@ -4,50 +4,69 @@ import { useAppDispatch } from "../../redux/app/hooks";
 import { setIsLogin } from "../../redux/slice/login_slice";
 import { deleteData, postData } from "../../services/app_services";
 import { servicesPath } from "../../services/services_path";
+import Button from "../button";
+import DeleteIcon from "../../assets/icons/delete_icon.svg";
 
 type Props = {
   onOpenRightBar?: (action: RightBarAction) => void;
-  my_id?: string;
+  myID?: string;
+  authorVideoID?: string;
   liked?: boolean;
   styleArrayInner?: string;
   styleArray?: string;
   widthSvg?: string;
   heightSvg?: string;
-  video_id: string;
+  videoId: string;
 };
 const LikeCmtShare = ({
   liked,
-  my_id,
-  video_id,
+  myID,
+  authorVideoID,
+  videoId,
   onOpenRightBar,
   styleArrayInner,
   styleArray = "flex flex-col justify-center items-center space-y-2",
   widthSvg = "36",
   heightSvg = "36",
 }: Props) => {
-  const [like, setLike] = useState(liked);
+  console.log({ liked });
+
+  const [like, setLike] = useState(liked ? true : false);
+  console.log({ like });
+
   const dispatch = useAppDispatch();
+
   const onLikeVideo = async () => {
-    if (my_id) {
+    if (myID) {
+      if (!authorVideoID && !videoId) {
+        alert("Error");
+        return;
+      }
       if (!like) {
+        setLike(!like);
         const likeRes = await postData(
           servicesPath.POST_LIKE_VIDEO,
           {
-            video_id: video_id,
+            video_id: videoId,
+            author_video_id: authorVideoID,
           },
           true
         ).catch(console.error);
         likeRes && likeRes.data && console.log("liked video");
       } else {
+        setLike(!like);
         const delRes = await deleteData(servicesPath.DEL_LIKE_VIDEO, {
-          video_id: video_id,
+          video_id: videoId,
+          author_video_id: authorVideoID,
         }).catch(console.error);
         delRes && delRes.data && console.log("del like video successfully");
       }
-      setLike(!like);
     } else {
       dispatch(setIsLogin(true));
     }
+  };
+  const handleOpenOptions = () => {
+    console.log("click");
   };
   return (
     <div className={`${styleArray}`}>
@@ -442,21 +461,30 @@ const LikeCmtShare = ({
         </div>
       </button>
       {/* report icon */}
-      <button
-        className={`${styleArrayInner} text-white opacity-80 hover:opacity-100`}
+
+      <Button
+        onClick={handleOpenOptions}
+        text=""
+        backgroundColor="bg-transparent"
+        width="w-auo"
+        height="h-auto"
+        styleArray={`${styleArrayInner} text-white opacity-80 hover:opacity-100 relative`}
+        icon={
+          <div>
+            <svg
+              width={`${widthSvg}`}
+              height={`${heightSvg}`}
+              className="fill-current"
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 36 36"
+            >
+              <path d="M13.556 17.778a1.778 1.778 0 11-3.556 0 1.778 1.778 0 013.556 0zM19.778 17.778a1.778 1.778 0 11-3.556 0 1.778 1.778 0 013.556 0zM24.222 19.556a1.778 1.778 0 100-3.556 1.778 1.778 0 000 3.556z"></path>
+            </svg>
+          </div>
+        }
       >
-        <div>
-          <svg
-            width={`${widthSvg}`}
-            height={`${heightSvg}`}
-            className="fill-current"
-            xmlns="http://www.w3.org/2000/svg"
-            viewBox="0 0 36 36"
-          >
-            <path d="M13.556 17.778a1.778 1.778 0 11-3.556 0 1.778 1.778 0 013.556 0zM19.778 17.778a1.778 1.778 0 11-3.556 0 1.778 1.778 0 013.556 0zM24.222 19.556a1.778 1.778 0 100-3.556 1.778 1.778 0 000 3.556z"></path>
-          </svg>
-        </div>
-      </button>
+        <div className="bg-white absolute bottom-full left-0"></div>
+      </Button>
     </div>
   );
 };

@@ -33,8 +33,10 @@ export const servicesPath = {
   GET_ALL_FOLLOWING: "/api/v1/following",
   FOLLOW_USER: "/api/v1/following/create-following",
   CHECK_FOLLOWING: "/api/v1/following/check-following",
+  BLOCK_USER: "/api/v1/following/blocked-user-by-author",
   DEL_FOLLOWING: "/api/v1/following/delete-following",
 
   POST_LIKE_VIDEO: "/api/v1/user-actions/create-liked",
+  CHECK_LIKED: "/api/v1/user-actions/check-liked",
   DEL_LIKE_VIDEO: "/api/v1/user-actions/delete-liked",
 };

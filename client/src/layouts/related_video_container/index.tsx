@@ -18,7 +18,6 @@ const RelatedVideoContainer = ({ id }: Props) => {
     message: string;
     doc: IVideo[];
   }>(servicesPath.GET_RELATED_RECOMMENDED, relatedVideoParams);
-  console.log(relatedVideo);
 
   return (
     <div className="flex flex-col justify-start items-start space-y-6 w-full h-full mt-6">

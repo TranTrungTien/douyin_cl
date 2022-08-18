@@ -2,10 +2,15 @@ import { RightBarAction } from "../../layouts/video_slide";
 
 type Props = {
   fromVideoPage?: boolean;
+  totalComments?: number;
   handleCloseComment?: (action: RightBarAction) => void;
 };
 
-const CommentBoxHeader = ({ handleCloseComment, fromVideoPage }: Props) => {
+const CommentBoxHeader = ({
+  totalComments,
+  handleCloseComment,
+  fromVideoPage,
+}: Props) => {
   const onCloseComment = () => {
     handleCloseComment &&
       handleCloseComment({ comment: false, isOpen: false, user: false });
@@ -15,7 +20,7 @@ const CommentBoxHeader = ({ handleCloseComment, fromVideoPage }: Props) => {
       <div>
         <span className="leading-6 text-base text-white opacity-90 font-medium">
           全部评论
-          <span>(11807)</span>
+          <span>({totalComments})</span>
         </span>
       </div>
       {fromVideoPage || (

@@ -31,6 +31,8 @@ const VideoSlide = ({
   allowedPlay,
 }: Props) => {
   console.log("video slide rerender");
+  const myID = useAppSelector((state) => state.user.data?._id);
+  console.log({ myID });
   const [isPlay, setIsPlay] = useState(true);
   const swiper = useSwiper();
   const swiperSlide = useSwiperSlide();
@@ -88,9 +90,8 @@ const VideoSlide = ({
   };
   console.log({ isActive, isVisible, isPrev, isNext });
 
-  const my_id = useAppSelector((state) => state.user.data?._id);
   const isFollow = useAppSelector((state) =>
-    isFollowUser(state, my_id, video.author_id._id)
+    isFollowUser(state, myID, video.author_id._id)
   ) as boolean | undefined;
 
   return (
@@ -113,17 +114,17 @@ const VideoSlide = ({
               }
             >
               <Video
-                my_id={my_id}
+                myID={myID}
                 isFollow={isFollow}
-                author_id={video.author_id._id}
-                author_uid={video.author_id.uid}
+                authorVideoID={video.author_id._id}
+                authorUid={video.author_id.uid}
                 nickname={video.author_id.nickname}
-                video_addr={video.play_addr.url_list[0]}
-                video_desc={video.desc}
-                video_duration={video.duration}
-                video_id={video._id}
-                video_idf={video.id_f}
-                avatar_thumb={avatar_thumb}
+                videoAddr={video.play_addr.url_list[0]}
+                videoDesc={video.desc}
+                videoDuration={video.duration}
+                videoID={video._id}
+                videoIdf={video.id_f}
+                avatarThumb={avatar_thumb}
                 fromVideoPage={false}
                 allowedPlay={allowedPlay}
                 isPlay={isPlay}
@@ -139,7 +140,7 @@ const VideoSlide = ({
         <RightContainer>
           {openRightBar.user ? (
             <UserContainer
-              my_id={my_id}
+              myID={myID}
               isFollow={isFollow}
               uid={video.author_id.uid}
               user_id={video.author_id._id}
@@ -150,7 +151,7 @@ const VideoSlide = ({
             />
           ) : (
             <CommentContainer
-              video_id={video._id}
+              videoID={video._id}
               handleCloseComment={onOpenRightBar}
             />
           )}

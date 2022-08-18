@@ -6,11 +6,22 @@ function createLikedComment(req: Request, res: Response) {
   const author_id = req.body._id as string;
   const video_id = req.body.video_id as string;
   const comment_id = req.body.comment_id as string;
-  const likeComment = new LikedCommentModel({
-    author_id: author_id,
-    video_id: video_id,
-    comment_id: comment_id,
-  });
+  const reply_comment_id = req.body.reply_comment_id as string;
+
+  const options = reply_comment_id
+    ? {
+        reply_comment_id: reply_comment_id,
+        author_id: author_id,
+        video_id: video_id,
+        comment_id: comment_id,
+      }
+    : {
+        author_id: author_id,
+        video_id: video_id,
+        comment_id: comment_id,
+      };
+
+  const likeComment = new LikedCommentModel(options);
   likeComment.save((err) => {
     if (err) res.status(500).send({ message: "Error like video", error: err });
     else {

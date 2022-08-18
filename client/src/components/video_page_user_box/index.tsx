@@ -15,16 +15,22 @@ type Props = {
   imageLink: string;
   uid: string;
   user_id: string;
+  myID?: string;
 };
 
-const VideoPageUserBox = ({ nickName, imageLink, uid, user_id }: Props) => {
-  const my_id = useAppSelector((state) => state.user.data?._id);
+const VideoPageUserBox = ({
+  nickName,
+  imageLink,
+  uid,
+  user_id,
+  myID,
+}: Props) => {
   const isFollowing = useAppSelector((state) =>
-    isFollowUser(state, my_id, user_id)
+    isFollowUser(state, myID, user_id)
   );
   const dispatch = useAppDispatch();
   const onFollow = async () => {
-    if (my_id) {
+    if (myID) {
       if (isFollowing) {
         const delFollowingRes = await deleteData(servicesPath.DEL_FOLLOWING, {
           follow_id: user_id,

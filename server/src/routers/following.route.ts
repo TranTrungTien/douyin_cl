@@ -10,6 +10,7 @@ router.post(
 );
 router.get("/check-following", verifyToken, FollowingController.checkFollowing);
 router.get("/", verifyToken, FollowingController.getAllFollowing);
+router.patch("blocked-user-by-author", verifyToken, FollowingController.block);
 router.delete(
   "/delete-following",
   verifyToken,

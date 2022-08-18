@@ -19,14 +19,15 @@ type Props = {
   uid: string;
   likedCount?: number;
   replyCount?: number;
-  video_id: string;
-  comment_id?: string;
+  videoID: string;
+  commentID?: string;
   isLiked?: boolean;
+  replyCommentID?: string;
 };
 
 const Comment = ({
-  comment_id,
-  video_id,
+  commentID,
+  videoID,
   replyCount,
   likedCount,
   styleArray,
@@ -36,7 +37,10 @@ const Comment = ({
   nickname = "ღ᭄余生ꦿ࿐",
   uid,
   isLiked,
+  replyCommentID,
 }: Props) => {
+  console.log({ replyCommentID });
+
   const [isReply, setIsReply] = useState(false);
   const user = useAppSelector((state) => state.user);
   const [showReply, setShowReply] = useState({
@@ -46,11 +50,11 @@ const Comment = ({
 
   const commentParams = useMemo(() => {
     return {
-      video_id: video_id,
-      reply_comment_id: comment_id,
+      video_id: videoID,
+      reply_comment_id: commentID,
       cursor: 0,
     };
-  }, [video_id, comment_id]);
+  }, [videoID, commentID]);
   const { data: replyComments, setData: setReplyComments } =
     useFetchAppend<IComment>(
       servicesPath.GET_REPLY_OF_COMMENT,
@@ -59,17 +63,17 @@ const Comment = ({
       undefined,
       typeof replyCount === "number" &&
         replyCount > 0 &&
-        video_id &&
+        videoID &&
         showReply.isShow
         ? true
         : false
     );
   const likedCommentInCommentsParams = useMemo(() => {
     return {
-      video_id: video_id,
-      reply_comment_id: comment_id,
+      video_id: videoID,
+      reply_comment_id: commentID,
     };
-  }, [video_id, comment_id]);
+  }, [videoID, commentID]);
   const { data: likedCommentInComments } = useFetchAppend<ILikedComment>(
     servicesPath.GET_ALL_LIKED_COMMENT_IN_OTHER_COMMENT,
     likedCommentInCommentsParams,
@@ -94,8 +98,8 @@ const Comment = ({
       const commentRes = await postData<{ message: string; doc: IComment }>(
         servicesPath.POST_COMMENT,
         {
-          reply_comment_id: comment_id,
-          video_id: video_id,
+          reply_comment_id: commentID,
+          video_id: videoID,
           text: text,
         },
         true
@@ -136,22 +140,30 @@ const Comment = ({
     event: MouseEvent<HTMLButtonElement>,
     like: boolean
   ) => {
-    if (like) {
-      const likeRes = await postData(
-        servicesPath.POST_lIKED_COMMENT,
-        {
-          video_id: video_id,
-          comment_id: comment_id,
-        },
-        true
-      ).catch(console.error);
-      likeRes && likeRes.data && console.log("commented");
-    } else {
-      const deleteRes = await deleteData<any>(servicesPath.DEL_lIKED_COMMENT, {
-        video_id: video_id,
-        comment_id: comment_id,
-      }).catch(console.error);
-      deleteRes && deleteRes.data && console.log("del comment successfully");
+    if (user.data) {
+      console.log({ replyCommentID });
+
+      if (like) {
+        const likeRes = await postData(
+          servicesPath.POST_lIKED_COMMENT,
+          {
+            video_id: videoID,
+            comment_id: commentID,
+            reply_comment_id: replyCommentID,
+          },
+          true
+        ).catch(console.error);
+        likeRes && likeRes.data && console.log("liked");
+      } else {
+        const deleteRes = await deleteData<any>(
+          servicesPath.DEL_lIKED_COMMENT,
+          {
+            video_id: videoID,
+            comment_id: commentID,
+          }
+        ).catch(console.error);
+        deleteRes && deleteRes.data && console.log("del comment successfully");
+      }
     }
   };
 
@@ -185,7 +197,7 @@ const Comment = ({
           {/* Action: Like, Reply */}
           <div className="text-xs font-medium leading-5 text-inherit opacity-70  flex justify-start items-center space-x-5">
             <Heart
-              liked={isLiked}
+              isLiked={isLiked}
               likedCount={likedCount}
               onClick={onLikeComment}
             />
@@ -242,14 +254,16 @@ const Comment = ({
           {replyComments &&
             showReply.isShow &&
             replyComments.list.map((c, index) => {
+              console.log({ c });
               const isLiked = likedCommentInComments?.list.find((l) => {
                 return l.comment_id._id === c._id;
               });
               return (
                 <Comment
+                  replyCommentID={c.reply_comment_id?._id}
                   isLiked={isLiked ? true : false}
-                  comment_id={c._id}
-                  video_id={video_id}
+                  commentID={c._id}
+                  videoID={videoID}
                   nickname={c.author_id.nickname}
                   image={c.author_id.avatar_thumb.url_list[0]}
                   key={c._id}

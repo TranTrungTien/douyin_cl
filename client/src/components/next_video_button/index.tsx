@@ -1,9 +1,9 @@
 type Props = {
-  handleChangeVideo: (isNextAction: boolean) => void;
+  handleChangeVideo?: (isNextAction: boolean) => void;
 };
 const NextVideoButton = ({ handleChangeVideo }: Props) => {
   const onChangeVideo = (isNextAction: boolean) => {
-    handleChangeVideo(isNextAction);
+    handleChangeVideo && handleChangeVideo(isNextAction);
   };
   return (
     <div className="flex flex-col justify-center items-start bg-gray_button opacity-30 rounded-full max-w-max hover:opacity-70">

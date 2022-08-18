@@ -24,7 +24,8 @@ const UserInfoContainer = ({ avatar_thumb_url, nickname, user_id }: Props) => {
   const isFollow = useAppSelector((state) =>
     isFollowUser(state, my_id, user_id)
   );
-  const [isFollowing, setIsFollowing] = useState(isFollow);
+
+  const [isFollowing, setIsFollowing] = useState(isFollow ? true : false);
   const onFollow = async () => {
     if (my_id) {
       if (isFollowing) {
