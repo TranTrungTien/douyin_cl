@@ -11,6 +11,7 @@ import {
   UserInfoContainer,
   UserVideoContainer,
 } from "../../layouts";
+import { useAppSelector } from "../../redux/app/hooks";
 import { servicesPath } from "../../services/services_path";
 
 type Props = {};
@@ -35,10 +36,21 @@ const UserPage = (props: Props) => {
       uid: user_id,
     };
   }, [user_id]);
-  const user = useFetch<null | { message: string; doc: IUser }>(
+
+  const userFromStore = useAppSelector((state) => state.user);
+  const userFromFetch = useFetch<null | { message: string; doc: IUser }>(
     servicesPath.GET_USER_INFO,
-    userInfoParams
+    userInfoParams,
+    userFromStore.data ? true : false
   );
+
+  const user = userFromStore.data
+    ? userFromStore.data
+    : userFromFetch?.doc
+    ? userFromFetch.doc
+    : null;
+  console.log({ user });
+
   const [cursorState, setCursorState] = useState<ICursorState>({
     viewOwn: {
       isCurrent: true,
@@ -128,21 +140,21 @@ const UserPage = (props: Props) => {
         </HeaderContainer>
         <PageContainer styleArray="laptop:w-full laptop:px-5 desktop:max-w-max extra-desktop:max-w-[1280px] over-desktop:max-w-[1440px] mx-auto desktop:space-x-3 extra-desktop:space-x-0">
           <SideContainer styleArray="desktop:min-w-min  min-h-full flex-1 text-white pt-10">
-            {user?.doc && (
+            {user && (
               <UserInfoContainer
-                avatar_thumb_url={user.doc.avatar_thumb.url_list[0]}
-                nickname={user.doc.nickname}
-                user_id={user.doc._id}
+                avatar_thumb_url={user.avatar_thumb.url_list[0]}
+                nickname={user.nickname}
+                user_id={user._id}
               />
             )}
           </SideContainer>
           <SideContainer styleArray="over-desktop:w-[900px] text-white shadow-[-18px_0px_80px_#000] h-max">
-            {user?.doc && (
+            {user && (
               <UserVideoContainer
-                viewLikedAllowed={user.doc.show_favorite_list}
+                viewLikedAllowed={user.show_favorite_list}
                 stopFetchingMoreVideo={stopFetchingMoreVideo}
                 cursor={cursorState}
-                author_id={user.doc._id}
+                author_id={user._id}
               />
             )}
           </SideContainer>

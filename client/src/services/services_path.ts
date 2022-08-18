@@ -37,5 +37,6 @@ export const servicesPath = {
   DEL_FOLLOWING: "/api/v1/following/delete-following",
 
   POST_LIKE_VIDEO: "/api/v1/user-actions/create-liked",
+  CHECK_LIKED: "/api/v1/user-actions/check-liked",
   DEL_LIKE_VIDEO: "/api/v1/user-actions/delete-liked",
 };

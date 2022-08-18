@@ -9,44 +9,58 @@ import DeleteIcon from "../../assets/icons/delete_icon.svg";
 
 type Props = {
   onOpenRightBar?: (action: RightBarAction) => void;
-  my_id?: string;
+  myID?: string;
+  authorVideoID?: string;
   liked?: boolean;
   styleArrayInner?: string;
   styleArray?: string;
   widthSvg?: string;
   heightSvg?: string;
-  video_id: string;
+  videoId: string;
 };
 const LikeCmtShare = ({
   liked,
-  my_id,
-  video_id,
+  myID,
+  authorVideoID,
+  videoId,
   onOpenRightBar,
   styleArrayInner,
   styleArray = "flex flex-col justify-center items-center space-y-2",
   widthSvg = "36",
   heightSvg = "36",
 }: Props) => {
-  const [like, setLike] = useState(liked);
+  console.log({ liked });
+
+  const [like, setLike] = useState(liked ? true : false);
+  console.log({ like });
+
   const dispatch = useAppDispatch();
+
   const onLikeVideo = async () => {
-    if (my_id) {
+    if (myID) {
+      if (!authorVideoID && !videoId) {
+        alert("Error");
+        return;
+      }
       if (!like) {
+        setLike(!like);
         const likeRes = await postData(
           servicesPath.POST_LIKE_VIDEO,
           {
-            video_id: video_id,
+            video_id: videoId,
+            author_video_id: authorVideoID,
           },
           true
         ).catch(console.error);
         likeRes && likeRes.data && console.log("liked video");
       } else {
+        setLike(!like);
         const delRes = await deleteData(servicesPath.DEL_LIKE_VIDEO, {
-          video_id: video_id,
+          video_id: videoId,
+          author_video_id: authorVideoID,
         }).catch(console.error);
         delRes && delRes.data && console.log("del like video successfully");
       }
-      setLike(!like);
     } else {
       dispatch(setIsLogin(true));
     }

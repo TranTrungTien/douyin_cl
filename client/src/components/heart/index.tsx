@@ -1,24 +1,26 @@
-import { MouseEvent, useState } from "react";
+import { MouseEvent, useEffect, useState } from "react";
 
 type Props = {
   likedCount?: number;
   styleArray?: string;
-  liked?: boolean;
+  isLiked?: boolean;
   onClick?: (event: MouseEvent<HTMLButtonElement>, liked: boolean) => void;
 };
 
-const Heart = ({ likedCount, styleArray, liked, onClick }: Props) => {
-  const [isLiked, setIsLiked] = useState(liked);
-
+const Heart = ({ likedCount, styleArray, isLiked, onClick }: Props) => {
+  const [liked, setLiked] = useState(false);
+  useEffect(() => {
+    setLiked(isLiked ? true : false);
+  }, [isLiked]);
   const onHandleLiked = (event: MouseEvent<HTMLButtonElement>) => {
-    onClick && onClick(event, !isLiked);
-    setIsLiked(!isLiked);
+    onClick && onClick(event, !liked);
+    setLiked(!liked);
   };
   return (
     <button
       onClick={onHandleLiked}
       className={`${styleArray} flex justify-start items-center space-x-px hover:text-fresh_red ${
-        isLiked && "text-fresh_red"
+        liked && "text-fresh_red"
       }`}
     >
       <svg

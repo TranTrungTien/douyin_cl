@@ -107,5 +107,4 @@ const userSchema = new mongoose.Schema<IUser>(
   { timestamps: true, validateBeforeSave: true }
 );
 
-const UserModel = mongoose.model("User", userSchema);
-export default UserModel;
+export default mongoose.model("User", userSchema);

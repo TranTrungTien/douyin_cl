@@ -44,7 +44,12 @@ const UserVideoContainer = ({
     message: string;
     ownVideoTotal: number;
     likedVideoTotal: number;
-  } | null>(servicesPath.GET_COUNT, countParams);
+  } | null>(
+    servicesPath.GET_COUNT,
+    countParams,
+    false,
+    author_id ? true : false
+  );
   const ownVideosParams = useMemo(() => {
     return {
       author_id: author_id,

@@ -4,11 +4,11 @@ import { timeFormat } from "../../utils/timeFormat";
 import "./style.css";
 
 type Props = {
-  author_uid?: string;
-  video_idf: string;
-  video_id: string;
-  video_desc: string;
-  video_duration: number;
+  authorUid?: string;
+  videoIdf: string;
+  videoID: string;
+  videoDesc: string;
+  videoDuration: number;
   fromVideoPage: boolean;
   nickname: string;
   isPlay?: boolean;
@@ -22,11 +22,11 @@ type Props = {
 const BottomVideoAction = forwardRef<HTMLSpanElement, Props>(
   (
     {
-      author_uid,
-      video_desc,
-      video_duration,
-      video_id,
-      video_idf,
+      authorUid,
+      videoDesc,
+      videoDuration,
+      videoID,
+      videoIdf,
       fromVideoPage,
       allowedPlay,
       isPlay,
@@ -96,13 +96,13 @@ const BottomVideoAction = forwardRef<HTMLSpanElement, Props>(
           {/* User name and description */}
           {!fromVideoPage && (
             <div className="flex flex-col items-start w-[95%] h-auto text-white ml-4 mb-4">
-              <Link to={`/user/${author_uid}`} target="_blank">
+              <Link to={`/user/${authorUid}`} target="_blank">
                 <h3 className="font-medium leading-[26px] text-[18px]">
                   @{nickname}
                 </h3>
               </Link>
               <p className="font-normal leading-[22px] text-sm opacity-60">
-                {video_desc}
+                {videoDesc}
               </p>
             </div>
           )}
@@ -149,7 +149,7 @@ const BottomVideoAction = forwardRef<HTMLSpanElement, Props>(
                     <span ref={timeCounterRef}>00:00</span>
                     <span className="mx-1">/</span>
                     <span className="group-hover:opacity-75">
-                      {timeFormat(video_duration)}
+                      {timeFormat(videoDuration)}
                     </span>
                   </div>
                 </div>
@@ -262,7 +262,7 @@ const BottomVideoAction = forwardRef<HTMLSpanElement, Props>(
                 </div>
 
                 {!fromVideoPage && (
-                  <Link target="_blank" to={`/video/${video_id}/${video_idf}`}>
+                  <Link target="_blank" to={`/video/${videoID}/${videoIdf}`}>
                     <div className="flex justify-center items-center group-hover: opacity-100">
                       {/* link to video's page */}
                       <span className="text-xs font-normal mr-2">详情</span>

@@ -26,10 +26,12 @@ import VideoPageUserBox from "../../components/video_page_user_box";
 import { useFetch } from "../../hooks/useFetch";
 import { IVideo } from "../../interfaces/video.interface";
 import { servicesPath } from "../../services/services_path";
+import { useAppSelector } from "../../redux/app/hooks";
 
 type Props = {};
 
 const VideoPage = (props: Props) => {
+  const myID = useAppSelector((state) => state.user.data?._id);
   const [isPlay, setIsPlay] = useState(true);
   const { video_id, video_idf } = useParams();
   const videoParams = useMemo(() => {
@@ -39,7 +41,21 @@ const VideoPage = (props: Props) => {
   }, [video_id]);
   const video = useFetch<{ message: string; doc: IVideo }>(
     servicesPath.GET_METADATA,
-    videoParams
+    videoParams,
+    false,
+    video_id ? true : false
+  );
+
+  const isLikedVideoParams = useMemo(() => {
+    return {
+      video_id: video_id,
+    };
+  }, [video_id]);
+  const isLikedVideo = useFetch<{ message: string; like?: boolean }>(
+    servicesPath.CHECK_LIKED,
+    isLikedVideoParams,
+    true,
+    video_id ? true : false
   );
   const onPlayOrPause = (
     e: MouseEvent<HTMLElement> & {
@@ -104,19 +120,19 @@ const VideoPage = (props: Props) => {
                   >
                     {video && (
                       <Video
+                        myID={myID}
                         nickname={video.doc.author_id.nickname}
-                        video_addr={video.doc.play_addr.url_list[0]}
-                        video_desc={video.doc.desc}
-                        video_duration={video.doc.duration}
-                        video_id={video.doc._id}
-                        video_idf={video.doc.id_f}
-                        avatar_thumb={
+                        videoAddr={video.doc.play_addr.url_list[0]}
+                        videoDesc={video.doc.desc}
+                        videoDuration={video.doc.duration}
+                        videoID={video.doc._id}
+                        videoIdf={video.doc.id_f}
+                        avatarThumb={
                           video.doc.author_id.avatar_thumb.url_list[0]
                         }
                         fromVideoPage={true}
                         isActive={true}
                         isPlay={isPlay ? true : false}
-                        onChangeVideo={() => {}}
                         allowedPlay={true}
                       />
                     )}
@@ -125,7 +141,14 @@ const VideoPage = (props: Props) => {
               </section>
 
               <div className="flex flex-col justify-start items-start w-full">
-                {video && <VideoHeaderContainer video={video.doc} />}
+                {video && (
+                  <VideoHeaderContainer
+                    authorVideoID={video.doc.author_id._id}
+                    myID={myID}
+                    video={video.doc}
+                    isLiked={isLikedVideo ? isLikedVideo?.like : false}
+                  />
+                )}
                 <div className="flex justify-start items-center space-x-1 mt-4 w-full">
                   <span className="text-sm font-normal leading-6 text-white opacity-50">
                     全部评论
@@ -134,10 +157,7 @@ const VideoPage = (props: Props) => {
                 </div>
                 <div className="w-full mt-6">
                   {video_id && (
-                    <CommentContainer
-                      video_id={video_id}
-                      fromVideoPage={true}
-                    />
+                    <CommentContainer videoID={video_id} fromVideoPage={true} />
                   )}
                 </div>
               </div>
@@ -146,6 +166,7 @@ const VideoPage = (props: Props) => {
               <RelatedContainer>
                 {video && (
                   <VideoPageUserBox
+                    myID={myID}
                     user_id={video.doc.author_id._id}
                     uid={video.doc.author_id.uid}
                     imageLink={video.doc.author_id.avatar_thumb.url_list[0]}

@@ -11,33 +11,33 @@ import { servicesPath } from "../../services/services_path";
 import { RightBarAction } from "../video_slide";
 
 type Props = {
-  video_id: string;
+  videoID: string;
   fromVideoPage?: boolean;
   handleCloseComment?: (action: RightBarAction) => void;
 };
 
 const CommentContainer = ({
   handleCloseComment,
-  video_id,
+  videoID,
   fromVideoPage,
 }: Props) => {
   const user = useAppSelector((state) => state.user);
   const commentParams = useMemo(() => {
     return {
-      video_id: video_id,
+      video_id: videoID,
     };
-  }, [video_id]);
+  }, [videoID]);
   const { data: comments, setData: setComments } = useFetchAppend<IComment>(
     servicesPath.GET_ALL_COMMENTS_OF_VIDEO,
     commentParams,
     undefined,
     undefined,
-    video_id ? true : false
+    videoID ? true : false
   );
 
   const likedCommentParams = useMemo(() => {
-    return { video_id: video_id };
-  }, [video_id]);
+    return { video_id: videoID };
+  }, [videoID]);
   const { data: likedComments } = useFetchAppend<ILikedComment>(
     servicesPath.GET_ALL_LIKED_COMMENT_OF_VIDEO_BY_AUTHOR,
     likedCommentParams,
@@ -60,7 +60,7 @@ const CommentContainer = ({
     const commentRes = await postData<{ message: string; doc: IComment }>(
       servicesPath.POST_COMMENT,
       {
-        video_id: video_id,
+        video_id: videoID,
         text: text,
       },
       true
@@ -89,6 +89,7 @@ const CommentContainer = ({
         className={`shadow-md w-full ${fromVideoPage ? "px-0" : "px-3"} pb-2`}
       >
         <CommentHeader
+          totalComments={comments?.list.length}
           handleCloseComment={handleCloseComment && handleCloseComment}
           fromVideoPage={fromVideoPage}
         />
@@ -103,8 +104,8 @@ const CommentContainer = ({
               return (
                 <Comment
                   isLiked={isLiked ? true : false}
-                  comment_id={c._id}
-                  video_id={video_id}
+                  commentID={c._id}
+                  videoID={videoID}
                   nickname={c.author_id.nickname}
                   image={c.author_id.avatar_thumb.url_list[0]}
                   key={c._id}
@@ -118,51 +119,6 @@ const CommentContainer = ({
               );
             })
           : null}
-        {/* <Comment
-          video_id=""
-          styleArray={!fromVideoPage ? `px-3` : "px-0"}
-          uid="fake"
-          datePosted={new Date().toISOString()}
-          content={"ffffffffffffffff"}
-          likedCount={100}
-          replyCount={0}
-        />
-        <Comment
-          video_id=""
-          styleArray={!fromVideoPage ? `px-3` : "px-0"}
-          uid="fake"
-          datePosted={new Date().toISOString()}
-          content={"ffffffffffffffff"}
-          likedCount={100}
-          replyCount={0}
-        />
-        <Comment
-          video_id=""
-          styleArray={!fromVideoPage ? `px-3` : "px-0"}
-          uid="fake"
-          datePosted={new Date().toISOString()}
-          content={"ffffffffffffffff"}
-          likedCount={100}
-          replyCount={0}
-        />
-        <Comment
-          video_id=""
-          styleArray={!fromVideoPage ? `px-3` : "px-0"}
-          uid="fake"
-          datePosted={new Date().toISOString()}
-          content={"ffffffffffffffff"}
-          likedCount={100}
-          replyCount={0}
-        />
-        <Comment
-          video_id=""
-          styleArray={!fromVideoPage ? `px-3` : "px-0"}
-          uid="fake"
-          datePosted={new Date().toISOString()}
-          content={"ffffffffffffffff"}
-          likedCount={100}
-          replyCount={0}
-        /> */}
       </div>
     </>
   );

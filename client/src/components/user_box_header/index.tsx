@@ -9,7 +9,7 @@ import Button from "../button";
 
 type Props = {
   isFollow?: boolean;
-  my_id?: string;
+  myID?: string;
   avatar_thumb: string;
   nickname: string;
   uid: string;
@@ -18,7 +18,7 @@ type Props = {
 };
 
 const UserBoxHeader = ({
-  my_id,
+  myID,
   user_id,
   isFollow,
   avatar_thumb,
@@ -31,7 +31,7 @@ const UserBoxHeader = ({
     handleCloseUserBox({ comment: false, isOpen: false, user: false });
   };
   const handleFollow = async () => {
-    if (my_id && user_id) {
+    if (myID && user_id) {
       const followRes = await postData<any>(
         servicesPath.FOLLOW_USER,
         {

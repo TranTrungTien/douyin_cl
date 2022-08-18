@@ -16,59 +16,61 @@ import Plus from "../plus";
 import ProgressBar from "../progress_bar";
 
 type Props = {
-  author_uid?: string;
-  author_id?: string;
+  authorUid?: string;
+  authorVideoID?: string;
   isFollow?: boolean;
-  my_id?: string;
-  video_addr: string;
-  video_idf: string;
-  video_id: string;
-  video_desc: string;
-  video_duration: number;
+  myID?: string;
+  videoAddr: string;
+  videoIdf: string;
+  videoID: string;
+  videoDesc: string;
+  videoDuration: number;
   nickname: string;
   fromVideoPage: boolean;
   allowedPlay: boolean;
   isPlay: boolean;
+  isLiked?: boolean;
   isActive: boolean;
-  avatar_thumb: string;
-  onChangeVideo: (action: boolean) => void;
+  avatarThumb: string;
+  onChangeVideo?: (action: boolean) => void;
   onOpenRightBar?: (action: RightBarAction) => void;
 };
 
 const Video = ({
   isFollow,
-  author_id,
-  my_id,
-  author_uid,
-  video_addr,
+  authorVideoID,
+  myID,
+  authorUid,
+  videoAddr,
   nickname,
-  video_desc,
-  video_duration,
-  video_id,
-  video_idf,
+  videoDesc,
+  videoDuration,
+  videoID,
+  videoIdf,
   fromVideoPage,
   allowedPlay,
   isPlay,
+  isLiked,
   isActive,
-  avatar_thumb,
+  avatarThumb,
   onChangeVideo,
   onOpenRightBar,
 }: Props) => {
   const dispatch = useAppDispatch();
   const videoRef = useRef<HTMLVideoElement>(null);
   console.log("video rerender");
+
   const progressBarRef = useRef<HTMLDivElement>(null);
   const progressRef = useRef<HTMLDivElement>(null);
   const timeCounterRef = useRef<HTMLSpanElement>(null);
   const progressContainerRef = useRef({ progressRef, progressBarRef });
   const videoBlob = useFetchSuspense<Blob>(
-    "/" + video_addr,
+    "/" + videoAddr,
     null,
     false,
     "blob",
     "video/mp4"
   );
-
   useEffect(() => {
     let videoRefCl: HTMLVideoElement | null = null;
     if (videoBlob && videoRef.current && !videoRef.current.src) {
@@ -105,7 +107,7 @@ const Video = ({
   const onTimeUpdate = () => {
     if (videoRef.current && progressBarRef.current && progressRef.current) {
       const currentTimePercent =
-        (videoRef.current.currentTime / video_duration) * 100;
+        (videoRef.current.currentTime / videoDuration) * 100;
       const width =
         (progressBarRef.current.clientWidth / 100) * currentTimePercent;
       if (width > progressBarRef.current.clientWidth) {
@@ -135,7 +137,7 @@ const Video = ({
     if (progressBarRef.current && videoRef.current) {
       const progressBarPercentage =
         (position / progressBarRef.current.clientWidth) * 100;
-      const changedTime = (progressBarPercentage / 100) * video_duration;
+      const changedTime = (progressBarPercentage / 100) * videoDuration;
       videoRef.current.currentTime = changedTime;
     }
   };
@@ -151,11 +153,11 @@ const Video = ({
   };
 
   const handleFollow = async () => {
-    if (my_id && author_id) {
+    if (myID && authorVideoID) {
       const followRes = await postData<any>(
         servicesPath.FOLLOW_USER,
         {
-          follow_id: author_id,
+          follow_id: authorVideoID,
         },
         true
       ).catch(console.error);
@@ -196,13 +198,13 @@ const Video = ({
       )}
       {/* Action's video */}
       <BottomVideoAction
-        author_uid={author_uid}
+        authorUid={authorUid}
         handleToggleFullscreenMode={onToggleFullscreenMode}
         nickname={nickname}
-        video_desc={video_desc}
-        video_duration={video_duration}
-        video_id={video_id}
-        video_idf={video_idf}
+        videoDesc={videoDesc}
+        videoDuration={videoDuration}
+        videoID={videoID}
+        videoIdf={videoIdf}
         handleChangeVolume={onChangeVolume}
         fromVideoPage={fromVideoPage}
         allowedPlay={allowedPlay}
@@ -223,7 +225,7 @@ const Video = ({
           <NextVideoButton handleChangeVideo={onChangeVideo} />
           <AvatarCardButton
             firstNickNameCharacter={nickname[0]}
-            image={avatar_thumb}
+            image={avatarThumb}
             borderRadius="rounded-full"
             handleOpenRightBar={onOpenRightBar}
             height="h-10"
@@ -233,7 +235,13 @@ const Video = ({
             {!isFollow && <Plus onClick={handleFollow} />}
           </AvatarCardButton>
           {/* like share, cmt,.,,, */}
-          <LikeCmtShare video_id={video_id} onOpenRightBar={onOpenRightBar} />
+          <LikeCmtShare
+            authorVideoID={authorVideoID}
+            videoId={videoID}
+            myID={myID}
+            liked={isLiked}
+            onOpenRightBar={onOpenRightBar}
+          />
         </RightVideoAction>
       )}
     </>

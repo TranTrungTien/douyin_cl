@@ -1,5 +1,6 @@
 import { Request, Response } from "express";
 import CommentModel from "../models/comment.model";
+import StatisticsModel from "../models/statistics.model";
 
 const createComment = (req: Request, res: Response) => {
   const video_id = req.body.video_id as string;
@@ -45,16 +46,55 @@ const createComment = (req: Request, res: Response) => {
                 .status(500)
                 .send({ message: "Error update reply count for comment", err });
             else {
-              res.status(200).send({ message: "Comment saved", doc });
+              StatisticsModel.findOneAndUpdate(
+                {
+                  video_id: video_id,
+                },
+                {
+                  $inc: {
+                    comment_count: 1,
+                  },
+                },
+                null,
+                (err, _) => {
+                  if (err)
+                    return res.status(500).send({
+                      message: "Error updating comment count for video",
+                      err,
+                    });
+                  else res.status(200).send({ message: "Comment saved", doc });
+                }
+              );
             }
           }
         );
-      } else res.status(200).send({ message: "Comment saved", doc });
+      } else {
+        StatisticsModel.findOneAndUpdate(
+          {
+            video_id: video_id,
+          },
+          {
+            $inc: {
+              comment_count: 1,
+            },
+          },
+          null,
+          (err, _) => {
+            if (err)
+              return res.status(500).send({
+                message: "Error updating comment count for video",
+                err,
+              });
+            else res.status(200).send({ message: "Comment saved", doc });
+          }
+        );
+      }
     }
   });
 };
 const deleteComment = (req: Request, res: Response) => {
-  const comment_id = req.body.comment_id;
+  const comment_id = req.query.comment_id;
+  const videoId = req.query.video_id;
   CommentModel.findByIdAndUpdate(
     comment_id,
     { delete_comment: true },
@@ -64,10 +104,26 @@ const deleteComment = (req: Request, res: Response) => {
         return res.status(500).send({ message: "Error deleting comment", err });
       else {
         if (!doc) return res.status(404).send({ message: "Comment not found" });
-        else
-          return res
-            .status(200)
-            .send({ message: "Comment deleted Successfully", doc });
+        else {
+          StatisticsModel.findOneAndUpdate(
+            {
+              video_id: videoId,
+            },
+            {
+              $inc: {
+                comment_count: -1,
+              },
+            },
+            null,
+            (err, _) => {
+              if (err) return res.status(500).send({ message: "Error", err });
+              else
+                return res
+                  .status(200)
+                  .send({ message: "Comment deleted Successfully", doc });
+            }
+          );
+        }
       }
     }
   );

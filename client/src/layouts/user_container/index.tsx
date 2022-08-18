@@ -12,7 +12,7 @@ import VideoContainer from "../video_container";
 import { RightBarAction } from "../video_slide";
 type Props = {
   isFollow?: boolean;
-  my_id?: string;
+  myID?: string;
   author_id: string;
   uid: string;
   user_id: string;
@@ -21,7 +21,7 @@ type Props = {
   handleCloseUserBox: (action: RightBarAction) => void;
 };
 const UserContainer = ({
-  my_id,
+  myID,
   isFollow,
   uid,
   user_id,
@@ -59,7 +59,7 @@ const UserContainer = ({
   return (
     <section className="w-full h-full overflow-hidden">
       <UserBoxHeader
-        my_id={my_id}
+        myID={myID}
         isFollow={isFollow}
         user_id={user_id}
         uid={uid}

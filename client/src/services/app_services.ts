@@ -12,7 +12,6 @@ async function axiosAction<T>(
   responseType: ResponseType = "json",
   contentType: string = "application/json"
 ) {
-  console.log({ withCredentials });
   return (await Axios(url, {
     data: data,
     method: method,
