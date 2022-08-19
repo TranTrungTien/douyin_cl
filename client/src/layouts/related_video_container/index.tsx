@@ -5,15 +5,15 @@ import { useFetchSuspense } from "../../hooks/useFetchSuspense";
 import { IVideo } from "../../interfaces/video.interface";
 
 type Props = {
-  id: string;
+  videoIdf: string;
 };
-const RelatedVideoContainer = ({ id }: Props) => {
+const RelatedVideoContainer = ({ videoIdf }: Props) => {
   const relatedVideoParams = useMemo(() => {
     return {
-      videoId: `${id}`,
+      videoId: `${videoIdf}`,
       limit: 15,
     };
-  }, [id]);
+  }, [videoIdf]);
   const relatedVideo = useFetchSuspense<{
     message: string;
     doc: IVideo[];
@@ -26,7 +26,7 @@ const RelatedVideoContainer = ({ id }: Props) => {
         relatedVideo.doc.map((video, index) => (
           <RelatedVideo
             key={index}
-            video_cover={video.origin_cover.url_list[0]}
+            coverImage={video.origin_cover.url_list[0]}
             desc={video.desc}
             nickname={video.author_id.nickname}
           />

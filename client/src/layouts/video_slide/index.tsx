@@ -11,7 +11,7 @@ import RightContainer from "../right_container";
 import UserContainer from "../user_container";
 
 type Props = {
-  avatar_thumb: string;
+  avatarThumb: string;
   nickname: string;
   video: IVideo;
   onStart: () => void;
@@ -24,7 +24,7 @@ export interface RightBarAction {
 }
 const dataType = "clickable";
 const VideoSlide = ({
-  avatar_thumb,
+  avatarThumb,
   nickname,
   onStart,
   video,
@@ -44,7 +44,7 @@ const VideoSlide = ({
 
   const { isActive, isVisible, isNext, isPrev } = swiperSlide;
 
-  const onOpenRightBar = (action: RightBarAction) => {
+  const handleOpenRightBar = (action: RightBarAction) => {
     console.log({ action });
 
     if (action.isOpen === openRightBar.isOpen) return;
@@ -57,7 +57,7 @@ const VideoSlide = ({
       return newState;
     });
   };
-  const onChangeVideo = (isNextAction: boolean) => {
+  const handleChangeVideo = (isNextAction: boolean) => {
     console.log({ isNextAction });
 
     if (isNextAction) {
@@ -67,7 +67,7 @@ const VideoSlide = ({
     }
   };
 
-  const onPlayOrPause = (
+  const handlePlayOrPause = (
     e: MouseEvent<HTMLElement> & {
       target: {
         dataset: { type: string };
@@ -97,17 +97,17 @@ const VideoSlide = ({
   return (
     <div className="flex justify-between items-center w-full h-full rounded-md">
       <section
-        onClick={onPlayOrPause}
+        onClick={handlePlayOrPause}
         data-type="clickable"
         className="w-full h-full flex-1 relative grid place-content-center overflow-hidden rounded-md"
       >
-        <BackgroundVideo cover_url={video.origin_cover.url_list[0]} />
+        <BackgroundVideo coverImage={video.origin_cover.url_list[0]} />
         {isVisible && (
           <Suspense fallback={<Loading />}>
             <ErrorBoundary
               fallback={
                 <Modal>
-                  <div className="w-96 h-96 rounded bg-white text-center text-black">
+                  <div className="w-96 h-96 rounded bg-dark_blue text-center text-white flex justify-center items-center">
                     <h1>Opps we ran into some problems</h1>
                   </div>
                 </Modal>
@@ -124,13 +124,13 @@ const VideoSlide = ({
                 videoDuration={video.duration}
                 videoID={video._id}
                 videoIdf={video.id_f}
-                avatarThumb={avatar_thumb}
+                avatarThumb={avatarThumb}
                 fromVideoPage={false}
                 allowedPlay={allowedPlay}
                 isPlay={isPlay}
                 isActive={isActive}
-                onChangeVideo={onChangeVideo}
-                onOpenRightBar={onOpenRightBar}
+                onChangeVideo={handleChangeVideo}
+                onOpenRightBar={handleOpenRightBar}
               />
             </ErrorBoundary>
           </Suspense>
@@ -143,16 +143,15 @@ const VideoSlide = ({
               myID={myID}
               isFollow={isFollow}
               uid={video.author_id.uid}
-              user_id={video.author_id._id}
-              author_id={video.author_id._id}
-              avatar_thumb={avatar_thumb}
+              authorVideoID={video.author_id._id}
+              avatarThumb={avatarThumb}
               nickname={nickname}
-              handleCloseUserBox={onOpenRightBar}
+              onCloseUserBox={handleOpenRightBar}
             />
           ) : (
             <CommentContainer
               videoID={video._id}
-              handleCloseComment={onOpenRightBar}
+              onCloseComment={handleOpenRightBar}
             />
           )}
         </RightContainer>

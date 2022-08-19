@@ -2,17 +2,17 @@ type Props = {
   bottom?: string;
   right?: string;
   time: string;
-  styleArray?: string;
+  className?: string;
 };
 
 const TimeFooter = ({
   time,
   right = "right-0",
   bottom = "bottom-0",
-  styleArray,
+  className,
 }: Props) => {
   return (
-    <div className={`absolute ${bottom} ${right} ${styleArray}`}>
+    <div className={`absolute ${bottom} ${right} ${className}`}>
       <span className="font-medium text-sm text-white leading-[22px]">
         {time}
       </span>

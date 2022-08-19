@@ -16,7 +16,7 @@ const SwiperWrapper = () => {
     servicesPath.GET_NEW_RECOMMENDED,
     null
   );
-  const onStart = () => {
+  const handleStart = () => {
     if (!start) setStart(true);
   };
   return (
@@ -39,11 +39,11 @@ const SwiperWrapper = () => {
             virtualIndex={index}
           >
             <VideoSlide
-              avatar_thumb={video.author_id.avatar_thumb.url_list[0]}
+              avatarThumb={video.author_id.avatar_thumb.url_list[0]}
               nickname={video.author_id.nickname}
               allowedPlay={start}
               video={video}
-              onStart={onStart}
+              onStart={handleStart}
             />
           </SwiperSlide>
         ))}

@@ -12,14 +12,14 @@ const SubRegisterOrLogin = ({ onVerifyEmail }: Props) => {
   const dispatch = useAppDispatch();
   const emailRef = useRef<HTMLInputElement>(null);
   const codeRef = useRef<HTMLInputElement>(null);
-  const onSendCode = (e: MouseEvent<HTMLButtonElement>) => {
+  const handleSendCode = (e: MouseEvent<HTMLButtonElement>) => {
     const email = emailRef.current?.value;
     if (!email) return;
     postData(servicesPath.SEND_EMAIL, { email })
       .then((_) => alert("Successfully !!! Please check your email"))
       .catch(console.log);
   };
-  const onSubmit = async () => {
+  const handleSubmit = async () => {
     if (!codeRef.current?.value || !emailRef.current?.value) return;
     else {
       const code = codeRef.current.value;
@@ -87,7 +87,7 @@ const SubRegisterOrLogin = ({ onVerifyEmail }: Props) => {
           </div>
           <div className="w-16 h-full">
             <button
-              onClick={onSendCode}
+              onClick={handleSendCode}
               type="button"
               title="code"
               className="text-[10px] w-full h-full font-light text-black pr-2"
@@ -105,7 +105,7 @@ const SubRegisterOrLogin = ({ onVerifyEmail }: Props) => {
           <a href="/">隐私政策</a>
         </div>
         <button
-          onClick={onSubmit}
+          onClick={handleSubmit}
           type="submit"
           title="login"
           className="w-full py-2 text center text-xs text-white opacity-75 bg-fresh_red rounded-sm"

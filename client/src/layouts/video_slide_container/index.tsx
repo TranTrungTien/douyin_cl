@@ -1,5 +1,5 @@
 import { Suspense } from "react";
-import { Loading } from "../../components";
+import { Button, Loading } from "../../components";
 import Modal from "../../components/modal";
 import SwiperWrapper from "../swiper_container";
 import ErrorBoundary from "../../utils/error-boundaries";
@@ -15,6 +15,14 @@ const VideoSlideContainer = (props: Props) => {
             <Modal>
               <div className="w-96 h-96 rounded bg-white text-center text-black">
                 <h1>Opps we ran into some problems</h1>
+                <Button
+                  text="Refresh page"
+                  onClick={() => window.location.reload()}
+                />
+                <Button
+                  text="Comme back home page"
+                  onClick={() => window.location.replace("/")}
+                />
               </div>
             </Modal>
           }

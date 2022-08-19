@@ -1,6 +1,5 @@
 import LikeCmtShare from "../../components/like_cmt_share_action";
 import { IVideo } from "../../interfaces/video.interface";
-import { useAppSelector } from "../../redux/app/hooks";
 import "./style.css";
 
 type Props = {
@@ -28,8 +27,8 @@ const VideoHeaderContainer = ({
             liked={isLiked}
             myID={myID}
             videoId={video._id}
-            styleArray="flex justify-start items-center space-x-6"
-            styleArrayInner="flex justify-center items-center space-x-2"
+            className="flex justify-start items-center space-x-6"
+            classNameInner="flex justify-center items-center space-x-2"
             widthSvg="32"
             heightSvg="32"
           />

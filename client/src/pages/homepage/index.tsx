@@ -14,7 +14,7 @@ const HomePage = (props: Props) => {
       <div className="flex flex-col justify-start items-start bg-light_blue h-full w-full overflow-hidden">
         <HeaderContainer
           fromHomePage={true}
-          styleArray="laptop:py-[6px] desktop:py-[9px]"
+          className="laptop:py-[6px] desktop:py-[9px]"
         >
           <Search />
           <Nav />

@@ -14,9 +14,9 @@ type Props = {
   isPlay?: boolean;
   allowedPlay?: boolean;
   progressBar: JSX.Element;
-  turnOnOffVolume?: (action: boolean) => void;
-  handleChangeVolume: (volume: number) => void;
-  handleToggleFullscreenMode: () => void;
+  onTurnOnOffVolume?: (action: boolean) => void;
+  onChangeVolume: (volume: number) => void;
+  onToggleFullscreenMode: () => void;
 };
 
 const BottomVideoAction = forwardRef<HTMLSpanElement, Props>(
@@ -32,9 +32,9 @@ const BottomVideoAction = forwardRef<HTMLSpanElement, Props>(
       isPlay,
       progressBar,
       nickname,
-      turnOnOffVolume,
-      handleChangeVolume,
-      handleToggleFullscreenMode,
+      onTurnOnOffVolume,
+      onChangeVolume,
+      onToggleFullscreenMode,
     }: Props,
     timeCounterRef
   ) => {
@@ -56,7 +56,7 @@ const BottomVideoAction = forwardRef<HTMLSpanElement, Props>(
     }, []);
 
     // set turn on or off volume
-    const onTurnOnOffVolume = (
+    const handleTurnOnOffVolume = (
       e: MouseEvent<HTMLButtonElement> & { target: HTMLElement }
     ) => {
       if (e.target.dataset.canChangeVolume === "unavailable") return;
@@ -70,11 +70,11 @@ const BottomVideoAction = forwardRef<HTMLSpanElement, Props>(
               "px") ??
           "0px";
       }
-      turnOnOffVolume && turnOnOffVolume(!isTurnOffVolume);
+      onTurnOnOffVolume && onTurnOnOffVolume(!isTurnOffVolume);
       setIsTurnOffVolume(!isTurnOffVolume);
     };
 
-    const onChangeVolume = (
+    const handleChangeVolume = (
       e: MouseEvent<HTMLDivElement> & { currentTarget: HTMLElement }
     ) => {
       e.stopPropagation();
@@ -85,11 +85,11 @@ const BottomVideoAction = forwardRef<HTMLSpanElement, Props>(
         volumeRef.current.style.height =
           (volumeBarRef.current.clientHeight / 100) * ((1 - volume) * 100) +
             "px" ?? "0px";
-        handleChangeVolume(1 - volume);
+        onChangeVolume(1 - volume);
       }
     };
 
-    const onChangeMode = () => setAutoNext(!autoNext);
+    const handleChangeMode = () => setAutoNext(!autoNext);
     return (
       <div className="progress_bar absolute bottom-0 left-0 w-full z-[2]">
         <div className="flex flex-col justify-end items-start w-full">
@@ -166,7 +166,7 @@ const BottomVideoAction = forwardRef<HTMLSpanElement, Props>(
                         autoNext ? "bg-white" : "bg-dimgray"
                       } relative`}
                       type="button"
-                      onClick={onChangeMode}
+                      onClick={handleChangeMode}
                     >
                       <div
                         className={`absolute h-4 w-4 rounded-full top-1/2 transform -translate-y-1/2 left-px transition-all ${
@@ -183,7 +183,7 @@ const BottomVideoAction = forwardRef<HTMLSpanElement, Props>(
                   </div>
                   {/* Volume*/}
                   <button
-                    onClick={onTurnOnOffVolume}
+                    onClick={handleTurnOnOffVolume}
                     type="button"
                     className="mt-[2px] relative volume-custom"
                   >
@@ -192,7 +192,7 @@ const BottomVideoAction = forwardRef<HTMLSpanElement, Props>(
                       className="volume-inner-custom  cursor-default absolute bottom-full left-0 w-10 h-40 bg-[#323442] py-[10px] px-4 rounded-[4px] flex justify-center items-center"
                     >
                       <div
-                        onClick={onChangeVolume}
+                        onClick={handleChangeVolume}
                         ref={volumeBarRef}
                         className="w-1 h-full rounded-full bg-[hsla(0,0%,100%,.3)] cursor-pointer flex justify-center items-end"
                       >
@@ -235,10 +235,7 @@ const BottomVideoAction = forwardRef<HTMLSpanElement, Props>(
                     </div>
                   </button>
                   {/* Fullscreen */}
-                  <button
-                    onClick={handleToggleFullscreenMode}
-                    className="mt-[2px]"
-                  >
+                  <button onClick={onToggleFullscreenMode} className="mt-[2px]">
                     <svg
                       width="32"
                       height="32"

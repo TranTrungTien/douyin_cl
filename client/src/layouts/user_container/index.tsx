@@ -13,40 +13,38 @@ import { RightBarAction } from "../video_slide";
 type Props = {
   isFollow?: boolean;
   myID?: string;
-  author_id: string;
+  authorVideoID: string;
   uid: string;
-  user_id: string;
-  avatar_thumb: string;
+  avatarThumb: string;
   nickname: string;
-  handleCloseUserBox: (action: RightBarAction) => void;
+  onCloseUserBox: (action: RightBarAction) => void;
 };
 const UserContainer = ({
   myID,
   isFollow,
   uid,
-  user_id,
-  author_id,
-  avatar_thumb,
+  authorVideoID,
+  avatarThumb,
   nickname,
-  handleCloseUserBox,
+  onCloseUserBox,
 }: Props) => {
   const [cursor, setCursor] = useState(0);
   const ownVideosParams = useMemo(() => {
     return {
-      author_id: author_id,
+      author_id: authorVideoID,
       cursor: cursor,
       limit: 15,
     };
-  }, [author_id, cursor]);
+  }, [authorVideoID, cursor]);
   const { data: ownVideos } = useFetchAppend<IVideo>(
     servicesPath.GET_VIDEO_BY_USER,
     ownVideosParams,
     undefined,
     undefined,
-    author_id ? true : false
+    authorVideoID ? true : false
   );
 
-  const onScroll = (e: UIEvent<HTMLDivElement>) => {
+  const handleScroll = (e: UIEvent<HTMLDivElement>) => {
     const toBottom =
       e.currentTarget.scrollHeight -
       e.currentTarget.scrollTop -
@@ -61,14 +59,14 @@ const UserContainer = ({
       <UserBoxHeader
         myID={myID}
         isFollow={isFollow}
-        user_id={user_id}
+        authorVideoID={authorVideoID}
         uid={uid}
-        avatar_thumb={avatar_thumb}
+        avatarThumb={avatarThumb}
         nickname={nickname}
-        handleCloseUserBox={handleCloseUserBox}
+        onCloseUserBox={onCloseUserBox}
       />
       <div
-        onScroll={onScroll}
+        onScroll={handleScroll}
         className="h-[calc(100%-70px)] w-full overflow-x-hidden overflow-y-auto hidden-scrollbar"
       >
         <VideoContainer
@@ -88,8 +86,8 @@ const UserContainer = ({
                   to={`/video/${video._id}/${video.id_f}`}
                 >
                   <VideoCard
-                    cover_image={video.origin_cover.url_list[0]}
-                    styleArray="mx-auto laptop:max-w-auto laptop:max-h-[160px] extra-desktop:max-h-[170px] h-full"
+                    coverImage={video.origin_cover.url_list[0]}
+                    className="mx-auto laptop:max-w-auto laptop:max-h-[160px] extra-desktop:max-h-[170px] h-full"
                   >
                     <VideoBadge pinned={true} text="置顶" />
                     <VideoCardFooter>
@@ -99,12 +97,6 @@ const UserContainer = ({
                 </Link>
               );
             })}
-          {/* <VideoCard>
-            <VideoBadge hot={true} text="热榜" />
-            <VideoCardFooter>
-              <LikeFooter />
-            </VideoCardFooter>
-          </VideoCard> */}
         </VideoContainer>
       </div>
     </section>

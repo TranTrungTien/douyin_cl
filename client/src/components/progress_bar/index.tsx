@@ -1,20 +1,21 @@
 import { forwardRef, MouseEvent } from "react";
 type Props = {
-  handleChangeVideoTime: (position: number) => void;
+  onChangeVideoTime?: (position: number) => void;
 };
 const ProgressBar = forwardRef(
-  ({ handleChangeVideoTime }: Props, progressContainerRef) => {
+  ({ onChangeVideoTime }: Props, progressContainerRef) => {
     const progressWrapper = progressContainerRef as any;
     const { progressBarRef, progressRef } = progressWrapper?.current;
-    const onChangeVideoTime = (
+    const handleChangeVideoTime = (
       e: MouseEvent<HTMLDivElement> & { target: HTMLElement }
     ) => {
-      handleChangeVideoTime(e.clientX - e.target.getBoundingClientRect().x);
+      onChangeVideoTime &&
+        onChangeVideoTime(e.clientX - e.target.getBoundingClientRect().x);
     };
     return (
       <div className="w-full h-2 flex justify-start items-center cursor-pointer group">
         <div
-          onClick={onChangeVideoTime}
+          onClick={handleChangeVideoTime}
           ref={progressBarRef}
           className="w-full bg-darkslategray2 h-[3px] group-hover:h-[5px] relative"
         >

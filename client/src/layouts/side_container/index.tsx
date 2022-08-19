@@ -4,17 +4,17 @@ type Props = {
   children: ReactNode[] | ReactNode;
   width?: string;
   height?: string;
-  styleArray?: string;
+  className?: string;
 };
 
 const SideContainer = ({
   children,
   width,
   height = "h-full",
-  styleArray,
+  className,
 }: Props) => {
   return (
-    <section className={`${width} ${height} ${styleArray}`}>
+    <section className={`${width} ${height} ${className}`}>
       {Array.isArray(children) ? children.map((child) => child) : children}
     </section>
   );

@@ -30,7 +30,7 @@ const UploadContainer = () => {
     isOpen: false,
     select: "Public",
   });
-  const onChangeFile = (file: File | undefined) => {
+  const handleChangeFile = (file: File | undefined) => {
     if (!file) return;
     else {
       const canvas = document.createElement("canvas");
@@ -85,10 +85,10 @@ const UploadContainer = () => {
       };
     }
   };
-  const onChangeOption = () => {
+  const handleChangeOption = () => {
     setOpenOption({ ...openOption, isOpen: !openOption.isOpen });
   };
-  const onChooseSelections = (
+  const handleChooseSelections = (
     e: MouseEvent<HTMLDivElement> & {
       target: { closest: (selector: string) => ReactNode };
     }
@@ -103,7 +103,7 @@ const UploadContainer = () => {
       : setOpenOption({ ...openOption, select: privateElem.id });
   };
 
-  const onSubmit = async (e: SyntheticEvent) => {
+  const handleSubmit = async (e: SyntheticEvent) => {
     e.preventDefault();
     if (!file || !videoCover) return;
 
@@ -155,11 +155,11 @@ const UploadContainer = () => {
     <main className="py-4 h-[1000px] xl:w-[1100px] m-auto">
       <div className="p-[24px_56px] shadow-[0_2px_8px_rgba(0,0,0,0.1)] rounded-lg flex justify-center gap-x-6">
         <SelectFile
-          onChangeFile={onChangeFile}
+          onChangeFile={handleChangeFile}
           fileName={file?.videoMetaData.name}
         />
         <div className="flex-1">
-          <form id="video-form" onSubmit={onSubmit}>
+          <form id="video-form" onSubmit={handleSubmit}>
             <div className="flex flex-col justify-start  gap-y-6">
               <div>
                 <div className="flex justify-between items-center">
@@ -200,7 +200,7 @@ const UploadContainer = () => {
                 </h4>
                 <div className="w-[300px] h-[36px] rounded border border-[rgba(22,24,35,0.12)] relative cursor-pointer">
                   <div
-                    onClick={onChangeOption}
+                    onClick={handleChangeOption}
                     className="relative flex justify-start items-center p-[5px_12px_7px_12px]"
                   >
                     <span className="text-[rgb(22,24,35) leading-[22px]] inline-block h-[22px] text-base">
@@ -224,7 +224,7 @@ const UploadContainer = () => {
                   </div>
                   {openOption.isOpen && (
                     <div
-                      onClick={onChooseSelections}
+                      onClick={handleChooseSelections}
                       className="z-10 absolute left-0 top-[120%] bg-white border border-white px-1 w-[300px] rounded shadow-[0_2px_12px_rgba(0,0,0,0.1)] text-left"
                     >
                       <div
@@ -391,7 +391,7 @@ const UploadContainer = () => {
                     text="Discard"
                     borderRadius="rounded-sm"
                     backgroundColor="bg-transparent"
-                    styleArray="border border-[rgb(242,242,242)] w-full px-5 font-semibold"
+                    className="border border-[rgb(242,242,242)] w-full px-5 font-semibold"
                     width="min-w-[72px]"
                     height="h-11"
                   />
@@ -403,7 +403,7 @@ const UploadContainer = () => {
                     borderRadius="rounded-sm"
                     backgroundColor="bg-[rgb(242,242,242)]"
                     width="min-w-[72px]"
-                    styleArray="font-semibold w-full px-5 border-[rgb(242,242,242)] cursor-not-allowed"
+                    className="font-semibold w-full px-5 border-[rgb(242,242,242)] cursor-not-allowed"
                     height="h-11"
                   />
                 </div>

@@ -11,7 +11,6 @@ import {
   UserInfoContainer,
   UserVideoContainer,
 } from "../../layouts";
-import { useAppSelector } from "../../redux/app/hooks";
 import { servicesPath } from "../../services/services_path";
 
 type Props = {};
@@ -37,19 +36,22 @@ const UserPage = (props: Props) => {
     };
   }, [user_id]);
 
-  const userFromStore = useAppSelector((state) => state.user);
-  const userFromFetch = useFetch<null | { message: string; doc: IUser }>(
+  // const userFromStore = useAppSelector((state) => state.user);
+  const userRes = useFetch<null | { message: string; doc: IUser }>(
     servicesPath.GET_USER_INFO,
     userInfoParams,
-    userFromStore.data ? true : false
+    false,
+    true
   );
 
-  const user = userFromStore.data
-    ? userFromStore.data
-    : userFromFetch?.doc
-    ? userFromFetch.doc
-    : null;
-  console.log({ user });
+  const user = userRes && userRes.doc;
+
+  // const user = userFromStore.data
+  //   ? userFromStore.data
+  //   : userFromFetch?.doc
+  //   ? userFromFetch.doc
+  //   : null;
+  // console.log({ user });
 
   const [cursorState, setCursorState] = useState<ICursorState>({
     viewOwn: {
@@ -63,7 +65,7 @@ const UserPage = (props: Props) => {
       reachToEnd: false,
     },
   });
-  const onScroll = (e: UIEvent<HTMLDivElement>) => {
+  const handleScroll = (e: UIEvent<HTMLDivElement>) => {
     const isScrollToBottom =
       e.currentTarget.scrollHeight -
       window.innerHeight -
@@ -99,7 +101,7 @@ const UserPage = (props: Props) => {
       }
     }
   };
-  const stopFetchingMoreVideo = () => {
+  const handleStopFetchingMoreVideo = () => {
     if (cursorState.viewOwn.isCurrent) {
       if (!cursorState.viewOwn.reachToEnd)
         setCursorState((preState) => {
@@ -128,33 +130,33 @@ const UserPage = (props: Props) => {
     <section className="w-full flex flex-col justify-start items-start h-screen">
       <div
         style={{ overflow: "overlay" }}
-        onScroll={onScroll}
+        onScroll={handleScroll}
         className="w-full h-full custom-scrollbar bg-light_blue"
       >
-        <HeaderContainer styleArray="py-[10px]">
+        <HeaderContainer className="py-[10px]">
           <LeftHeaderContainer>
             <Logo py="0" />
             <Search />
           </LeftHeaderContainer>
           <Nav />
         </HeaderContainer>
-        <PageContainer styleArray="laptop:w-full laptop:px-5 desktop:max-w-max extra-desktop:max-w-[1280px] over-desktop:max-w-[1440px] mx-auto desktop:space-x-3 extra-desktop:space-x-0">
-          <SideContainer styleArray="desktop:min-w-min  min-h-full flex-1 text-white pt-10">
+        <PageContainer className="laptop:w-full laptop:px-5 desktop:max-w-max extra-desktop:max-w-[1280px] over-desktop:max-w-[1440px] mx-auto desktop:space-x-3 extra-desktop:space-x-0">
+          <SideContainer className="desktop:min-w-min  min-h-full flex-1 text-white pt-10">
             {user && (
               <UserInfoContainer
-                avatar_thumb_url={user.avatar_thumb.url_list[0]}
+                avatarThumb={user.avatar_thumb.url_list[0]}
                 nickname={user.nickname}
-                user_id={user._id}
+                authorPageID={user._id}
               />
             )}
           </SideContainer>
-          <SideContainer styleArray="over-desktop:w-[900px] text-white shadow-[-18px_0px_80px_#000] h-max">
+          <SideContainer className="over-desktop:w-[900px] text-white shadow-[-18px_0px_80px_#000] h-max">
             {user && (
               <UserVideoContainer
                 viewLikedAllowed={user.show_favorite_list}
-                stopFetchingMoreVideo={stopFetchingMoreVideo}
+                onStopFetchingMoreVideo={handleStopFetchingMoreVideo}
                 cursor={cursorState}
-                author_id={user._id}
+                authorID={user._id}
               />
             )}
           </SideContainer>

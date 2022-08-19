@@ -13,7 +13,7 @@ import Input from "../input";
 type Props = {
   nickname?: string;
   datePosted?: string;
-  styleArray?: string;
+  className?: string;
   content: string;
   image?: string;
   uid: string;
@@ -30,7 +30,7 @@ const Comment = ({
   videoID,
   replyCount,
   likedCount,
-  styleArray,
+  className,
   image,
   datePosted,
   content,
@@ -83,7 +83,7 @@ const Comment = ({
     true
   );
 
-  const onSubmit = async (event: SyntheticEvent) => {
+  const handleSubmit = async (event: SyntheticEvent) => {
     event.preventDefault();
     const target = event.target as typeof event.target & {
       comment: {
@@ -128,7 +128,7 @@ const Comment = ({
       }
     }
   };
-  const onShowReply = () => {
+  const handleShowReply = () => {
     setShowReply((preState) => {
       return {
         ...preState,
@@ -136,7 +136,7 @@ const Comment = ({
       };
     });
   };
-  const onLikeComment = async (
+  const handleLikeComment = async (
     event: MouseEvent<HTMLButtonElement>,
     like: boolean
   ) => {
@@ -168,7 +168,7 @@ const Comment = ({
   };
 
   return (
-    <div className={`w-full h-auto text-white ${styleArray}`}>
+    <div className={`w-full h-auto text-white ${className}`}>
       <div className="w-full flex justify-start items-start space-x-2 border-b border-darkslategray py-3">
         {/* User image */}
         <AvatarCardLink
@@ -178,7 +178,7 @@ const Comment = ({
           image={image}
           firstNickNameCharacter={nickname[0]}
           title={nickname}
-          hint={"Cover"}
+          hint={nickname}
         />
         {/* Content */}
         <div className="flex-1 flex-col justify-start items-start space-y-2">
@@ -199,7 +199,7 @@ const Comment = ({
             <Heart
               isLiked={isLiked}
               likedCount={likedCount}
-              onClick={onLikeComment}
+              onClick={handleLikeComment}
             />
             <button
               onClick={() => setIsReply(!isReply)}
@@ -222,11 +222,11 @@ const Comment = ({
               回复
             </button>
           </div>
-          {isReply && user.data && <Input onSubmit={onSubmit} />}
+          {isReply && user.data && <Input onSubmit={handleSubmit} />}
           {/* View more reply */}
           {replyCount !== 0 && (
             <button
-              onClick={onShowReply}
+              onClick={handleShowReply}
               className="flex justify-start items-center space-x-1 text-inherit font-normal opacity-50 text-xs leading-5"
             >
               <div className="space-x-1 text-gray-200 opacity-90">
@@ -267,7 +267,7 @@ const Comment = ({
                   nickname={c.author_id.nickname}
                   image={c.author_id.avatar_thumb.url_list[0]}
                   key={c._id}
-                  styleArray={!true ? `px-3` : "px-0"}
+                  className={!true ? `px-3` : "px-0"}
                   uid={c.author_id.uid}
                   datePosted={c.createdAt}
                   content={c.text}

@@ -15,30 +15,30 @@ import VideoContainer from "../video_container";
 
 type Props = {
   cursor: ICursorState;
-  author_id: string;
+  authorID: string;
   viewLikedAllowed: boolean;
-  stopFetchingMoreVideo: () => void;
+  onStopFetchingMoreVideo: () => void;
 };
 
 const UserVideoContainer = ({
-  author_id,
+  authorID,
   cursor,
   viewLikedAllowed,
-  stopFetchingMoreVideo,
+  onStopFetchingMoreVideo,
 }: Props) => {
   console.log({ cursor });
   const currentCursorPosition = useRef({
     viewOwn: -1,
     viewLiked: -1,
   });
-  const my_id = useAppSelector((state) => state.user.data?._id);
+  const myID = useAppSelector((state) => state.user.data?._id);
   const [viewOpt, setViewOpt] = useState({ viewOwn: true, viewLiked: false });
 
   const countParams = useMemo(() => {
     return {
-      author_id: author_id,
+      author_id: authorID,
     };
-  }, [author_id]);
+  }, [authorID]);
 
   const count = useFetch<{
     message: string;
@@ -48,20 +48,20 @@ const UserVideoContainer = ({
     servicesPath.GET_COUNT,
     countParams,
     false,
-    author_id ? true : false
+    authorID ? true : false
   );
   const ownVideosParams = useMemo(() => {
     return {
-      author_id: author_id,
+      author_id: authorID,
       cursor: cursor.viewOwn.cursorPosition,
       limit: 15,
     };
-  }, [author_id, cursor.viewOwn.cursorPosition]);
+  }, [authorID, cursor.viewOwn.cursorPosition]);
 
   const { data: ownVideos } = useFetchAppend<IVideo>(
     servicesPath.GET_VIDEO_BY_USER,
     ownVideosParams,
-    stopFetchingMoreVideo,
+    onStopFetchingMoreVideo,
     () =>
       (currentCursorPosition.current.viewOwn = cursor.viewOwn.cursorPosition),
     viewOpt.viewOwn &&
@@ -69,16 +69,16 @@ const UserVideoContainer = ({
   );
   const likedVideosParams = useMemo(() => {
     return {
-      author_id: author_id,
+      author_id: authorID,
       cursor: cursor.viewLiked.cursorPosition,
       limit: 15,
     };
-  }, [author_id, cursor.viewLiked.cursorPosition]);
+  }, [authorID, cursor.viewLiked.cursorPosition]);
 
   const { data: likedVideos } = useFetchAppend<IYourVideoLiked>(
     servicesPath.GET_ALL_VIDEO_LIKED_BY_USER,
     likedVideosParams,
-    stopFetchingMoreVideo,
+    onStopFetchingMoreVideo,
     () =>
       (currentCursorPosition.current.viewLiked =
         cursor.viewLiked.cursorPosition),
@@ -87,13 +87,13 @@ const UserVideoContainer = ({
         cursor.viewLiked.cursorPosition
   );
 
-  const onChangeViewOpt = (viewOwn: boolean) => {
+  const handleChangeViewOpt = (viewOwn: boolean) => {
     if (viewOwn && !viewOpt.viewOwn) {
       setViewOpt({ viewOwn: true, viewLiked: false });
     } else if (
       !viewOwn &&
       viewOpt.viewOwn &&
-      (viewLikedAllowed || author_id === my_id)
+      (viewLikedAllowed || authorID === myID)
     ) {
       setViewOpt({ viewOwn: false, viewLiked: true });
     }
@@ -103,7 +103,7 @@ const UserVideoContainer = ({
     <div className="extra-desktop:px-12 over-desktop:px-16 py-8 space-y-6">
       <header className="laptop:px-3 desktop:px-5 extra-desktop:px-0 flex justify-start items-center space-x-10 leading-[26px] font-medium text-[18px] opacity-90">
         <button
-          onClick={() => onChangeViewOpt(true)}
+          onClick={() => handleChangeViewOpt(true)}
           className={`${
             viewOpt.viewOwn
               ? "text-white opacity-100"
@@ -114,10 +114,10 @@ const UserVideoContainer = ({
           {count && <span>{count.ownVideoTotal}</span>}
         </button>
         <button
-          onClick={() => onChangeViewOpt(false)}
+          onClick={() => handleChangeViewOpt(false)}
           className={`flex justify-start items-end space-x-2 ${
             !viewLikedAllowed &&
-            author_id !== my_id &&
+            authorID !== myID &&
             "cursor-not-allowed opacity-70"
           } ${
             viewOpt.viewLiked
@@ -127,7 +127,7 @@ const UserVideoContainer = ({
         >
           <span className="">喜欢</span>
           {count && <span>{count.likedVideoTotal}</span>}
-          {!viewLikedAllowed && author_id !== my_id && (
+          {!viewLikedAllowed && authorID !== myID && (
             <div>
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -160,8 +160,8 @@ const UserVideoContainer = ({
                     className="block w-full  extra-desktop:h-full"
                   >
                     <VideoCard
-                      styleArray="laptop:h-[320px] desktop:h-[280px] extra-desktop:h-[328px] overflow-hidden"
-                      cover_image={video.origin_cover.url_list[0]}
+                      className="laptop:h-[320px] desktop:h-[280px] extra-desktop:h-[328px] overflow-hidden"
+                      coverImage={video.origin_cover.url_list[0]}
                     >
                       <VideoBadge pinned={true} text="置顶" />
                       <VideoCardFooter px="px-4" pb="pb-2">
@@ -181,8 +181,8 @@ const UserVideoContainer = ({
                     className="block w-full  extra-desktop:h-full"
                   >
                     <VideoCard
-                      styleArray="laptop:h-[320px] desktop:h-[280px] extra-desktop:h-[328px] overflow-hidden"
-                      cover_image={video.video_id.origin_cover.url_list[0]}
+                      className="laptop:h-[320px] desktop:h-[280px] extra-desktop:h-[328px] overflow-hidden"
+                      coverImage={video.video_id.origin_cover.url_list[0]}
                     >
                       <VideoBadge pinned={true} text="置顶" />
                       <VideoCardFooter px="px-4" pb="pb-2">

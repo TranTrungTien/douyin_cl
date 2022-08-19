@@ -13,11 +13,11 @@ import { RightBarAction } from "../video_slide";
 type Props = {
   videoID: string;
   fromVideoPage?: boolean;
-  handleCloseComment?: (action: RightBarAction) => void;
+  onCloseComment?: (action: RightBarAction) => void;
 };
 
 const CommentContainer = ({
-  handleCloseComment,
+  onCloseComment,
   videoID,
   fromVideoPage,
 }: Props) => {
@@ -35,19 +35,16 @@ const CommentContainer = ({
     videoID ? true : false
   );
 
-  const likedCommentParams = useMemo(() => {
-    return { video_id: videoID };
-  }, [videoID]);
   const { data: likedComments } = useFetchAppend<ILikedComment>(
     servicesPath.GET_ALL_LIKED_COMMENT_OF_VIDEO_BY_AUTHOR,
-    likedCommentParams,
+    commentParams,
     undefined,
     undefined,
     user.data?.uid ? true : false,
     true
   );
 
-  const onSubmit = async (e: SyntheticEvent) => {
+  const handleSubmit = async (e: SyntheticEvent) => {
     e.preventDefault();
     const target = e.target as typeof e.target & {
       comment: {
@@ -89,11 +86,10 @@ const CommentContainer = ({
         className={`shadow-md w-full ${fromVideoPage ? "px-0" : "px-3"} pb-2`}
       >
         <CommentHeader
-          totalComments={comments?.list.length}
-          handleCloseComment={handleCloseComment && handleCloseComment}
+          onCloseComment={onCloseComment}
           fromVideoPage={fromVideoPage}
         />
-        {user.data && <Input onSubmit={onSubmit} />}
+        {user.data && <Input onSubmit={handleSubmit} />}
       </div>
       <div className="w-full h-auto overflow-auto hidden-scrollbar">
         {comments && comments.list.length
@@ -109,7 +105,7 @@ const CommentContainer = ({
                   nickname={c.author_id.nickname}
                   image={c.author_id.avatar_thumb.url_list[0]}
                   key={c._id}
-                  styleArray={!fromVideoPage ? `px-3` : "px-0"}
+                  className={!fromVideoPage ? `px-3` : "px-0"}
                   uid={c.author_id.uid}
                   datePosted={c.createdAt}
                   content={c.text}
