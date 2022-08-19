@@ -33,31 +33,26 @@ type Props = {};
 const VideoPage = (props: Props) => {
   const myID = useAppSelector((state) => state.user.data?._id);
   const [isPlay, setIsPlay] = useState(true);
-  const { video_id, video_idf } = useParams();
+  const { video_id: videoID, video_idf: videoIdf } = useParams();
   const videoParams = useMemo(() => {
     return {
-      video_id,
+      video_id: videoID,
     };
-  }, [video_id]);
+  }, [videoID]);
   const video = useFetch<{ message: string; doc: IVideo }>(
     servicesPath.GET_METADATA,
     videoParams,
     false,
-    video_id ? true : false
+    videoID ? true : false
   );
 
-  const isLikedVideoParams = useMemo(() => {
-    return {
-      video_id: video_id,
-    };
-  }, [video_id]);
   const isLikedVideo = useFetch<{ message: string; like?: boolean }>(
     servicesPath.CHECK_LIKED,
-    isLikedVideoParams,
+    videoParams,
     true,
-    video_id ? true : false
+    videoID ? true : false
   );
-  const onPlayOrPause = (
+  const handlePlayOrPause = (
     e: MouseEvent<HTMLElement> & {
       target: {
         dataset: { type: string };
@@ -91,7 +86,7 @@ const VideoPage = (props: Props) => {
           </LeftHeaderContainer>
           <Nav />
         </HeaderContainer>
-        <PageContainer styleArray="pt-6">
+        <PageContainer className="pt-6">
           <div className="laptop:w-full laptop:px-6 desktop:px-0 desktop:max-w-[1080px] extra-desktop:w-[1280px] over-desktop:max-w-[1440px] flex laptop:justify-start desktop:justify-center items-start mx-auto laptop:space-x-3">
             <SideContainer
               width="laptop:w-[75%] desktop:w-[770px] extra-desktop:w-[850px] over-desktop:w-[960px]"
@@ -99,13 +94,13 @@ const VideoPage = (props: Props) => {
             >
               <section
                 id="fullscreen"
-                onClick={onPlayOrPause}
+                onClick={handlePlayOrPause}
                 data-type="clickable"
                 className="w-full laptop:h-[574px]  flex-1 relative grid place-content-center overflow-hidden rounded-md backdrop-blur-sm"
               >
                 {video && (
                   <BackgroundVideo
-                    cover_url={video.doc.origin_cover.url_list[0]}
+                    coverImage={video.doc.origin_cover.url_list[0]}
                   />
                 )}
                 <Suspense fallback={<Loading />}>
@@ -156,13 +151,13 @@ const VideoPage = (props: Props) => {
                   <div className="w-full h-px bg-darkslategray flex-1"></div>
                 </div>
                 <div className="w-full mt-6">
-                  {video_id && (
-                    <CommentContainer videoID={video_id} fromVideoPage={true} />
+                  {videoID && (
+                    <CommentContainer videoID={videoID} fromVideoPage={true} />
                   )}
                 </div>
               </div>
             </SideContainer>
-            <SideContainer width="w-auto" styleArray="flex-1">
+            <SideContainer width="w-auto" className="flex-1">
               <RelatedContainer>
                 {video && (
                   <VideoPageUserBox
@@ -177,7 +172,7 @@ const VideoPage = (props: Props) => {
                   <h4 className="text-[18px] opacity-90 font-medium leading-[26px]">
                     推荐视频
                   </h4>
-                  {video_id && (
+                  {videoID && (
                     <Suspense fallback={<Loading />}>
                       <ErrorBoundary
                         fallback={
@@ -188,7 +183,9 @@ const VideoPage = (props: Props) => {
                           </Modal>
                         }
                       >
-                        {video_idf && <RelatedVideoContainer id={video_idf} />}
+                        {videoIdf && (
+                          <RelatedVideoContainer videoIdf={videoIdf} />
+                        )}
                       </ErrorBoundary>
                     </Suspense>
                   )}

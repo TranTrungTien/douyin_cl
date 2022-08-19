@@ -4,14 +4,14 @@ import { servicesPath } from "../../services/services_path";
 type Props = {
   children: ReactNode[] | ReactNode;
   title?: string;
-  styleArray?: string;
-  cover_image?: string;
+  className?: string;
+  coverImage?: string;
 };
-const VideoCard = ({ cover_image, children, styleArray, title }: Props) => {
+const VideoCard = ({ coverImage, children, className, title }: Props) => {
   return (
-    <div className={`${styleArray} relative place-self-center`}>
+    <div className={`${className} relative place-self-center`}>
       <img
-        src={cover_image && `${servicesPath.BASE_URL}/${cover_image}`}
+        src={coverImage && `${servicesPath.BASE_URL}/${coverImage}`}
         onError={({ currentTarget }) => {
           currentTarget.onerror = null; // prevents looping
           currentTarget.src =

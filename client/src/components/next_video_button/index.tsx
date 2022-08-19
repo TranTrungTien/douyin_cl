@@ -1,14 +1,14 @@
 type Props = {
-  handleChangeVideo?: (isNextAction: boolean) => void;
+  onChangeVideo?: (isNextAction: boolean) => void;
 };
-const NextVideoButton = ({ handleChangeVideo }: Props) => {
-  const onChangeVideo = (isNextAction: boolean) => {
-    handleChangeVideo && handleChangeVideo(isNextAction);
+const NextVideoButton = ({ onChangeVideo }: Props) => {
+  const handleChangeVideo = (isNextAction: boolean) => {
+    onChangeVideo && onChangeVideo(isNextAction);
   };
   return (
     <div className="flex flex-col justify-center items-start bg-gray_button opacity-30 rounded-full max-w-max hover:opacity-70">
       <button
-        onClick={() => onChangeVideo(false)}
+        onClick={() => handleChangeVideo(false)}
         className="inline-block px-[6px] py-2 hover:opacity-100"
       >
         <svg
@@ -22,7 +22,7 @@ const NextVideoButton = ({ handleChangeVideo }: Props) => {
         </svg>
       </button>
       <button
-        onClick={() => onChangeVideo(true)}
+        onClick={() => handleChangeVideo(true)}
         className="inline-block px-[6px] py-2 hover:opacity-100"
       >
         <svg

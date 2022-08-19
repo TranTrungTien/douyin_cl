@@ -5,7 +5,7 @@ import { HeaderContainer, UploadContainer } from "../../layouts";
 const UploadVideo = () => {
   return (
     <div className="h-full overflow-y-auto">
-      <HeaderContainer styleArray="py-[9px]">
+      <HeaderContainer className="py-[9px]">
         <Logo />
         <Search />
         <Nav />

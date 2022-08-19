@@ -25,7 +25,7 @@ function App() {
     }
   }, [dispatch, user]);
   return (
-    <div className="App hidden laptop:block">
+    <div className="App hidden laptop:block bg-dark_blue">
       <Routers />
     </div>
   );

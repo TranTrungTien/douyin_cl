@@ -3,17 +3,17 @@ import { RightBarAction } from "../../layouts/video_slide";
 type Props = {
   fromVideoPage?: boolean;
   totalComments?: number;
-  handleCloseComment?: (action: RightBarAction) => void;
+  onCloseComment?: (action: RightBarAction) => void;
 };
 
 const CommentBoxHeader = ({
   totalComments,
-  handleCloseComment,
+  onCloseComment,
   fromVideoPage,
 }: Props) => {
-  const onCloseComment = () => {
-    handleCloseComment &&
-      handleCloseComment({ comment: false, isOpen: false, user: false });
+  const handleCloseComment = () => {
+    onCloseComment &&
+      onCloseComment({ comment: false, isOpen: false, user: false });
   };
   return (
     <header className="sticky top-0 left-0 py-3 flex justify-between items-center w-full h-auto">
@@ -25,7 +25,7 @@ const CommentBoxHeader = ({
       </div>
       {fromVideoPage || (
         <button
-          onClick={onCloseComment}
+          onClick={handleCloseComment}
           className="text-white opacity-50 hover:opacity-100"
         >
           <svg

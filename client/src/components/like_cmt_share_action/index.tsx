@@ -12,8 +12,8 @@ type Props = {
   myID?: string;
   authorVideoID?: string;
   liked?: boolean;
-  styleArrayInner?: string;
-  styleArray?: string;
+  classNameInner?: string;
+  className?: string;
   widthSvg?: string;
   heightSvg?: string;
   videoId: string;
@@ -24,19 +24,16 @@ const LikeCmtShare = ({
   authorVideoID,
   videoId,
   onOpenRightBar,
-  styleArrayInner,
-  styleArray = "flex flex-col justify-center items-center space-y-2",
+  classNameInner,
+  className = "flex flex-col justify-center items-center space-y-2",
   widthSvg = "36",
   heightSvg = "36",
 }: Props) => {
-  console.log({ liked });
-
   const [like, setLike] = useState(liked ? true : false);
-  console.log({ like });
 
   const dispatch = useAppDispatch();
 
-  const onLikeVideo = async () => {
+  const handleLikeVideo = async () => {
     if (myID) {
       if (!authorVideoID && !videoId) {
         alert("Error");
@@ -69,12 +66,12 @@ const LikeCmtShare = ({
     console.log("click");
   };
   return (
-    <div className={`${styleArray}`}>
+    <div className={`${className}`}>
       {/* heart icon */}
       <button
-        onClick={onLikeVideo}
+        onClick={handleLikeVideo}
         title="喜欢"
-        className={`${styleArrayInner} text-white opacity-80 hover:opacity-100`}
+        className={`${classNameInner} text-white opacity-80 hover:opacity-100`}
       >
         <div>
           <svg
@@ -246,7 +243,7 @@ const LikeCmtShare = ({
           if (!onOpenRightBar) return;
           onOpenRightBar({ comment: true, isOpen: true, user: false });
         }}
-        className={`${styleArrayInner} text-white opacity-80 hover:opacity-100`}
+        className={`${classNameInner} text-white opacity-80 hover:opacity-100`}
       >
         <div>
           <svg
@@ -268,7 +265,7 @@ const LikeCmtShare = ({
       </button>
       {/* star icon */}
       <button
-        className={`${styleArrayInner} text-white opacity-80 hover:opacity-100`}
+        className={`${classNameInner} text-white opacity-80 hover:opacity-100`}
       >
         <div>
           <svg
@@ -441,7 +438,7 @@ const LikeCmtShare = ({
       {/* share icon */}
       <button
         title="分享"
-        className={`${styleArrayInner} text-white opacity-80 hover:opacity-100`}
+        className={`${classNameInner} text-white opacity-80 hover:opacity-100`}
       >
         <div>
           <svg
@@ -468,7 +465,7 @@ const LikeCmtShare = ({
         backgroundColor="bg-transparent"
         width="w-auo"
         height="h-auto"
-        styleArray={`${styleArrayInner} text-white opacity-80 hover:opacity-100 relative`}
+        className={`${classNameInner} text-white opacity-80 hover:opacity-100 relative`}
         icon={
           <div>
             <svg

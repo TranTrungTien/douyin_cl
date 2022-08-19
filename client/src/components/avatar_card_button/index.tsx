@@ -10,9 +10,9 @@ type Props = {
   image: string;
   hint?: string;
   borderRadius?: string | number;
-  styleArray?: string;
+  className?: string;
   firstNickNameCharacter: string;
-  handleOpenRightBar?: (action: RightBarAction) => void;
+  onOpenRightBar?: (action: RightBarAction) => void;
 };
 //
 const AvatarCardButton = ({
@@ -24,22 +24,20 @@ const AvatarCardButton = ({
   image,
   hint,
   borderRadius = "rounded-full",
-  styleArray,
-  handleOpenRightBar,
+  className,
+  onOpenRightBar,
 }: Props) => {
-  const onOpenRightBar = () => {
-    if (!handleOpenRightBar) return;
-    handleOpenRightBar({ comment: false, isOpen: true, user: true });
+  const handleOpenRightBar = () => {
+    onOpenRightBar &&
+      onOpenRightBar({ comment: false, isOpen: true, user: true });
   };
   return (
-    <div
-      className={`${width} ${height} ${borderRadius} ${styleArray} relative`}
-    >
+    <div className={`${width} ${height} ${borderRadius} ${className} relative`}>
       <button
         type="button"
         title={title}
         className={`${width} ${height} ${borderRadius}`}
-        onClick={onOpenRightBar}
+        onClick={handleOpenRightBar}
       >
         {image ? (
           <img

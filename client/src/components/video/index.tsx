@@ -104,7 +104,7 @@ const Video = ({
     videoRef.current &&
       (videoRef.current.volume = Number(localStorage.getItem("volume")) ?? 0);
   }, []);
-  const onTimeUpdate = () => {
+  const handleTimeUpdate = () => {
     if (videoRef.current && progressBarRef.current && progressRef.current) {
       const currentTimePercent =
         (videoRef.current.currentTime / videoDuration) * 100;
@@ -120,7 +120,7 @@ const Video = ({
         videoRef.current?.currentTime ?? 0
       ));
   };
-  const onTurnOnOffVolume = (turnOff: boolean) => {
+  const handleTurnOnOffVolume = (turnOff: boolean) => {
     if (!videoRef.current) {
       return;
     } else {
@@ -133,7 +133,7 @@ const Video = ({
       }
     }
   };
-  const onChangeVideoTime = (position: number) => {
+  const handleChangeVideoTime = (position: number) => {
     if (progressBarRef.current && videoRef.current) {
       const progressBarPercentage =
         (position / progressBarRef.current.clientWidth) * 100;
@@ -141,13 +141,13 @@ const Video = ({
       videoRef.current.currentTime = changedTime;
     }
   };
-  const onChangeVolume = (volume: number) => {
+  const handleChangeVolume = (volume: number) => {
     console.log(volume);
     videoRef.current && (videoRef.current.volume = volume);
     localStorage.setItem("volume", JSON.stringify(volume));
   };
 
-  const onToggleFullscreenMode = () => {
+  const handleToggleFullscreenMode = () => {
     const player = document.querySelector("#fullscreen") as HTMLElement;
     toggleFullScreen(player);
   };
@@ -177,7 +177,7 @@ const Video = ({
         className="max-h-full min-h-full h-full w-auto  object-contain object-center rounded-md absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 hover:cursor-pointer"
         loop={isActive && true}
         autoPlay={isActive && allowedPlay}
-        onTimeUpdate={onTimeUpdate}
+        onTimeUpdate={handleTimeUpdate}
       ></video>
       {/* Pause when clicking */}
       {(!isPlay || !allowedPlay) && (
@@ -199,35 +199,35 @@ const Video = ({
       {/* Action's video */}
       <BottomVideoAction
         authorUid={authorUid}
-        handleToggleFullscreenMode={onToggleFullscreenMode}
+        onToggleFullscreenMode={handleToggleFullscreenMode}
         nickname={nickname}
         videoDesc={videoDesc}
         videoDuration={videoDuration}
         videoID={videoID}
         videoIdf={videoIdf}
-        handleChangeVolume={onChangeVolume}
+        onChangeVolume={handleChangeVolume}
         fromVideoPage={fromVideoPage}
         allowedPlay={allowedPlay}
         ref={timeCounterRef}
         isPlay={isPlay}
         progressBar={
           <ProgressBar
-            handleChangeVideoTime={onChangeVideoTime}
+            onChangeVideoTime={handleChangeVideoTime}
             ref={progressContainerRef}
           />
         }
-        turnOnOffVolume={onTurnOnOffVolume}
+        onTurnOnOffVolume={handleTurnOnOffVolume}
       />
       {/* Like, share, subscribe action, ect,..., */}
       {!fromVideoPage && onOpenRightBar && (
         <RightVideoAction>
           {/* next, pre button */}
-          <NextVideoButton handleChangeVideo={onChangeVideo} />
+          <NextVideoButton onChangeVideo={onChangeVideo} />
           <AvatarCardButton
             firstNickNameCharacter={nickname[0]}
             image={avatarThumb}
             borderRadius="rounded-full"
-            handleOpenRightBar={onOpenRightBar}
+            onOpenRightBar={onOpenRightBar}
             height="h-10"
             width="w-10"
             hint="User Cover"

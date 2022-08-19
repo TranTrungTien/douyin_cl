@@ -13,24 +13,24 @@ import { deleteData, postData } from "../../services/app_services";
 import { servicesPath } from "../../services/services_path";
 
 type Props = {
-  avatar_thumb_url: string;
+  avatarThumb: string;
   nickname: string;
-  user_id: string;
+  authorPageID: string;
 };
 
-const UserInfoContainer = ({ avatar_thumb_url, nickname, user_id }: Props) => {
-  const my_id = useAppSelector((state) => state.user.data?._id);
+const UserInfoContainer = ({ avatarThumb, nickname, authorPageID }: Props) => {
+  const myID = useAppSelector((state) => state.user.data?._id);
   const dispatch = useAppDispatch();
   const isFollow = useAppSelector((state) =>
-    isFollowUser(state, my_id, user_id)
+    isFollowUser(state, myID, authorPageID)
   );
 
   const [isFollowing, setIsFollowing] = useState(isFollow ? true : false);
-  const onFollow = async () => {
-    if (my_id) {
+  const handleFollow = async () => {
+    if (myID) {
       if (isFollowing) {
         const delFollowRes = await deleteData(servicesPath.DEL_FOLLOWING, {
-          follow_id: user_id,
+          follow_id: authorPageID,
         });
         if (delFollowRes && delFollowRes.data) {
           console.log("del followed");
@@ -40,7 +40,7 @@ const UserInfoContainer = ({ avatar_thumb_url, nickname, user_id }: Props) => {
         const followRes = await postData<any>(
           servicesPath.FOLLOW_USER,
           {
-            follow_id: user_id,
+            follow_id: authorPageID,
           },
           true
         ).catch(console.error);
@@ -57,7 +57,7 @@ const UserInfoContainer = ({ avatar_thumb_url, nickname, user_id }: Props) => {
       <header className="flex justify-start items-center laptop:space-x-9">
         <AvatarCardButton
           firstNickNameCharacter={nickname[0]}
-          image={avatar_thumb_url}
+          image={avatarThumb}
           height="h-62px"
           width="w-62px"
           title={nickname}
@@ -88,7 +88,7 @@ const UserInfoContainer = ({ avatar_thumb_url, nickname, user_id }: Props) => {
         </div>
         <div className="flex justify-start items-center space-x-2 opacity-80 text-xs font-normal leading-5">
           <span>抖音号:</span>
-          <span>{user_id}</span>
+          <span>{authorPageID}</span>
         </div>
         <div className="flex flex-col justify-start items-start opacity-80 leading-[22px] text-sm font-normal">
           <span>谢谢您点进来看我</span>
@@ -98,16 +98,16 @@ const UserInfoContainer = ({ avatar_thumb_url, nickname, user_id }: Props) => {
         </div>
       </div>
       <div className="flex justify-start items-center space-x-3">
-        {my_id !== user_id && (
+        {myID !== authorPageID && (
           <Button
             title={isFollowing ? "" : "关注"}
             icon={isFollowing && <img src={followingIcon} alt="following" />}
             text={isFollowing ? "" : "关注"}
-            onClick={onFollow}
+            onClick={handleFollow}
             width={isFollowing ? "w-36px" : undefined}
             height={isFollowing ? "h-36px" : undefined}
             backgroundColor={isFollowing ? "bg-darkslategray3" : "bg-fresh_red"}
-            styleArray={
+            className={
               isFollowing
                 ? `border-darkslategray2 border flex justify-center items-center`
                 : ""

@@ -10,7 +10,7 @@ type Props = {
   firstNickNameCharacter?: string;
   hint?: string;
   borderRadius?: string | number;
-  styleArray?: string;
+  className?: string;
   href: string;
   title?: string;
   target?: string;
@@ -26,13 +26,13 @@ const AvatarCardLink = ({
   image,
   hint,
   borderRadius = "rounded-full",
-  styleArray,
+  className,
   href,
 }: Props) => {
   return (
     <div
       title={title}
-      className={`${width} ${height} ${borderRadius} ${styleArray} relative rounded-full overflow-hidden`}
+      className={`${width} ${height} ${borderRadius} ${className} relative rounded-full overflow-hidden`}
     >
       <Link target={target} to={href}>
         {image ? (

@@ -6,7 +6,7 @@ type Props = {
   onChangeFile: (file: File | undefined) => void;
 };
 const SelectFile = ({ fileName, onChangeFile }: Props) => {
-  const onFileChange = (e: FormEvent<HTMLInputElement>) => {
+  const handleChangeFile = (e: FormEvent<HTMLInputElement>) => {
     const file = e.currentTarget.files?.[0];
     onChangeFile(file);
   };
@@ -18,7 +18,7 @@ const SelectFile = ({ fileName, onChangeFile }: Props) => {
           className="flex flex-col justify-center items-center"
         >
           <input
-            onChange={onFileChange}
+            onChange={handleChangeFile}
             type="file"
             className="hidden"
             id="file_upload"
@@ -49,7 +49,7 @@ const SelectFile = ({ fileName, onChangeFile }: Props) => {
             width="w-[186px]"
             height="h-[36px]"
             borderRadius="rounded-sm"
-            styleArray="font-semibold mt-[32px] text-white"
+            className="font-semibold mt-[32px] text-white"
           />
         </label>
         {fileName && <p>{fileName}</p>}

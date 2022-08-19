@@ -1,16 +1,16 @@
 import React from "react";
 import { servicesPath } from "../../services/services_path";
 type Props = {
-  cover_url?: string;
+  coverImage?: string;
 };
-const BackgroundVideo = ({ cover_url }: Props) => {
+const BackgroundVideo = ({ coverImage }: Props) => {
   return (
     <div
       className="absolute -z-10 top-0 left-0 w-full h-full bg-center bg-no-repeat bg-cover bg-gradient-to-r from-darkslategray2 to-darkslategray3 blur-xl rounded-md"
       style={{
         backgroundImage: `url(${
-          cover_url
-            ? `${servicesPath.BASE_URL}/${cover_url}`
+          coverImage
+            ? `${servicesPath.BASE_URL}/${coverImage}`
             : "images/video_background.jpg"
         })`,
       }}

@@ -19,11 +19,11 @@ const Nav = (props: Props) => {
     emailVerified: string;
     code: string;
   } | null>(null);
-  const onVerifyEmail = (emailVerified: string, code: string | null) => {
+  const handleVerifyEmail = (emailVerified: string, code: string | null) => {
     emailVerified && code && setEmailVerified({ emailVerified, code });
   };
 
-  const onLoginChecking = (e: MouseEvent<HTMLAnchorElement>) => {
+  const handleLoginChecking = (e: MouseEvent<HTMLAnchorElement>) => {
     e.preventDefault();
     if (user.data) navigate("/upload");
     else dispatch(setIsLogin(true));
@@ -49,7 +49,7 @@ const Nav = (props: Props) => {
         </li>
       )}
       <li className="ml-8 relative">
-        <Link target="_blank" onClick={onLoginChecking} to={"/upload"}>
+        <Link target="_blank" onClick={handleLoginChecking} to={"/upload"}>
           {/* <div className="absolute top-0 z-[-1] -left-px w-[3px] h-full bg-bright_blue"></div> */}
           <div className="laptop:w-[100px] desktop:w-[104px] laptop:h-[36px] desktop:h-[38px] bg-light_blue flex justify-center item-center border-2 border-white w-[104px] h-[38px] rounded-[5px] before:absolute before:top-0 before:z-[-1] before:-right-[3px] before:w-full before:rounded-[5px]  before:h-full before:bg-fresh_red after:absolute after:top-0 after:z-[-1] after:-left-[3px] after:w-full after:rounded-[5px] after:h-full after:bg-bright_blue">
             <span className="laptop:leading-8 desktop:leading-9 text-lg mr-2">
@@ -72,7 +72,7 @@ const Nav = (props: Props) => {
             width="laptop:w-[90px] desktop:w-[104px]"
             height="laptop:h-[36px] desktop:h-[38px]"
             px="px-4"
-            styleArray="font-medium leading-[23px] border border-fresh_red flex justify-center items-center text-white"
+            className="font-medium leading-[23px] border border-fresh_red flex justify-center items-center text-white"
           />
         </li>
       )}
@@ -85,7 +85,7 @@ const Nav = (props: Props) => {
             />
           ) : (
             <Login
-              onVerifyEmail={onVerifyEmail}
+              onVerifyEmail={handleVerifyEmail}
               onCloseLogin={() => dispatch(setIsLogin(false))}
             />
           )}

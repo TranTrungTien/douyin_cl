@@ -10,32 +10,32 @@ import Button from "../button";
 type Props = {
   isFollow?: boolean;
   myID?: string;
-  avatar_thumb: string;
+  avatarThumb: string;
   nickname: string;
   uid: string;
-  user_id: string;
-  handleCloseUserBox: (action: RightBarAction) => void;
+  authorVideoID: string;
+  onCloseUserBox: (action: RightBarAction) => void;
 };
 
 const UserBoxHeader = ({
   myID,
-  user_id,
+  authorVideoID,
   isFollow,
-  avatar_thumb,
+  avatarThumb,
   nickname,
   uid,
-  handleCloseUserBox,
+  onCloseUserBox,
 }: Props) => {
   const dispatch = useAppDispatch();
   const onCloseUser = () => {
-    handleCloseUserBox({ comment: false, isOpen: false, user: false });
+    onCloseUserBox({ comment: false, isOpen: false, user: false });
   };
   const handleFollow = async () => {
-    if (myID && user_id) {
+    if (myID && authorVideoID) {
       const followRes = await postData<any>(
         servicesPath.FOLLOW_USER,
         {
-          follow_id: user_id,
+          follow_id: authorVideoID,
         },
         true
       ).catch(console.error);
@@ -50,9 +50,9 @@ const UserBoxHeader = ({
         <div className="flex justify-start desktop:flex-row desktop:items-center laptop:items-center laptop:space-x-2 desktop:space-x-3">
           <AvatarCard
             firstNickNameCharacter={nickname[0]}
-            hint="User Cover"
+            hint={nickname}
             borderRadius="full"
-            image={avatar_thumb}
+            image={avatarThumb}
           />
           <div className="text-white flex flex-col justify-start items-start space-y-2 flex-1 desktop:mt-0">
             <div className="flex justify-center items-center space-x-1 hover:text-fresh_red ">
@@ -97,7 +97,7 @@ const UserBoxHeader = ({
               height="h-8"
               px="px-5"
               width="auto"
-              styleArray="font-normal"
+              className="font-normal"
               text="关注"
             />
           )}

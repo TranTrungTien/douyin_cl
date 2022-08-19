@@ -29,7 +29,7 @@ const VideoPageUserBox = ({
     isFollowUser(state, myID, user_id)
   );
   const dispatch = useAppDispatch();
-  const onFollow = async () => {
+  const handleFollow = async () => {
     if (myID) {
       if (isFollowing) {
         const delFollowingRes = await deleteData(servicesPath.DEL_FOLLOWING, {
@@ -81,7 +81,7 @@ const VideoPageUserBox = ({
       </div>
       {!isFollowing && (
         <Button
-          onClick={onFollow}
+          onClick={handleFollow}
           text="关注"
           width="w-[68px]"
           height="h-8"
