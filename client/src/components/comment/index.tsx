@@ -1,4 +1,5 @@
 import { memo, MouseEvent, SyntheticEvent, useMemo, useState } from "react";
+import SmallHeartIcon from "../../assets/icons/small_heart_icon";
 import { useFetchAppend } from "../../hooks/useFetchAppend";
 import { IComment } from "../../interfaces/comment";
 import { ILikedComment } from "../../interfaces/liked_video.interface";
@@ -7,6 +8,7 @@ import { deleteData, postData } from "../../services/app_services";
 import { servicesPath } from "../../services/services_path";
 import { convertDate } from "../../utils/covert_date";
 import AvatarCardLink from "../avatar_card_link";
+import Button from "../button";
 import Heart from "../heart";
 import Input from "../input";
 
@@ -197,44 +199,49 @@ const Comment = ({
           {/* Action: Like, Reply */}
           <div className="text-xs font-medium leading-5 text-inherit opacity-70  flex justify-start items-center space-x-5">
             <Heart
+              icon={<SmallHeartIcon />}
               isLiked={isLiked}
               likedCount={likedCount}
               onClick={handleLikeComment}
             />
-            <button
+            <Button
+              width="w-auto"
+              height="h-auto"
+              text=""
+              backgroundColor="bg-transparent"
               onClick={() => setIsReply(!isReply)}
               className="flex justify-start items-center space-x-px hover:text-fresh_red"
+              icon={
+                <svg
+                  width="20"
+                  height="20"
+                  className="fill-current"
+                  xmlns="http://www.w3.org/2000/svg"
+                  viewBox="0 0 36 36"
+                >
+                  <path
+                    fillRule="evenodd"
+                    clipRule="evenodd"
+                    d="M6 17.617C6 11.561 11.578 7 18 7s12 4.561 12 10.617c0 3.036-1.51 5.529-3.749 7.728-.187.184-.381.364-.58.54-1.925 2.082-3.911 3.417-5.847 3.973-.77.221-1.702.242-2.454-.381-.68-.564-.837-1.361-.878-1.823a3.848 3.848 0 01-.01-.136C10.898 26.91 6 23.264 6 17.617zM18 10c-5.177 0-9 3.602-9 7.617 0 3.867 3.794 6.992 9.152 6.992h1.5v1.717l-.06.206c0-.001-.03.104-.06.259 1.155-.46 2.515-1.394 3.984-2.996l.056-.06.063-.055c.182-.16.353-.318.514-.475C26.075 21.312 27 19.543 27 17.617 27 13.602 23.177 10 18 10z"
+                    fillOpacity="0.9"
+                  ></path>
+                </svg>
+              }
             >
-              <svg
-                width="20"
-                height="20"
-                className="fill-current"
-                xmlns="http://www.w3.org/2000/svg"
-                viewBox="0 0 36 36"
-              >
-                <path
-                  fillRule="evenodd"
-                  clipRule="evenodd"
-                  d="M6 17.617C6 11.561 11.578 7 18 7s12 4.561 12 10.617c0 3.036-1.51 5.529-3.749 7.728-.187.184-.381.364-.58.54-1.925 2.082-3.911 3.417-5.847 3.973-.77.221-1.702.242-2.454-.381-.68-.564-.837-1.361-.878-1.823a3.848 3.848 0 01-.01-.136C10.898 26.91 6 23.264 6 17.617zM18 10c-5.177 0-9 3.602-9 7.617 0 3.867 3.794 6.992 9.152 6.992h1.5v1.717l-.06.206c0-.001-.03.104-.06.259 1.155-.46 2.515-1.394 3.984-2.996l.056-.06.063-.055c.182-.16.353-.318.514-.475C26.075 21.312 27 19.543 27 17.617 27 13.602 23.177 10 18 10z"
-                  fillOpacity="0.9"
-                ></path>
-              </svg>
-              回复
-            </button>
+              <span>回复</span>
+            </Button>
           </div>
           {isReply && user.data && <Input onSubmit={handleSubmit} />}
           {/* View more reply */}
           {replyCount !== 0 && (
-            <button
+            <Button
+              width="w-auto"
+              height="h-auto"
+              text=""
+              backgroundColor="bg-transparent"
               onClick={handleShowReply}
               className="flex justify-start items-center space-x-1 text-inherit font-normal opacity-50 text-xs leading-5"
-            >
-              <div className="space-x-1 text-gray-200 opacity-90">
-                <span>展开</span>
-                <span className="text-white text-sm">{replyCount}</span>
-                <span>条回复</span>
-              </div>
-              <div>
+              icon={
                 <svg
                   width="13"
                   height="13"
@@ -248,8 +255,14 @@ const Comment = ({
                     d="M4.21 4h5.58c.28.322.28.844 0 1.166L7.506 7.759a.651.651 0 01-1.012 0L4.21 5.166A.915.915 0 014.21 4z"
                   ></path>
                 </svg>
+              }
+            >
+              <div className="space-x-1 text-gray-200 opacity-90 text-sm">
+                <span>展开</span>
+                <span className="text-white text-sm">{replyCount}</span>
+                <span>条回复</span>
               </div>
-            </button>
+            </Button>
           )}
           {replyComments &&
             showReply.isShow &&

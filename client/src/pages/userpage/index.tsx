@@ -144,6 +144,9 @@ const UserPage = (props: Props) => {
           <SideContainer className="desktop:min-w-min  min-h-full flex-1 text-white pt-10">
             {user && (
               <UserInfoContainer
+                followerCount={user.follower_count}
+                followingCount={user.following_count}
+                totalFavouringCount={user.total_favorited}
                 avatarThumb={user.avatar_thumb.url_list[0]}
                 nickname={user.nickname}
                 authorPageID={user._id}

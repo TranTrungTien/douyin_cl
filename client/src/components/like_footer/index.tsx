@@ -1,5 +1,8 @@
-type Props = {};
-const LikeFooter = (props: Props) => {
+type Props = {
+  totalLiked?: number;
+};
+
+const LikeFooter = ({ totalLiked = 0 }: Props) => {
   return (
     <div className={`flex justify-start items-center space-x-2`}>
       <div>
@@ -17,7 +20,7 @@ const LikeFooter = (props: Props) => {
       </div>
       <div>
         <span className="text-white text-sm font-medium leading-[22px]">
-          258.2w
+          {totalLiked}
         </span>
       </div>
     </div>

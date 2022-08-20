@@ -1,5 +1,5 @@
 import { useState } from "react";
-import followingIcon from "../../assets/icons/following_icon.svg";
+import FollowingIcon from "../../assets/icons/following_icon";
 import AvatarCardButton from "../../components/avatar_card_button";
 import Button from "../../components/button";
 import VerificationMark from "../../components/verification_mark";
@@ -16,9 +16,19 @@ type Props = {
   avatarThumb: string;
   nickname: string;
   authorPageID: string;
+  followingCount?: number;
+  followerCount?: number;
+  totalFavouringCount?: number;
 };
 
-const UserInfoContainer = ({ avatarThumb, nickname, authorPageID }: Props) => {
+const UserInfoContainer = ({
+  avatarThumb,
+  nickname,
+  authorPageID,
+  followerCount = 0,
+  totalFavouringCount = 0,
+  followingCount = 0,
+}: Props) => {
   const myID = useAppSelector((state) => state.user.data?._id);
   const dispatch = useAppDispatch();
   const isFollow = useAppSelector((state) =>
@@ -64,20 +74,22 @@ const UserInfoContainer = ({ avatarThumb, nickname, authorPageID }: Props) => {
           hint="User Cover"
         />
         <div className="text-white opacity-90 leading-5 flex justify-center items-center laptop:space-x-6 desktop:space-x-16">
-          <div className="flex flex-col justify-center items-start space-y-1">
+          <div className="flex flex-col justify-center items-center space-y-1">
             <span className="text-xs font-normal opacity-50">关注</span>
             {/* following */}
-            <span className="text-[17px] font-medium">123</span>
+            <span className="text-[17px] font-medium">{followingCount}</span>
           </div>
-          <div className="flex flex-col justify-center items-start space-y-1">
+          <div className="flex flex-col justify-center items-center space-y-1">
             <span className="text-xs font-normal opacity-50">粉丝</span>
             {/* follower */}
-            <span className="text-[17px] font-medium">123w</span>
+            <span className="text-[17px] font-medium">{followerCount}</span>
           </div>
-          <div className="flex flex-col justify-center items-start space-y-1">
+          <div className="flex flex-col justify-center items-center space-y-1">
             <span className="text-xs font-normal opacity-50">获赞</span>
             {/* favoring count */}
-            <span className="text-[17px] font-medium">1.1亿</span>
+            <span className="text-[17px] font-medium">
+              {totalFavouringCount}亿
+            </span>
           </div>
         </div>
       </header>
@@ -101,7 +113,7 @@ const UserInfoContainer = ({ avatarThumb, nickname, authorPageID }: Props) => {
         {myID !== authorPageID && (
           <Button
             title={isFollowing ? "" : "关注"}
-            icon={isFollowing && <img src={followingIcon} alt="following" />}
+            icon={isFollowing && <FollowingIcon />}
             text={isFollowing ? "" : "关注"}
             onClick={handleFollow}
             width={isFollowing ? "w-36px" : undefined}
