@@ -7,7 +7,7 @@ type Props = {
 };
 
 const CommentBoxHeader = ({
-  totalComments,
+  totalComments = 0,
   onCloseComment,
   fromVideoPage,
 }: Props) => {

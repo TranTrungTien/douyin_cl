@@ -1,5 +1,6 @@
 import { useMemo, useRef, useState } from "react";
 import { Link } from "react-router-dom";
+import { Button } from "../../components";
 import LikeFooter from "../../components/like_footer";
 import VideoBadge from "../../components/video_badge";
 import VideoCard from "../../components/video_card";
@@ -102,20 +103,28 @@ const UserVideoContainer = ({
   return (
     <div className="extra-desktop:px-12 over-desktop:px-16 py-8 space-y-6">
       <header className="laptop:px-3 desktop:px-5 extra-desktop:px-0 flex justify-start items-center space-x-10 leading-[26px] font-medium text-[18px] opacity-90">
-        <button
+        <Button
+          text=""
+          backgroundColor="bg-transparent"
+          width="w-auto"
+          height="h-auto"
           onClick={() => handleChangeViewOpt(true)}
           className={`${
             viewOpt.viewOwn
               ? "text-white opacity-100"
               : "text-gray-400 opacity-80"
-          } flex justify-start items-center space-x-2`}
+          } flex justify-start items-center space-x-2 text-base`}
         >
-          <span className={``}>作品</span>
+          <span>作品</span>
           {count && <span>{count.ownVideoTotal}</span>}
-        </button>
-        <button
+        </Button>
+        <Button
+          text=""
+          backgroundColor="bg-transparent"
+          width="w-auto"
+          height="h-auto"
           onClick={() => handleChangeViewOpt(false)}
-          className={`flex justify-start items-end space-x-2 ${
+          className={`flex justify-start items-center space-x-2 text-base ${
             !viewLikedAllowed &&
             authorID !== myID &&
             "cursor-not-allowed opacity-70"
@@ -140,7 +149,7 @@ const UserVideoContainer = ({
               </svg>
             </div>
           )}
-        </button>
+        </Button>
       </header>
       <div className="laptop:max-w-[620px] desktop:max-w-[680px] extra-desktop:max-w-[776px]">
         <VideoContainer
@@ -165,7 +174,7 @@ const UserVideoContainer = ({
                     >
                       <VideoBadge pinned={true} text="置顶" />
                       <VideoCardFooter px="px-4" pb="pb-2">
-                        <LikeFooter />
+                        <LikeFooter totalLiked={0} />
                       </VideoCardFooter>
                     </VideoCard>
                   </Link>
