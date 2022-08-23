@@ -1,15 +1,18 @@
 import LikeCmtShare from "../../components/like_cmt_share_action";
 import { IVideo } from "../../interfaces/video.interface";
+import { IStatistics } from "../../interfaces/statistic";
 import "./style.css";
 
 type Props = {
   myID?: string;
+  statistics?: IStatistics;
   isLiked?: boolean;
   authorVideoID?: string;
   video: IVideo;
 };
 
 const VideoHeaderContainer = ({
+  statistics,
   myID,
   isLiked,
   authorVideoID,
@@ -24,7 +27,8 @@ const VideoHeaderContainer = ({
         <div className="flex justify-between items-center w-full">
           <LikeCmtShare
             authorVideoID={authorVideoID}
-            liked={isLiked}
+            statistics={statistics}
+            isLiked={isLiked}
             myID={myID}
             videoId={video._id}
             className="flex justify-start items-center space-x-6"

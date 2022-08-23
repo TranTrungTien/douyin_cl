@@ -133,7 +133,11 @@ const getCommentOfVideo = (req: Request, res: Response) => {
   const video_id = req.query.video_id as string;
   CommentModel.find(
     { video_id: video_id, reply_comment_id: { $exists: false } },
-    null,
+    {
+      createdAt: 0,
+      updatedAt: 0,
+      __v: 0,
+    },
     null
   )
     .populate("author_id")
@@ -153,7 +157,11 @@ const getReplyComments = (req: Request, res: Response) => {
       reply_comment_id: reply_comment_id,
       video_id: video_id,
     },
-    null,
+    {
+      createdAt: 0,
+      updatedAt: 0,
+      __v: 0,
+    },
     {
       skip: Number(cursor) * 10,
       limit: 10,

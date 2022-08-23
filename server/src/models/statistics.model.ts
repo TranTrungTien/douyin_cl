@@ -15,6 +15,10 @@ const statisticsSchema = new mongoose.Schema<IStatistics>(
       type: Number,
       default: 0,
     },
+    stars_count: {
+      type: Number,
+      default: 0,
+    },
     share_count: {
       type: Number,
       default: 0,

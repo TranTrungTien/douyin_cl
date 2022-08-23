@@ -11,6 +11,8 @@ import AvatarCardLink from "../avatar_card_link";
 import Button from "../button";
 
 type Props = {
+  followerCount?: number;
+  followingCount?: number;
   nickName: string;
   imageLink: string;
   uid: string;
@@ -19,6 +21,8 @@ type Props = {
 };
 
 const VideoPageUserBox = ({
+  followerCount = 0,
+  followingCount = 0,
   nickName,
   imageLink,
   uid,
@@ -70,11 +74,15 @@ const VideoPageUserBox = ({
           <div className="flex justify-center desktop:flex-row laptop:flex-col laptop:items-start desktop:items-center desktop:space-x-2 ">
             <div className="flex justify-center items-center space-x-px leading-5 text-xs">
               <span className="font-medium opacity-50 ">粉丝</span>
-              <span className="font-semibold opacity-90 ">34.1w</span>
+              <span className="font-semibold opacity-90 ">
+                {followingCount}
+              </span>
             </div>
             <div className="flex justify-center items-center space-x-px text-xs leading-5">
               <span className="font-medium opacity-50 ">获赞</span>
-              <span className="font-semibold text-xs opacity-90">344.4w</span>
+              <span className="font-semibold text-xs opacity-90">
+                {followerCount}
+              </span>
             </div>
           </div>
         </div>

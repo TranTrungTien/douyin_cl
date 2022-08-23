@@ -111,7 +111,7 @@ function checkLiked(req: Request, res: Response) {
       author_id: authorID,
       video_id: videoID,
     },
-    null,
+    { createdAt: 0, updatedAt: 0, __v: 0 },
     null,
     (err, doc) => {
       if (err)

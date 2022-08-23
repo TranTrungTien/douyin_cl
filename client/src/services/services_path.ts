@@ -39,4 +39,7 @@ export const servicesPath = {
   POST_LIKE_VIDEO: "/api/v1/user-actions/create-liked",
   CHECK_LIKED: "/api/v1/user-actions/check-liked",
   DEL_LIKE_VIDEO: "/api/v1/user-actions/delete-liked",
+
+  GET_STATISTICS_OF_VIDEO: "/api/v1/statistics/video",
+  GET_STATISTICS_OF_LIST: "/api/v1/statistics/list",
 };

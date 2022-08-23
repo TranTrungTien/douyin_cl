@@ -1,4 +1,4 @@
-import { MouseEvent, ReactNode, useEffect, useState } from "react";
+import { MouseEvent, ReactNode } from "react";
 import Button from "../button";
 
 type Props = {
@@ -8,7 +8,7 @@ type Props = {
   title?: string;
   icon?: ReactNode;
   children?: ReactNode;
-  onClick?: (event: MouseEvent<HTMLButtonElement>, liked: boolean) => void;
+  onClick?: () => void;
 };
 
 const Heart = ({
@@ -20,13 +20,8 @@ const Heart = ({
   children,
   onClick,
 }: Props) => {
-  const [liked, setLiked] = useState(false);
-  useEffect(() => {
-    setLiked(isLiked ? true : false);
-  }, [isLiked]);
   const handleLiked = (event: MouseEvent<HTMLButtonElement>) => {
-    setLiked(!liked);
-    onClick && onClick(event, !liked);
+    onClick && onClick();
   };
   return (
     <Button
@@ -37,7 +32,7 @@ const Heart = ({
       title={title}
       onClick={handleLiked}
       className={`${className}  hover:text-fresh_red ${
-        liked && "text-fresh_red"
+        isLiked && "text-fresh_red"
       }`}
     >
       {icon}

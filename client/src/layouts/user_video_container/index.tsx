@@ -7,6 +7,7 @@ import VideoCard from "../../components/video_card";
 import { useFetch } from "../../hooks/useFetch";
 import { useFetchAppend } from "../../hooks/useFetchAppend";
 import { IYourVideoLiked } from "../../interfaces/liked_video.interface";
+import { IStatistics } from "../../interfaces/statistic";
 import { IVideo } from "../../interfaces/video.interface";
 import { ICursorState } from "../../pages/userpage";
 import { useAppSelector } from "../../redux/app/hooks";
@@ -55,11 +56,12 @@ const UserVideoContainer = ({
     return {
       author_id: authorID,
       cursor: cursor.viewOwn.cursorPosition,
+      include_like_count: 1,
       limit: 15,
     };
   }, [authorID, cursor.viewOwn.cursorPosition]);
 
-  const { data: ownVideos } = useFetchAppend<IVideo>(
+  const { data: ownVideos } = useFetchAppend<IVideo, IStatistics>(
     servicesPath.GET_VIDEO_BY_USER,
     ownVideosParams,
     onStopFetchingMoreVideo,
@@ -72,11 +74,12 @@ const UserVideoContainer = ({
     return {
       author_id: authorID,
       cursor: cursor.viewLiked.cursorPosition,
+      include_like_count: 1,
       limit: 15,
     };
   }, [authorID, cursor.viewLiked.cursorPosition]);
 
-  const { data: likedVideos } = useFetchAppend<IYourVideoLiked>(
+  const { data: likedVideos } = useFetchAppend<IYourVideoLiked, IStatistics>(
     servicesPath.GET_ALL_VIDEO_LIKED_BY_USER,
     likedVideosParams,
     onStopFetchingMoreVideo,
@@ -160,7 +163,10 @@ const UserVideoContainer = ({
         >
           {viewOpt.viewOwn
             ? ownVideos &&
-              ownVideos.list.map((video, index) => {
+              ownVideos.list.map((video) => {
+                const likedCount = ownVideos.statistics?.find(
+                  (statistic) => statistic.video_id === video._id
+                );
                 return (
                   <Link
                     target="_blank"
@@ -174,14 +180,17 @@ const UserVideoContainer = ({
                     >
                       <VideoBadge pinned={true} text="置顶" />
                       <VideoCardFooter px="px-4" pb="pb-2">
-                        <LikeFooter totalLiked={0} />
+                        <LikeFooter likedCount={likedCount?.like_count} />
                       </VideoCardFooter>
                     </VideoCard>
                   </Link>
                 );
               })
             : likedVideos &&
-              likedVideos.list.map((video, index) => {
+              likedVideos.list.map((video) => {
+                const likedCount = likedVideos.statistics?.find(
+                  (statistic) => statistic.video_id === video._id
+                );
                 return (
                   <Link
                     target="_blank"
@@ -195,7 +204,7 @@ const UserVideoContainer = ({
                     >
                       <VideoBadge pinned={true} text="置顶" />
                       <VideoCardFooter px="px-4" pb="pb-2">
-                        <LikeFooter />
+                        <LikeFooter likedCount={likedCount?.like_count} />
                       </VideoCardFooter>
                     </VideoCard>
                   </Link>

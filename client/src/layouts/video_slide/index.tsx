@@ -3,6 +3,7 @@ import { memo, MouseEvent, Suspense, useState } from "react";
 import { useSwiper, useSwiperSlide } from "swiper/react";
 import { BackgroundVideo, Loading, Video } from "../../components";
 import Modal from "../../components/modal";
+import { IStatistics } from "../../interfaces/statistic";
 import { IVideo } from "../../interfaces/video.interface";
 import { isFollowUser, useAppSelector } from "../../redux/app/hooks";
 import ErrorBoundary from "../../utils/error-boundaries";
@@ -16,6 +17,7 @@ type Props = {
   video: IVideo;
   onStart: () => void;
   allowedPlay: boolean;
+  statistics?: IStatistics;
 };
 export interface RightBarAction {
   isOpen: boolean;
@@ -25,6 +27,7 @@ export interface RightBarAction {
 const dataType = "clickable";
 const VideoSlide = ({
   avatarThumb,
+  statistics,
   nickname,
   onStart,
   video,
@@ -114,6 +117,7 @@ const VideoSlide = ({
               }
             >
               <Video
+                statistics={statistics}
                 myID={myID}
                 isFollow={isFollow}
                 authorVideoID={video.author_id._id}

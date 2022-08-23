@@ -27,6 +27,7 @@ import { useFetch } from "../../hooks/useFetch";
 import { IVideo } from "../../interfaces/video.interface";
 import { servicesPath } from "../../services/services_path";
 import { useAppSelector } from "../../redux/app/hooks";
+import { IStatistics } from "../../interfaces/statistic";
 
 type Props = {};
 
@@ -50,8 +51,15 @@ const VideoPage = (props: Props) => {
     servicesPath.CHECK_LIKED,
     videoParams,
     true,
-    videoID ? true : false
+    videoID && myID ? true : false
   );
+  const statistics = useFetch<{ message: string; statistics: IStatistics }>(
+    servicesPath.GET_STATISTICS_OF_VIDEO,
+    videoParams,
+    false,
+    video?.doc ? true : false
+  );
+  console.log({ statistics });
   const handlePlayOrPause = (
     e: MouseEvent<HTMLElement> & {
       target: {
@@ -138,6 +146,7 @@ const VideoPage = (props: Props) => {
               <div className="flex flex-col justify-start items-start w-full">
                 {video && (
                   <VideoHeaderContainer
+                    statistics={statistics?.statistics}
                     authorVideoID={video.doc.author_id._id}
                     myID={myID}
                     video={video.doc}
@@ -152,7 +161,11 @@ const VideoPage = (props: Props) => {
                 </div>
                 <div className="w-full mt-6">
                   {videoID && (
-                    <CommentContainer videoID={videoID} fromVideoPage={true} />
+                    <CommentContainer
+                      commentsCount={statistics?.statistics.comment_count}
+                      videoID={videoID}
+                      fromVideoPage={true}
+                    />
                   )}
                 </div>
               </div>
@@ -161,6 +174,8 @@ const VideoPage = (props: Props) => {
               <RelatedContainer>
                 {video && (
                   <VideoPageUserBox
+                    followerCount={video.doc.author_id.follower_count}
+                    followingCount={video.doc.author_id.following_count}
                     myID={myID}
                     user_id={video.doc.author_id._id}
                     uid={video.doc.author_id.uid}

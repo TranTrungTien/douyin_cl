@@ -12,6 +12,7 @@ import {
 } from "../const/path";
 import LikedModel from "../models/liked.model";
 import MusicModel from "../models/music.model";
+import StatisticsModel from "../models/statistics.model";
 import VideoModel from "../models/video.model";
 import { convertMp4ToMp3 } from "../utils/convertMp4ToMp3";
 
@@ -171,7 +172,7 @@ function getVideoInfo(req: Request, res: Response) {
   if (!video_id) {
     return res.status(400).send("Video id is needed");
   } else {
-    VideoModel.findById(video_id, null, null)
+    VideoModel.findById(video_id, { createdAt: 0, updatedAt: 0, __v: 0 }, null)
       .populate("author_id")
       .exec((err, doc) => {
         if (err) return res.status(500).send({ err });
@@ -186,11 +187,11 @@ function getVideoInfo(req: Request, res: Response) {
 function getAllVideoByUser(req: Request, res: Response) {
   const author_id = req.query.author_id as string;
   const cursor = req.query.cursor as string;
-  const limit = parseInt(req.query.limit as string) ?? 15;
+  const limit = parseInt(req.query.limit as string) || 15;
 
   VideoModel.find(
     { author_id: author_id },
-    null,
+    { createdAt: 0, updatedAt: 0, __v: 0 },
     { skip: Number(cursor) * limit, limit: limit },
     (err, list) => {
       if (err)
@@ -198,7 +199,31 @@ function getAllVideoByUser(req: Request, res: Response) {
       else {
         if (list.length <= 0)
           return res.status(404).send({ err, message: "No videos found" });
-        else return res.status(200).send({ message: "Found", list });
+        else {
+          const idList = list.map((v) => v._id);
+          StatisticsModel.find(
+            { video_id: { $in: idList } },
+            {
+              createdAt: 0,
+              updatedAt: 0,
+              __v: 0,
+            },
+            { skip: Number(cursor) * limit, limit: limit },
+            (err, statistics) => {
+              if (err)
+                return res
+                  .status(500)
+                  .send({ message: "Something went wrong", err });
+              else {
+                return res.status(200).send({
+                  message: "Found videos Successfully",
+                  list,
+                  statistics,
+                });
+              }
+            }
+          );
+        }
       }
     }
   );
@@ -207,11 +232,15 @@ function getAllVideoByUser(req: Request, res: Response) {
 function getAllLikedVideoByUser(req: Request, res: Response) {
   const author_id = req.query.author_id as string;
   const cursor = req.query.cursor as string;
-  const limit = parseInt(req.query.limit as string) ?? 15;
-  LikedModel.find({ author_id: author_id }, null, {
-    skip: Number(cursor) * limit,
-    limit: limit,
-  })
+  const limit = parseInt(req.query.limit as string) || 15;
+  LikedModel.find(
+    { author_id: author_id },
+    { createdAt: 0, updatedAt: 0, __v: 0 },
+    {
+      skip: Number(cursor) * limit,
+      limit: limit,
+    }
+  )
     .populate("author_id")
     .populate("video_id")
     .exec((err, list) => {
@@ -220,7 +249,29 @@ function getAllLikedVideoByUser(req: Request, res: Response) {
       else {
         if (list.length <= 0)
           return res.status(404).send({ err, message: "No videos found" });
-        else return res.status(200).send({ message: "Found", list });
+        else {
+          const idList = list.map((v) => v.video_id._id);
+          StatisticsModel.find(
+            {
+              video_id: { $in: idList },
+            },
+            { createdAt: 0, updatedAt: 0, __v: 0 },
+            null,
+            (err, statistics) => {
+              if (err)
+                return res
+                  .status(500)
+                  .send({ err, message: "Something went wrong" });
+              else {
+                return res.status(200).send({
+                  message: "Found liked video Successfully",
+                  list,
+                  statistics,
+                });
+              }
+            }
+          );
+        }
       }
     });
 }

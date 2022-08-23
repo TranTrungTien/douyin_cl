@@ -13,11 +13,13 @@ import { RightBarAction } from "../video_slide";
 type Props = {
   videoID: string;
   fromVideoPage?: boolean;
+  commentsCount?: number;
   onCloseComment?: (action: RightBarAction) => void;
 };
 
 const CommentContainer = ({
   onCloseComment,
+  commentsCount,
   videoID,
   fromVideoPage,
 }: Props) => {
@@ -27,7 +29,10 @@ const CommentContainer = ({
       video_id: videoID,
     };
   }, [videoID]);
-  const { data: comments, setData: setComments } = useFetchAppend<IComment>(
+  const { data: comments, setData: setComments } = useFetchAppend<
+    IComment,
+    any
+  >(
     servicesPath.GET_ALL_COMMENTS_OF_VIDEO,
     commentParams,
     undefined,
@@ -35,7 +40,7 @@ const CommentContainer = ({
     videoID ? true : false
   );
 
-  const { data: likedComments } = useFetchAppend<ILikedComment>(
+  const { data: likedComments } = useFetchAppend<ILikedComment, any>(
     servicesPath.GET_ALL_LIKED_COMMENT_OF_VIDEO_BY_AUTHOR,
     commentParams,
     undefined,
@@ -86,6 +91,7 @@ const CommentContainer = ({
         className={`shadow-md w-full ${fromVideoPage ? "px-0" : "px-3"} pb-2`}
       >
         <CommentHeader
+          commentsCount={commentsCount}
           onCloseComment={onCloseComment}
           fromVideoPage={fromVideoPage}
         />

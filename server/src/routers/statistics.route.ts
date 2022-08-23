@@ -1,24 +1,24 @@
 import express from "express";
-import statisticsController from "../controllers/statistics.controller";
+import StatisticsController from "../controllers/statistics.controller";
 import { verifyToken } from "../middlewares/verifytoken";
 const router = express.Router();
 
-router.post("/create", statisticsController.create);
+router.post("/create", StatisticsController.create);
 router.patch(
   "/update/like-count",
   verifyToken,
-  statisticsController.updateLikeCount
+  StatisticsController.updateLikeCount
 );
 router.patch(
   "/update/comment-count",
   verifyToken,
-  statisticsController.updateCommentCount
+  StatisticsController.updateCommentCount
 );
 router.patch(
   "/update/share-count",
   verifyToken,
-  statisticsController.updateShareCount
+  StatisticsController.updateShareCount
 );
-router.get("/", statisticsController.get);
+router.get("/video", StatisticsController.getStatisticsOfVideo);
 
 export default router;

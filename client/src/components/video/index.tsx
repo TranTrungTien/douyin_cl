@@ -1,5 +1,6 @@
 import { useEffect, useRef } from "react";
 import { useFetchSuspense } from "../../hooks/useFetchSuspense";
+import { IStatistics } from "../../interfaces/statistic";
 import RightVideoAction from "../../layouts/right_video_action_container";
 import { RightBarAction } from "../../layouts/video_slide";
 import { useAppDispatch } from "../../redux/app/hooks";
@@ -32,6 +33,7 @@ type Props = {
   isLiked?: boolean;
   isActive: boolean;
   avatarThumb: string;
+  statistics?: IStatistics;
   onChangeVideo?: (action: boolean) => void;
   onOpenRightBar?: (action: RightBarAction) => void;
 };
@@ -52,6 +54,7 @@ const Video = ({
   isPlay,
   isLiked,
   isActive,
+  statistics,
   avatarThumb,
   onChangeVideo,
   onOpenRightBar,
@@ -236,10 +239,11 @@ const Video = ({
           </AvatarCardButton>
           {/* like share, cmt,.,,, */}
           <LikeCmtShare
+            statistics={statistics}
             authorVideoID={authorVideoID}
             videoId={videoID}
             myID={myID}
-            liked={isLiked}
+            isLiked={isLiked}
             onOpenRightBar={onOpenRightBar}
           />
         </RightVideoAction>
