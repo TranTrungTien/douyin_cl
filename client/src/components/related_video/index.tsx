@@ -6,16 +6,18 @@ import TimeFooter from "../time_footer";
 import VideoCard from "../video_card";
 
 type Props = {
-  totalLiked?: number;
+  likedCount?: number;
   coverImage: string;
   nickname: string;
+  time?: string;
   desc: string;
 };
 const RelatedVideo = ({
   coverImage,
   nickname,
   desc,
-  totalLiked = 0,
+  likedCount = 0,
+  time = "00:00",
 }: Props) => {
   return (
     <div className="flex justify-start items-start laptop:flex-col desktop:flex-row desktop:space-x-2 w-full h-full">
@@ -27,7 +29,7 @@ const RelatedVideo = ({
           <TimeFooter
             bottom="bottom-1"
             right="right-2"
-            time="11:32"
+            time={time}
             className="font-normal text-xs"
           />
         </VideoCardFooter>
@@ -41,7 +43,7 @@ const RelatedVideo = ({
             icon={<SmallHeartIcon />}
             className="font-medium leading-5 text-xs opacity-70 flex justify-start items-center flex-row"
           >
-            <span>{totalLiked}</span>
+            <span>{likedCount}</span>
           </Heart>
           <Link to="/user">
             <span className="font-normal leading-5 text-xs opacity-70 truncate">

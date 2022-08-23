@@ -118,7 +118,7 @@ function checkFollowing(req: Request, res: Response) {
       author_id: author_id,
       follow: follow_id,
     },
-    null,
+    { createdAt: 0, updatedAt: 0, __v: 0 },
     null,
     (err, doc) => {
       if (err) res.status(500).send({ message: "Error check following", err });
@@ -137,7 +137,7 @@ function getAllFollowing(req: Request, res: Response) {
     {
       author_id: author_id,
     },
-    null,
+    { createdAt: 0, updatedAt: 0, __v: 0 },
     null,
     (err, list) => {
       if (err) res.status(500).send({ message: "Error check following", err });

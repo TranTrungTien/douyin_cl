@@ -36,7 +36,6 @@ const UserPage = (props: Props) => {
     };
   }, [user_id]);
 
-  // const userFromStore = useAppSelector((state) => state.user);
   const userRes = useFetch<null | { message: string; doc: IUser }>(
     servicesPath.GET_USER_INFO,
     userInfoParams,
@@ -45,13 +44,6 @@ const UserPage = (props: Props) => {
   );
 
   const user = userRes && userRes.doc;
-
-  // const user = userFromStore.data
-  //   ? userFromStore.data
-  //   : userFromFetch?.doc
-  //   ? userFromFetch.doc
-  //   : null;
-  // console.log({ user });
 
   const [cursorState, setCursorState] = useState<ICursorState>({
     viewOwn: {

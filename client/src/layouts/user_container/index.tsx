@@ -5,6 +5,7 @@ import UserBoxHeader from "../../components/user_box_header";
 import VideoBadge from "../../components/video_badge";
 import VideoCard from "../../components/video_card";
 import { useFetchAppend } from "../../hooks/useFetchAppend";
+import { IStatistics } from "../../interfaces/statistic";
 import { IVideo } from "../../interfaces/video.interface";
 import { servicesPath } from "../../services/services_path";
 import VideoCardFooter from "../video_card_footer_container";
@@ -36,7 +37,7 @@ const UserContainer = ({
       limit: 15,
     };
   }, [authorVideoID, cursor]);
-  const { data: ownVideos } = useFetchAppend<IVideo>(
+  const { data: ownVideos } = useFetchAppend<IVideo, IStatistics>(
     servicesPath.GET_VIDEO_BY_USER,
     ownVideosParams,
     undefined,

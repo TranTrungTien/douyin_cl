@@ -1,6 +1,5 @@
-import { Types } from "mongoose";
 export interface IStatistics {
-  video_id: Types.ObjectId;
+  video_id: string;
   comment_count: number;
   stars_count: number;
   like_count: number;

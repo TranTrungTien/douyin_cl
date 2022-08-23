@@ -11,7 +11,6 @@ const loginHelper = new LoginHelper();
 
 function createUser(req: Request, res: Response) {
   const { password, ...user } = req.body.user as IUser;
-
   bcrypt
     .hash(password, 15)
     .then((hashedPassword) => {
@@ -44,24 +43,34 @@ function updateUser(req: Request, res: Response) {
 }
 function getOwnInfo(req: Request, res: Response) {
   const uid = req.body.uid;
-  UserModel.findOne({ uid: uid }, { password: 0 }, null, (err, doc) => {
-    if (err) res.status(500).send({ message: "Error", err });
-    else {
-      if (!doc) return res.status(404).send({ message: "Not found" });
-      res.status(200).send({ message: "Successfully", doc });
+  UserModel.findOne(
+    { uid: uid },
+    { password: 0, createdAt: 0, updatedAt: 0, __v: 0 },
+    null,
+    (err, doc) => {
+      if (err) res.status(500).send({ message: "Error", err });
+      else {
+        if (!doc) return res.status(404).send({ message: "Not found" });
+        res.status(200).send({ message: "Successfully", doc });
+      }
     }
-  });
+  );
 }
 
 function getUserInfo(req: Request, res: Response) {
   const uid = req.query.uid;
-  UserModel.findOne({ uid: uid }, { password: 0 }, null, (err, doc) => {
-    if (err) res.status(500).send({ message: "Error", err });
-    else {
-      if (!doc) return res.status(404).send({ message: "Not found" });
-      res.status(200).send({ message: "Successfully", doc });
+  UserModel.findOne(
+    { uid: uid },
+    { password: 0, createdAt: 0, updatedAt: 0, __v: 0 },
+    null,
+    (err, doc) => {
+      if (err) res.status(500).send({ message: "Error", err });
+      else {
+        if (!doc) return res.status(404).send({ message: "Not found" });
+        res.status(200).send({ message: "Successfully", doc });
+      }
     }
-  });
+  );
 }
 
 function deleteUser(req: Request, res: Response) {

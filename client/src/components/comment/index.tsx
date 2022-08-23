@@ -1,4 +1,11 @@
-import { memo, MouseEvent, SyntheticEvent, useMemo, useState } from "react";
+import {
+  memo,
+  MouseEvent,
+  SyntheticEvent,
+  useEffect,
+  useMemo,
+  useState,
+} from "react";
 import SmallHeartIcon from "../../assets/icons/small_heart_icon";
 import { useFetchAppend } from "../../hooks/useFetchAppend";
 import { IComment } from "../../interfaces/comment";
@@ -41,7 +48,10 @@ const Comment = ({
   isLiked,
   replyCommentID,
 }: Props) => {
-  console.log({ replyCommentID });
+  const [liked, setLiked] = useState(false);
+  useEffect(() => {
+    isLiked ? setLiked(true) : setLiked(false);
+  }, [isLiked]);
 
   const [isReply, setIsReply] = useState(false);
   const user = useAppSelector((state) => state.user);
@@ -57,26 +67,28 @@ const Comment = ({
       cursor: 0,
     };
   }, [videoID, commentID]);
-  const { data: replyComments, setData: setReplyComments } =
-    useFetchAppend<IComment>(
-      servicesPath.GET_REPLY_OF_COMMENT,
-      commentParams,
-      undefined,
-      undefined,
-      typeof replyCount === "number" &&
-        replyCount > 0 &&
-        videoID &&
-        showReply.isShow
-        ? true
-        : false
-    );
+  const { data: replyComments, setData: setReplyComments } = useFetchAppend<
+    IComment,
+    any
+  >(
+    servicesPath.GET_REPLY_OF_COMMENT,
+    commentParams,
+    undefined,
+    undefined,
+    typeof replyCount === "number" &&
+      replyCount > 0 &&
+      videoID &&
+      showReply.isShow
+      ? true
+      : false
+  );
   const likedCommentInCommentsParams = useMemo(() => {
     return {
       video_id: videoID,
       reply_comment_id: commentID,
     };
   }, [videoID, commentID]);
-  const { data: likedCommentInComments } = useFetchAppend<ILikedComment>(
+  const { data: likedCommentInComments } = useFetchAppend<ILikedComment, any>(
     servicesPath.GET_ALL_LIKED_COMMENT_IN_OTHER_COMMENT,
     likedCommentInCommentsParams,
     undefined,
@@ -138,14 +150,11 @@ const Comment = ({
       };
     });
   };
-  const handleLikeComment = async (
-    event: MouseEvent<HTMLButtonElement>,
-    like: boolean
-  ) => {
+  const handleLikeComment = async () => {
     if (user.data) {
       console.log({ replyCommentID });
-
-      if (like) {
+      if (!liked) {
+        setLiked(true);
         const likeRes = await postData(
           servicesPath.POST_lIKED_COMMENT,
           {
@@ -157,6 +166,7 @@ const Comment = ({
         ).catch(console.error);
         likeRes && likeRes.data && console.log("liked");
       } else {
+        setLiked(false);
         const deleteRes = await deleteData<any>(
           servicesPath.DEL_lIKED_COMMENT,
           {

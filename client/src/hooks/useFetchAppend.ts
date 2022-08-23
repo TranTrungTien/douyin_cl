@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { getData, ResponseType } from "../services/app_services";
 
-export function useFetchAppend<T>(
+export function useFetchAppend<T1, T2>(
   url: string,
   params: any,
   errorHandler?: (args?: any) => void,
@@ -13,13 +13,15 @@ export function useFetchAppend<T>(
 ) {
   const [data, setData] = useState<{
     message: string;
-    list: T[];
+    list: T1[];
+    statistics?: T2[];
   } | null>(null);
   useEffect(() => {
     const fetchData = async () => {
       const response = await getData<{
         message: string;
-        list: T[];
+        list: T1[];
+        statistics?: T2[];
       }>(url, params, withCredentials, responseType, contentType).catch(
         (err) => {
           errorHandler && errorHandler();

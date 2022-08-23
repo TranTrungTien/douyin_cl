@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { RightBarAction } from "../../layouts/video_slide";
 import { useAppDispatch } from "../../redux/app/hooks";
 import { setIsLogin } from "../../redux/slice/login_slice";
@@ -11,15 +11,14 @@ import LargeHeart from "../../assets/icons/large_heart_icon";
 import CommentIcon from "../../assets/icons/comment_icon";
 import StarsIcon from "../../assets/icons/star_icon";
 import ShareIcon from "../../assets/icons/share_icon";
+import { IStatistics } from "../../interfaces/statistic";
 
 type Props = {
   onOpenRightBar?: (action: RightBarAction) => void;
   myID?: string;
-  countLiked?: number;
-  countComments?: number;
-  countStars?: number;
+  statistics?: IStatistics;
   authorVideoID?: string;
-  liked?: boolean;
+  isLiked?: boolean;
   classNameInner?: string;
   className?: string;
   widthSvg?: string;
@@ -27,10 +26,8 @@ type Props = {
   videoId: string;
 };
 const LikeCmtShare = ({
-  liked,
-  countLiked = 0,
-  countComments = 0,
-  countStars = 0,
+  isLiked,
+  statistics,
   myID,
   authorVideoID,
   videoId,
@@ -40,7 +37,10 @@ const LikeCmtShare = ({
   widthSvg = "36",
   heightSvg = "36",
 }: Props) => {
-  const [like, setLike] = useState(liked ? true : false);
+  const [like, setLike] = useState(false);
+  useEffect(() => {
+    if (isLiked) setLike(isLiked);
+  }, [isLiked]);
 
   const dispatch = useAppDispatch();
 
@@ -86,7 +86,7 @@ const LikeCmtShare = ({
         className={`${classNameInner} text-white opacity-80 hover:opacity-100`}
       >
         <span className="font-medium text-[15px] leading-[23px]">
-          {countLiked}
+          {statistics?.like_count || 0}
         </span>
       </Heart>
       {/* cmt icon */}
@@ -103,7 +103,9 @@ const LikeCmtShare = ({
         }}
         icon={<CommentIcon heightSvg={36} widthSvg={36} />}
       >
-        <span className="font-medium text-[15px] leading-[23px]">{0}</span>
+        <span className="font-medium text-[15px] leading-[23px]">
+          {statistics?.comment_count || 0}
+        </span>
       </Button>
       {/* star icon */}
       <Button
@@ -115,7 +117,7 @@ const LikeCmtShare = ({
         icon={<StarsIcon heightSvg={36} widthSvg={36} />}
       >
         <span className="font-medium text-[15px] leading-[23px]">
-          {countStars}
+          {statistics?.stars_count || 0}
         </span>
       </Button>
       {/* share icon */}

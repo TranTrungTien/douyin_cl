@@ -62,7 +62,7 @@ function getAllLikedCommentOfVideo(req: Request, res: Response) {
         $exists: false,
       },
     },
-    null,
+    { createdAt: 0, updatedAt: 0, __v: 0 },
     null
   )
     .populate("video_id")
@@ -93,7 +93,7 @@ function getAllLikedCommentInOtherComment(req: Request, res: Response) {
       video_id: video_id,
       reply_comment_id: reply_comment_id,
     },
-    null,
+    { createdAt: 0, updatedAt: 0, __v: 0 },
     null
   )
     .populate("video_id")

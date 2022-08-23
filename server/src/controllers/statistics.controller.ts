@@ -15,19 +15,27 @@ function create(req: Request, res: Response) {
     else res.status(200).send({ message: "Successfully", doc });
   });
 }
-function get(req: Request, res: Response) {
+function getStatisticsOfVideo(req: Request, res: Response) {
   const video_id = req.query.video_id as string;
-  StatisticsModel.findOne({ video_id: video_id }, null, null, (err, doc) => {
-    if (err)
-      res.status(500).send({ message: "Error getting statistics", error: err });
-    else {
-      if (!doc) return res.status(404).send({ message: "Error Not Found" });
-      else
+  StatisticsModel.findOne(
+    { video_id: video_id },
+    { createdAt: 0, updatedAt: 0, __v: 0 },
+    null,
+    (err, doc) => {
+      if (err)
         res
-          .status(200)
-          .send({ message: "Successfully retrieved statistics", doc });
+          .status(500)
+          .send({ message: "Error getting statistics", error: err });
+      else {
+        if (!doc) return res.status(404).send({ message: "Error Not Found" });
+        else
+          res.status(200).send({
+            message: "Successfully retrieved statistics",
+            statistics: doc,
+          });
+      }
     }
-  });
+  );
 }
 function updateLikeCount(req: Request, res: Response) {
   const video_id = req.body.video_id as string;
@@ -101,5 +109,5 @@ export default {
   create,
   updateLikeCount,
   updateShareCount,
-  get,
+  getStatisticsOfVideo,
 };
