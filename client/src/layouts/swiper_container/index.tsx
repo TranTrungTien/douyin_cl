@@ -15,8 +15,13 @@ const SwiperWrapper = () => {
   const [start, setStart] = useState(false);
   const videos = useFetchSuspense<{
     message: string;
-    list: IVideo[];
-    statistics?: IStatistics[];
+    data: [
+      {
+        video: IVideo;
+        statistics: IStatistics;
+        weight?: number;
+      }
+    ];
   }>(servicesPath.GET_NEW_RECOMMENDED, null);
   const handleStart = () => {
     if (!start) setStart(true);
@@ -33,23 +38,20 @@ const SwiperWrapper = () => {
       virtual
     >
       {videos &&
-        Array.isArray(videos.list) &&
-        videos.list.map((video, index) => {
-          const statistics = videos.statistics?.find(
-            (statistic) => statistic.video_id === video._id
-          );
+        Array.isArray(videos.data) &&
+        videos.data.map((video, index) => {
           return (
             <SwiperSlide
               className="w-full h-full rounded-md"
-              key={video._id}
+              key={video.video._id}
               virtualIndex={index}
             >
               <VideoSlide
-                statistics={statistics}
-                avatarThumb={video.author_id.avatar_thumb.url_list[0]}
-                nickname={video.author_id.nickname}
+                statistics={video.statistics}
+                avatarThumb={video.video.author_id.avatar_thumb.url_list[0]}
+                nickname={video.video.author_id.nickname}
                 allowedPlay={start}
-                video={video}
+                video={video.video}
                 onStart={handleStart}
               />
             </SwiperSlide>

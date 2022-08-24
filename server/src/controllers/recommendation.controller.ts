@@ -2,8 +2,10 @@ import { Request, Response } from "express";
 import * as fs from "fs";
 import { metaPath } from "../const/path";
 import { IVideo } from "../interface/video.interface";
+import LikedModel from "../models/liked.model";
 import StatisticsModel from "../models/statistics.model";
 import VideoModel from "../models/video.model";
+import { dayOfTwoDate } from "../utils/day_of_two_date";
 import { RecommendationUtils } from "../utils/recommendation";
 
 ///just for development
@@ -17,25 +19,70 @@ const shuffleArray = (array: IVideo[]) => {
   return listCopy;
 };
 
-function getRecommendationDef(req: Request, res: Response) {
-  VideoModel.find({}, { createdAt: 0, updatedAt: 0, __v: 0 }, null)
+async function getRecommendationDef(req: Request, res: Response) {
+  const userID = req.query.user_id as string;
+  const likedList = await LikedModel.find(
+    { author_id: userID },
+    { createdAt: 0, updatedAt: 0, __v: 0, _id: 0 },
+    null
+  );
+  const videoIds = likedList.map((x) => x.video_id);
+  VideoModel.find(
+    {
+      _id: {
+        $nin: videoIds,
+      },
+      createdAt: {
+        $gt: new Date("2020-03-01"),
+      },
+    },
+    { updatedAt: 0, __v: 0 },
+    null
+  )
     .populate("author_id")
+    .sort({
+      createdAt: -1,
+    })
     .exec((err, list) => {
       if (err) res.status(500).send({ message: "Error", err });
       else {
         if (!list) return res.status(404).send({ message: "List not found" });
         else {
           StatisticsModel.find(
-            {},
+            {
+              video_id: {
+                $nin: videoIds,
+              },
+            },
             { createdAt: 0, updatedAt: 0, __v: 0 },
             null,
             (err, statistics) => {
               if (err)
                 res.status(500).send({ message: "not found statistics", err });
-              else
-                res
-                  .status(200)
-                  .send({ message: "Successfully", list, statistics });
+              else {
+                const currentDate = new Date();
+                const weight = list.map((v) => {
+                  const stat = statistics.find(
+                    (stat) => v._id.toString() === stat.video_id.toString()
+                  );
+                  const diffDays = dayOfTwoDate(
+                    currentDate,
+                    new Date(v?.createdAt || "2020-01-01T00:00:00")
+                  );
+                  const temp =
+                    (stat?.stars_count || 0) +
+                    (stat?.comment_count || 0) +
+                    (stat?.like_count || 0) +
+                    (stat?.share_count || 0);
+                  return {
+                    video: v,
+                    statistics: stat,
+                    weight: temp / diffDays / 100,
+                  };
+                });
+                weight.sort((x, y) => y.weight - x.weight);
+                res.status(200).send({ message: "Successfully", data: weight });
+              }
             }
           );
         }

@@ -21,7 +21,8 @@ export interface IVideo {
   play_addr: {
     url_list: string[];
   };
-
+  createdAt?: string;
+  updatedAt?: string;
   music_id: Types.ObjectId;
 }
 
