@@ -1,3 +1,4 @@
+import Button from "../button";
 import SubRegisterOrLogin from "../sub_login";
 
 type Props = {
@@ -17,14 +18,15 @@ const Login = ({ onCloseLogin, onVerifyEmail }: Props) => {
           backgroundRepeat: "no-repeat",
         }}
       >
-        <button
+        <Button
+          text=""
           onClick={onCloseLogin}
           type="button"
           title="close"
           className="absolute top-3 right-5"
         >
           X
-        </button>
+        </Button>
         <header className="w-full text-center">
           <h4 className="font-medium text-lg text-center">登录后抖音更懂你</h4>
           <ul className="grid w-full grid-cols-4 text-center font-light text-[9px]">

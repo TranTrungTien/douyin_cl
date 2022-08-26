@@ -37,10 +37,21 @@ const LikeCmtShare = ({
   widthSvg = "36",
   heightSvg = "36",
 }: Props) => {
-  const [like, setLike] = useState(false);
+  console.log("render");
+
+  const [videoData, setVideoData] = useState({
+    isLiked,
+    ...statistics,
+  });
   useEffect(() => {
-    if (isLiked) setLike(isLiked);
-  }, [isLiked]);
+    setVideoData((prev) => {
+      return {
+        ...prev,
+        ...statistics,
+        isLiked,
+      };
+    });
+  }, [isLiked, statistics]);
 
   const dispatch = useAppDispatch();
 
@@ -50,8 +61,14 @@ const LikeCmtShare = ({
         alert("Error");
         return;
       }
-      if (!like) {
-        setLike(!like);
+      if (!videoData.isLiked) {
+        setVideoData((prev) => {
+          return {
+            ...prev,
+            like_count: (prev.like_count || 0) + 1,
+            isLiked: true,
+          };
+        });
         const likeRes = await postData(
           servicesPath.POST_LIKE_VIDEO,
           {
@@ -62,7 +79,13 @@ const LikeCmtShare = ({
         ).catch(console.error);
         likeRes && likeRes.data && console.log("liked video");
       } else {
-        setLike(!like);
+        setVideoData((prev) => {
+          return {
+            ...prev,
+            like_count: (prev.like_count || 0) - 1,
+            isLiked: false,
+          };
+        });
         const delRes = await deleteData(servicesPath.DEL_LIKE_VIDEO, {
           video_id: videoId,
           author_video_id: authorVideoID,
@@ -80,21 +103,24 @@ const LikeCmtShare = ({
     <div className={`${className}`}>
       {/* heart icon */}
       <Heart
-        icon={<LargeHeart heightSvg={36} widthSvg={36} isLiked={like} />}
+        icon={
+          <LargeHeart
+            heightSvg={36}
+            widthSvg={36}
+            isLiked={videoData.isLiked}
+          />
+        }
         onClick={handleLikeVideo}
         title="喜欢"
         className={`${classNameInner} text-white opacity-80 hover:opacity-100`}
       >
         <span className="font-medium text-[15px] leading-[23px]">
-          {statistics?.like_count || 0}
+          {videoData.like_count}
         </span>
       </Heart>
       {/* cmt icon */}
       <Button
-        width="w-auto"
-        height="h-auto"
         text=""
-        backgroundColor="bg-transparent"
         title="评论"
         className={`${classNameInner} text-white opacity-80 hover:opacity-100`}
         onClick={() => {
@@ -104,28 +130,22 @@ const LikeCmtShare = ({
         icon={<CommentIcon heightSvg={36} widthSvg={36} />}
       >
         <span className="font-medium text-[15px] leading-[23px]">
-          {statistics?.comment_count || 0}
+          {videoData.comment_count}
         </span>
       </Button>
       {/* star icon */}
       <Button
         text=""
-        backgroundColor="bg-transparent"
-        width="w-auto"
-        height="h-auto"
         className={`${classNameInner} text-white opacity-80 hover:opacity-100`}
         icon={<StarsIcon heightSvg={36} widthSvg={36} />}
       >
         <span className="font-medium text-[15px] leading-[23px]">
-          {statistics?.stars_count || 0}
+          {videoData.stars_count}
         </span>
       </Button>
       {/* share icon */}
       <Button
-        width="w-auto"
-        height="h-auto"
         text=""
-        backgroundColor="bg-transparent"
         title="分享"
         className={`${classNameInner} text-white opacity-80 hover:opacity-100`}
         icon={<ShareIcon heightSvg={36} widthSvg={36} />}
@@ -135,9 +155,6 @@ const LikeCmtShare = ({
       <Button
         onClick={handleOpenOptions}
         text=""
-        backgroundColor="bg-transparent"
-        width="w-auo"
-        height="h-auto"
         className={`${classNameInner} text-white opacity-80 hover:opacity-100 relative`}
         icon={
           <div>

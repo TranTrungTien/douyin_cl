@@ -4,6 +4,8 @@ import { useAppDispatch } from "../../redux/app/hooks";
 import { getUserInfoSuccessfully } from "../../redux/slice/user_slice";
 import { postData } from "../../services/app_services";
 import { servicesPath } from "../../services/services_path";
+import Button from "../button";
+import Input from "../input";
 
 type Props = {
   emailVerified: string;
@@ -43,12 +45,23 @@ const BasicInfo = ({ emailVerified, code }: Props) => {
     <div className="w-96 h-96 bg-white">
       <form onSubmit={onSubmit} className="flex flex-col">
         <label htmlFor="nickname">NickName</label>
-        <input type="text" id="nickname" />
+        <input />
+        <Input
+          type="text"
+          id="nickname"
+          name="nickname"
+          placeholder="nick name"
+        />
         <label htmlFor="email">Email</label>
-        <input type="email" id="email" defaultValue={emailVerified} />
+        <Input type="email" id="email" name="email" placeholder="email" />
         <label htmlFor="password">Password</label>
-        <input type="text" id="password" />
-        <button type="submit">Submit</button>
+        <Input
+          type="password"
+          id="password"
+          name="password"
+          placeholder="password"
+        />
+        <Button text="Submit" type="submit" />
       </form>
     </div>
   );

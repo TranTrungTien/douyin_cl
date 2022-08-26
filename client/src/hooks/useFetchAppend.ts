@@ -14,14 +14,14 @@ export function useFetchAppend<T1, T2>(
   const [data, setData] = useState<{
     message: string;
     list: T1[];
-    statistics?: T2[];
+    statistics: T2[];
   } | null>(null);
   useEffect(() => {
     const fetchData = async () => {
       const response = await getData<{
         message: string;
         list: T1[];
-        statistics?: T2[];
+        statistics: T2[];
       }>(url, params, withCredentials, responseType, contentType).catch(
         (err) => {
           errorHandler && errorHandler();
@@ -35,7 +35,8 @@ export function useFetchAppend<T1, T2>(
           } else {
             return {
               ...prev,
-              list: [...prev.list, ...d.list],
+              list: [...(prev.list || []), ...(d.list || [])],
+              statistics: [...(prev.statistics || []), ...(d.statistics || [])],
             };
           }
         });

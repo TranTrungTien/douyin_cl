@@ -116,29 +116,34 @@ const UserInfoContainer = ({
             icon={isFollowing && <FollowingIcon />}
             text={isFollowing ? "" : "关注"}
             onClick={handleFollow}
-            width={isFollowing ? "w-36px" : undefined}
-            height={isFollowing ? "h-36px" : undefined}
-            backgroundColor={isFollowing ? "bg-darkslategray3" : "bg-fresh_red"}
-            className={
-              isFollowing
-                ? `border-darkslategray2 border flex justify-center items-center`
-                : ""
-            }
+            className={`
+              ${
+                isFollowing &&
+                `border-darkslategray2 border flex justify-center items-center`
+              }
+              ${
+                isFollowing ? "w-36px h-36px bg-darkslategray3" : "bg-fresh_red"
+              }
+            `}
           />
         )}
-        <button className="w-9 h-9 grid place-content-center  border border-darkslategray2 rounded bg-darkslategray3">
-          <svg
-            width="12"
-            height="4"
-            xmlns="http://www.w3.org/2000/svg"
-            viewBox="0, 0, 12, 4"
-          >
-            <path
-              d="M2.667 2.187a1.333 1.333 0 11-2.667 0 1.333 1.333 0 012.667 0zM7.333 2.187a1.333 1.333 0 11-2.666 0 1.333 1.333 0 012.666 0zM10.667 3.52a1.333 1.333 0 100-2.667 1.333 1.333 0 000 2.667z"
-              fill="currentColor"
-            ></path>
-          </svg>
-        </button>
+        <Button
+          text=""
+          className="w-9 h-9 grid place-content-center  border border-darkslategray2 rounded bg-darkslategray3"
+          icon={
+            <svg
+              width="12"
+              height="4"
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0, 0, 12, 4"
+            >
+              <path
+                d="M2.667 2.187a1.333 1.333 0 11-2.667 0 1.333 1.333 0 012.667 0zM7.333 2.187a1.333 1.333 0 11-2.666 0 1.333 1.333 0 012.666 0zM10.667 3.52a1.333 1.333 0 100-2.667 1.333 1.333 0 000 2.667z"
+                fill="currentColor"
+              ></path>
+            </svg>
+          }
+        />
       </div>
     </div>
   );

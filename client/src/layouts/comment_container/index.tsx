@@ -81,6 +81,7 @@ const CommentContainer = ({
           return {
             message: commentRes.data.message,
             list: [newComment],
+            statistics: [],
           };
       });
     }
@@ -95,7 +96,21 @@ const CommentContainer = ({
           onCloseComment={onCloseComment}
           fromVideoPage={fromVideoPage}
         />
-        {user.data && <Input onSubmit={handleSubmit} />}
+        {user.data && (
+          <form
+            autoComplete="off"
+            className="w-full py-1"
+            onSubmit={handleSubmit}
+          >
+            <Input
+              placeholder="评论 ..."
+              autoComplete="off"
+              id="comment"
+              name="comment"
+              type="text"
+            />
+          </form>
+        )}
       </div>
       <div className="w-full h-auto overflow-auto hidden-scrollbar">
         {comments && comments.list.length

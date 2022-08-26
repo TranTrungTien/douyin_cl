@@ -1,3 +1,6 @@
+import Button from "../button";
+import Input from "../input";
+
 type Props = {};
 
 const Search = (props: Props) => {
@@ -19,21 +22,19 @@ const Search = (props: Props) => {
         </svg>
       </div>
       <div className="flex-1 h-full flex justify-start items-center">
-        <input
+        <Input
           className="focus:outline-none focus:border-none border-none outline-none bg-transparent text-white w-full"
           type="text"
           name="search-box"
           id="search-box"
-          maxLength={100}
           placeholder="搜索你感兴趣的内容"
         />
       </div>
-      <button
+      <Button
+        text="搜索"
         type="submit"
         className="opacity-80 leading-6 hover:text-red_hover hover:opacity-100 text-white px-2"
-      >
-        搜索
-      </button>
+      />
     </form>
   );
 };

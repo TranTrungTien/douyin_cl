@@ -56,7 +56,6 @@ const UserVideoContainer = ({
     return {
       author_id: authorID,
       cursor: cursor.viewOwn.cursorPosition,
-      include_like_count: 1,
       limit: 15,
     };
   }, [authorID, cursor.viewOwn.cursorPosition]);
@@ -74,7 +73,6 @@ const UserVideoContainer = ({
     return {
       author_id: authorID,
       cursor: cursor.viewLiked.cursorPosition,
-      include_like_count: 1,
       limit: 15,
     };
   }, [authorID, cursor.viewLiked.cursorPosition]);
@@ -102,15 +100,11 @@ const UserVideoContainer = ({
       setViewOpt({ viewOwn: false, viewLiked: true });
     }
   };
-  console.log(viewOpt);
   return (
     <div className="extra-desktop:px-12 over-desktop:px-16 py-8 space-y-6">
       <header className="laptop:px-3 desktop:px-5 extra-desktop:px-0 flex justify-start items-center space-x-10 leading-[26px] font-medium text-[18px] opacity-90">
         <Button
           text=""
-          backgroundColor="bg-transparent"
-          width="w-auto"
-          height="h-auto"
           onClick={() => handleChangeViewOpt(true)}
           className={`${
             viewOpt.viewOwn
@@ -123,9 +117,6 @@ const UserVideoContainer = ({
         </Button>
         <Button
           text=""
-          backgroundColor="bg-transparent"
-          width="w-auto"
-          height="h-auto"
           onClick={() => handleChangeViewOpt(false)}
           className={`flex justify-start items-center space-x-2 text-base ${
             !viewLikedAllowed &&
@@ -189,7 +180,7 @@ const UserVideoContainer = ({
             : likedVideos &&
               likedVideos.list.map((video) => {
                 const likedCount = likedVideos.statistics?.find(
-                  (statistic) => statistic.video_id === video._id
+                  (statistic) => statistic.video_id === video.video_id._id
                 );
                 return (
                   <Link

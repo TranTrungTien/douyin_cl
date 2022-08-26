@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import SwiperCore, { Virtual } from "swiper";
 import "swiper/css";
 import "swiper/css/bundle";
@@ -8,11 +8,18 @@ import { VideoSlide } from "..";
 import { useFetchSuspense } from "../../hooks/useFetchSuspense";
 import { IStatistics } from "../../interfaces/statistic";
 import { IVideo } from "../../interfaces/video.interface";
+import { useAppSelector } from "../../redux/app/hooks";
 import { servicesPath } from "../../services/services_path";
 SwiperCore.use([Virtual]);
 
 const SwiperWrapper = () => {
+  const myID = useAppSelector((state) => state.user.data?._id);
   const [start, setStart] = useState(false);
+  const videoParams = useMemo(() => {
+    return {
+      user_id: myID,
+    };
+  }, [myID]);
   const videos = useFetchSuspense<{
     message: string;
     data: [
@@ -22,7 +29,7 @@ const SwiperWrapper = () => {
         weight?: number;
       }
     ];
-  }>(servicesPath.GET_NEW_RECOMMENDED, null);
+  }>(servicesPath.GET_NEW_RECOMMENDED, videoParams);
   const handleStart = () => {
     if (!start) setStart(true);
   };

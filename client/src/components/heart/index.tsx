@@ -25,10 +25,7 @@ const Heart = ({
   };
   return (
     <Button
-      width="w-auto"
-      height="h-auto"
       text=""
-      backgroundColor="bg-transparent"
       title={title}
       onClick={handleLiked}
       className={`${className}  hover:text-fresh_red ${

@@ -48,9 +48,25 @@ const Comment = ({
   isLiked,
   replyCommentID,
 }: Props) => {
-  const [liked, setLiked] = useState(false);
+  const [videoData, setVideoData] = useState({
+    isLiked,
+    likedCount,
+    replyCount,
+  });
   useEffect(() => {
-    isLiked ? setLiked(true) : setLiked(false);
+    isLiked
+      ? setVideoData((prev) => {
+          return {
+            ...prev,
+            isLiked: true,
+          };
+        })
+      : setVideoData((prev) => {
+          return {
+            ...prev,
+            isLiked: false,
+          };
+        });
   }, [isLiked]);
 
   const [isReply, setIsReply] = useState(false);
@@ -118,6 +134,12 @@ const Comment = ({
         },
         true
       ).catch(console.error);
+      setVideoData((prev) => {
+        return {
+          ...prev,
+          replyCount: (prev?.replyCount || 0) + 1,
+        };
+      });
       if (commentRes && commentRes.data) {
         const newComment = commentRes.data.doc;
         newComment.author_id = user.data;
@@ -137,6 +159,7 @@ const Comment = ({
             return {
               message: commentRes.data.message,
               list: [newComment],
+              statistics: [],
             };
         });
       }
@@ -151,10 +174,17 @@ const Comment = ({
     });
   };
   const handleLikeComment = async () => {
+    console.log({ videoData });
     if (user.data) {
       console.log({ replyCommentID });
-      if (!liked) {
-        setLiked(true);
+      if (!videoData.isLiked) {
+        setVideoData((prev) => {
+          return {
+            ...prev,
+            likedCount: (prev?.likedCount || 0) + 1,
+            isLiked: true,
+          };
+        });
         const likeRes = await postData(
           servicesPath.POST_lIKED_COMMENT,
           {
@@ -165,8 +195,14 @@ const Comment = ({
           true
         ).catch(console.error);
         likeRes && likeRes.data && console.log("liked");
-      } else {
-        setLiked(false);
+      } else if (videoData.isLiked) {
+        setVideoData((prev) => {
+          return {
+            ...prev,
+            likedCount: (prev?.likedCount || 0) - 1,
+            isLiked: false,
+          };
+        });
         const deleteRes = await deleteData<any>(
           servicesPath.DEL_lIKED_COMMENT,
           {
@@ -210,15 +246,12 @@ const Comment = ({
           <div className="text-xs font-medium leading-5 text-inherit opacity-70  flex justify-start items-center space-x-5">
             <Heart
               icon={<SmallHeartIcon />}
-              isLiked={isLiked}
-              likedCount={likedCount}
+              isLiked={videoData.isLiked}
+              likedCount={videoData.likedCount}
               onClick={handleLikeComment}
             />
             <Button
-              width="w-auto"
-              height="h-auto"
               text=""
-              backgroundColor="bg-transparent"
               onClick={() => setIsReply(!isReply)}
               className="flex justify-start items-center space-x-px hover:text-fresh_red"
               icon={
@@ -241,14 +274,21 @@ const Comment = ({
               <span>回复</span>
             </Button>
           </div>
-          {isReply && user.data && <Input onSubmit={handleSubmit} />}
+          {isReply && user.data && (
+            <form autoComplete="off" onSubmit={handleSubmit}>
+              <Input
+                placeholder="评论 ..."
+                type="text"
+                autoComplete="off"
+                id="comment"
+                name="comment"
+              />
+            </form>
+          )}
           {/* View more reply */}
           {replyCount !== 0 && (
             <Button
-              width="w-auto"
-              height="h-auto"
               text=""
-              backgroundColor="bg-transparent"
               onClick={handleShowReply}
               className="flex justify-start items-center space-x-1 text-inherit font-normal opacity-50 text-xs leading-5"
               icon={
@@ -269,7 +309,9 @@ const Comment = ({
             >
               <div className="space-x-1 text-gray-200 opacity-90 text-sm">
                 <span>展开</span>
-                <span className="text-white text-sm">{replyCount}</span>
+                <span className="text-white text-sm">
+                  {videoData.replyCount}
+                </span>
                 <span>条回复</span>
               </div>
             </Button>
