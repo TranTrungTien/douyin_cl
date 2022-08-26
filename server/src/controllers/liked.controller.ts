@@ -119,9 +119,13 @@ function checkLiked(req: Request, res: Response) {
           .status(500)
           .send({ message: "Something went wrong", error: err });
       else if (!doc)
-        return res.status(200).send({ message: "Not Found", like: false });
+        return res
+          .status(200)
+          .send({ message: "Not Found liked video", like: false });
       else
-        res.status(200).send({ message: "Found ", like: doc ? true : false });
+        res
+          .status(200)
+          .send({ message: "Found liked video ", like: doc ? true : false });
     }
   );
 }

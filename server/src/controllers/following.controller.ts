@@ -143,7 +143,7 @@ function getAllFollowing(req: Request, res: Response) {
       if (err) res.status(500).send({ message: "Error check following", err });
       else {
         if (list.length === 0)
-          return res.status(404).send({ message: "Following Not Found", err });
+          return res.status(404).send({ message: "Following Not Found", list });
         else res.status(200).send({ message: "Successfully", list });
       }
     }

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import SwiperCore, { Virtual } from "swiper";
 import "swiper/css";
 import "swiper/css/bundle";
@@ -8,16 +8,28 @@ import { VideoSlide } from "..";
 import { useFetchSuspense } from "../../hooks/useFetchSuspense";
 import { IStatistics } from "../../interfaces/statistic";
 import { IVideo } from "../../interfaces/video.interface";
+import { useAppSelector } from "../../redux/app/hooks";
 import { servicesPath } from "../../services/services_path";
 SwiperCore.use([Virtual]);
 
 const SwiperWrapper = () => {
+  const myID = useAppSelector((state) => state.user.data?._id);
   const [start, setStart] = useState(false);
+  const videoParams = useMemo(() => {
+    return {
+      user_id: myID,
+    };
+  }, [myID]);
   const videos = useFetchSuspense<{
     message: string;
-    list: IVideo[];
-    statistics?: IStatistics[];
-  }>(servicesPath.GET_NEW_RECOMMENDED, null);
+    data: [
+      {
+        video: IVideo;
+        statistics: IStatistics;
+        weight?: number;
+      }
+    ];
+  }>(servicesPath.GET_NEW_RECOMMENDED, videoParams);
   const handleStart = () => {
     if (!start) setStart(true);
   };
@@ -33,23 +45,20 @@ const SwiperWrapper = () => {
       virtual
     >
       {videos &&
-        Array.isArray(videos.list) &&
-        videos.list.map((video, index) => {
-          const statistics = videos.statistics?.find(
-            (statistic) => statistic.video_id === video._id
-          );
+        Array.isArray(videos.data) &&
+        videos.data.map((video, index) => {
           return (
             <SwiperSlide
               className="w-full h-full rounded-md"
-              key={video._id}
+              key={video.video._id}
               virtualIndex={index}
             >
               <VideoSlide
-                statistics={statistics}
-                avatarThumb={video.author_id.avatar_thumb.url_list[0]}
-                nickname={video.author_id.nickname}
+                statistics={video.statistics}
+                avatarThumb={video.video.author_id.avatar_thumb.url_list[0]}
+                nickname={video.video.author_id.nickname}
                 allowedPlay={start}
-                video={video}
+                video={video.video}
                 onStart={handleStart}
               />
             </SwiperSlide>

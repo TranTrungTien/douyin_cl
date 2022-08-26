@@ -105,7 +105,7 @@ function getAllLikedCommentInOtherComment(req: Request, res: Response) {
         if (list.length <= 0)
           return res
             .status(404)
-            .send({ err, message: "No liked comments found" });
+            .send({ list, message: "No liked comments found" });
         else
           return res
             .status(200)

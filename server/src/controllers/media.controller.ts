@@ -175,9 +175,11 @@ function getVideoInfo(req: Request, res: Response) {
     VideoModel.findById(video_id, { createdAt: 0, updatedAt: 0, __v: 0 }, null)
       .populate("author_id")
       .exec((err, doc) => {
-        if (err) return res.status(500).send({ err });
+        if (err)
+          return res.status(500).send({ err, message: "Something went wrong" });
         else {
-          if (!doc) return res.status(404).send({ message: "not found" });
+          if (!doc)
+            return res.status(404).send({ message: "Not found video data" });
           else return res.status(200).send({ message: "Successfully", doc });
         }
       });
@@ -208,7 +210,7 @@ function getAllVideoByUser(req: Request, res: Response) {
               updatedAt: 0,
               __v: 0,
             },
-            { skip: Number(cursor) * limit, limit: limit },
+            null,
             (err, statistics) => {
               if (err)
                 return res
@@ -304,6 +306,7 @@ function getTotalDocuments(req: Request, res: Response) {
     }
   );
 }
+
 function getAvatarThumbnail(req: Request, res: Response) {
   const avatar_id = req.query.avatar_id as string;
   fs.createReadStream(avatarPath + "/avatar_thumbs/" + avatar_id + ".jpg").pipe(

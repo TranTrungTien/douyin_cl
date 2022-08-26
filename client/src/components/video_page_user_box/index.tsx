@@ -91,9 +91,7 @@ const VideoPageUserBox = ({
         <Button
           onClick={handleFollow}
           text="关注"
-          width="w-[68px]"
-          height="h-8"
-          borderRadius="rounded"
+          className="w-[68px] rounded h-8 "
         />
       )}
     </div>

@@ -144,7 +144,11 @@ const getCommentOfVideo = (req: Request, res: Response) => {
     .exec((err, list) => {
       if (err)
         return res.status(500).send({ message: "Error getting video", err });
-      else return res.status(200).send({ message: "Comments found", list });
+      else if (list.length <= 0) {
+        return res.status(404).send({ message: "Comments not found", list });
+      } else {
+        return res.status(200).send({ message: "Comments found", list });
+      }
     });
 };
 

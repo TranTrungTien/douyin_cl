@@ -27,7 +27,8 @@ function getStatisticsOfVideo(req: Request, res: Response) {
           .status(500)
           .send({ message: "Error getting statistics", error: err });
       else {
-        if (!doc) return res.status(404).send({ message: "Error Not Found" });
+        if (!doc)
+          return res.status(404).send({ message: "Not Found Statistics" });
         else
           res.status(200).send({
             message: "Successfully retrieved statistics",

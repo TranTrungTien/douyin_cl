@@ -1,5 +1,6 @@
 import React, { FormEvent } from "react";
 import Button from "../button";
+import Input from "../input";
 
 type Props = {
   fileName?: string;
@@ -17,7 +18,7 @@ const SelectFile = ({ fileName, onChangeFile }: Props) => {
           htmlFor="file_upload"
           className="flex flex-col justify-center items-center"
         >
-          <input
+          <Input
             onChange={handleChangeFile}
             type="file"
             className="hidden"
@@ -44,12 +45,8 @@ const SelectFile = ({ fileName, onChangeFile }: Props) => {
             Less than 2 GB
           </p>
           <Button
-            onClick={() => {}}
             text="Select File"
-            width="w-[186px]"
-            height="h-[36px]"
-            borderRadius="rounded-sm"
-            className="font-semibold mt-[32px] text-white"
+            className="h-[36px] rounded-sm font-semibold mt-[32px] text-white w-[186px]"
           />
         </label>
         {fileName && <p>{fileName}</p>}

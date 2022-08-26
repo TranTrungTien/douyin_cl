@@ -1,6 +1,7 @@
 import { forwardRef, MouseEvent, useEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import { timeFormat } from "../../utils/timeFormat";
+import Button from "../button";
 import "./style.css";
 
 type Props = {
@@ -114,37 +115,39 @@ const BottomVideoAction = forwardRef<HTMLSpanElement, Props>(
               <div className="text-white">
                 {/* play, pause and time */}
                 <div className="flex justify-center items-center">
-                  <button
+                  <Button
+                    text=""
                     data-type="bottom_play_clickable"
                     aria-label="play and pause"
                     className="mr-2 mt-1"
-                  >
-                    {!isPlay || !allowedPlay ? (
-                      <svg
-                        width="32"
-                        height="32"
-                        className="fill-current"
-                        xmlns="http://www.w3.org/2000/svg"
-                        viewBox="0 0 39 39"
-                      >
-                        <path d="M10 10.693c0-1.7 0-2.549.354-3.013A1.729 1.729 0 0111.64 7c.582-.03 1.284.45 2.687 1.409l9.697 6.63c1.097.75 1.646 1.126 1.843 1.598.172.414.177.878.014 1.296-.187.476-.727.863-1.808 1.638l-9.697 6.945c-1.413 1.013-2.12 1.52-2.71 1.498a1.728 1.728 0 01-1.305-.67C10 26.877 10 26.007 10 24.268V10.693z"></path>
-                      </svg>
-                    ) : (
-                      <svg
-                        width="32"
-                        height="32"
-                        className="fill-current"
-                        xmlns="http://www.w3.org/2000/svg"
-                        viewBox="0 0 39 39"
-                      >
-                        <path
-                          fillRule="evenodd"
-                          clipRule="evenodd"
-                          d="M11 10.282C11 9.574 11.514 9 12.149 9h1.596c.634 0 1.149.574 1.149 1.282v15.436c0 .708-.515 1.282-1.15 1.282H12.15C11.514 27 11 26.426 11 25.718V10.282zm11 0C22 9.574 22.514 9 23.149 9h1.596c.634 0 1.149.574 1.149 1.282v15.436c0 .708-.515 1.282-1.15 1.282H23.15C22.514 27 22 26.426 22 25.718V10.282z"
-                        ></path>
-                      </svg>
-                    )}
-                  </button>
+                    icon={
+                      !isPlay || !allowedPlay ? (
+                        <svg
+                          width="32"
+                          height="32"
+                          className="fill-current"
+                          xmlns="http://www.w3.org/2000/svg"
+                          viewBox="0 0 39 39"
+                        >
+                          <path d="M10 10.693c0-1.7 0-2.549.354-3.013A1.729 1.729 0 0111.64 7c.582-.03 1.284.45 2.687 1.409l9.697 6.63c1.097.75 1.646 1.126 1.843 1.598.172.414.177.878.014 1.296-.187.476-.727.863-1.808 1.638l-9.697 6.945c-1.413 1.013-2.12 1.52-2.71 1.498a1.728 1.728 0 01-1.305-.67C10 26.877 10 26.007 10 24.268V10.693z"></path>
+                        </svg>
+                      ) : (
+                        <svg
+                          width="32"
+                          height="32"
+                          className="fill-current"
+                          xmlns="http://www.w3.org/2000/svg"
+                          viewBox="0 0 39 39"
+                        >
+                          <path
+                            fillRule="evenodd"
+                            clipRule="evenodd"
+                            d="M11 10.282C11 9.574 11.514 9 12.149 9h1.596c.634 0 1.149.574 1.149 1.282v15.436c0 .708-.515 1.282-1.15 1.282H12.15C11.514 27 11 26.426 11 25.718V10.282zm11 0C22 9.574 22.514 9 23.149 9h1.596c.634 0 1.149.574 1.149 1.282v15.436c0 .708-.515 1.282-1.15 1.282H23.15C22.514 27 22 26.426 22 25.718V10.282z"
+                          ></path>
+                        </svg>
+                      )
+                    }
+                  />
                   <div className="text-sm">
                     <span ref={timeCounterRef}>00:00</span>
                     <span className="mx-1">/</span>
@@ -161,7 +164,8 @@ const BottomVideoAction = forwardRef<HTMLSpanElement, Props>(
                     <span className="font-normal text-xs leading-[18px]">
                       自动连播
                     </span>
-                    <button
+                    <Button
+                      text=""
                       className={`w-10 h-5 rounded-full ${
                         autoNext ? "bg-white" : "bg-dimgray"
                       } relative`}
@@ -175,15 +179,16 @@ const BottomVideoAction = forwardRef<HTMLSpanElement, Props>(
                             : "left-px bg-white"
                         }`}
                       ></div>
-                    </button>
+                    </Button>
                   </div>
                   {/* Video's speed */}
                   <div>
                     <span className="font-semibold text-sm">1.0x</span>
                   </div>
                   {/* Volume*/}
-                  <button
-                    onClick={handleTurnOnOffVolume}
+                  <Button
+                    text=""
+                    onClick={(e) => handleTurnOnOffVolume(e as any)}
                     type="button"
                     className="mt-[2px] relative volume-custom"
                   >
@@ -233,19 +238,25 @@ const BottomVideoAction = forwardRef<HTMLSpanElement, Props>(
                         </svg>
                       )}
                     </div>
-                  </button>
+                  </Button>
                   {/* Fullscreen */}
-                  <button onClick={onToggleFullscreenMode} className="mt-[2px]">
-                    <svg
-                      width="32"
-                      height="32"
-                      className="fill-current"
-                      xmlns="http://www.w3.org/2000/svg"
-                      viewBox="0 0 39 39"
-                    >
-                      <path d="M11.444 16.028a1 1 0 01-1-1v-4.002a1 1 0 011-1h4.001a1 1 0 010 2H13.91l3.072 3.073a1 1 0 11-1.414 1.414l-3.122-3.122v1.636a1 1 0 01-1 1zM20.443 25.026a1 1 0 001 1h4a1 1 0 001.001-1v-4.001a1 1 0 10-2 0v1.536l-3.072-3.072a1 1 0 10-1.415 1.414l3.122 3.123h-1.636a1 1 0 00-1 1zM11.444 20.025a1 1 0 00-1 1v4a1 1 0 001 1.001h4.001a1 1 0 100-2H13.91l3.072-3.072a1 1 0 00-1.414-1.415l-3.122 3.122v-1.636a1 1 0 00-1-1zM20.443 11.026a1 1 0 011-1h4a1 1 0 011.001 1v4.001a1 1 0 01-2 0v-1.536l-3.072 3.073a1 1 0 11-1.415-1.415l3.122-3.122h-1.636a1 1 0 01-1-1z"></path>
-                    </svg>
-                    {/* <svg
+                  <Button
+                    text=""
+                    onClick={onToggleFullscreenMode}
+                    className="mt-[2px]"
+                    icon={
+                      <svg
+                        width="32"
+                        height="32"
+                        className="fill-current"
+                        xmlns="http://www.w3.org/2000/svg"
+                        viewBox="0 0 39 39"
+                      >
+                        <path d="M11.444 16.028a1 1 0 01-1-1v-4.002a1 1 0 011-1h4.001a1 1 0 010 2H13.91l3.072 3.073a1 1 0 11-1.414 1.414l-3.122-3.122v1.636a1 1 0 01-1 1zM20.443 25.026a1 1 0 001 1h4a1 1 0 001.001-1v-4.001a1 1 0 10-2 0v1.536l-3.072-3.072a1 1 0 10-1.415 1.414l3.122 3.123h-1.636a1 1 0 00-1 1zM11.444 20.025a1 1 0 00-1 1v4a1 1 0 001 1.001h4.001a1 1 0 100-2H13.91l3.072-3.072a1 1 0 00-1.414-1.415l-3.122 3.122v-1.636a1 1 0 00-1-1zM20.443 11.026a1 1 0 011-1h4a1 1 0 011.001 1v4.001a1 1 0 01-2 0v-1.536l-3.072 3.073a1 1 0 11-1.415-1.415l3.122-3.122h-1.636a1 1 0 01-1-1z"></path>
+                      </svg>
+                    }
+                  />
+                  {/* <svg
                       width="32"
                       height="32"
                       xmlns="http://www.w3.org/2000/svg"
@@ -255,7 +266,6 @@ const BottomVideoAction = forwardRef<HTMLSpanElement, Props>(
                         d="M20.25 25.878a1 1 0 01-1-1v-4.001a1 1 0 011-1h4.001a1 1 0 010 2h-1.536l3.072 3.072a1 1 0 11-1.414 1.415L21.25 23.24v1.637a1 1 0 01-1 1zM10.248 15.877a1 1 0 001 1h4.002a1 1 0 001-1v-4.002a1 1 0 10-2 0v1.536l-3.073-3.072a1 1 0 00-1.414 1.415l3.122 3.122h-1.636a1 1 0 00-1 1zM20.25 10.875a1 1 0 00-1 1v4.002a1 1 0 001 1h4.001a1 1 0 100-2h-1.536l3.072-3.073a1 1 0 10-1.414-1.414l-3.123 3.122v-1.636a1 1 0 00-1-1zM10.248 20.877a1 1 0 011-1h4.002a1 1 0 011 1v4a1 1 0 11-2 0v-1.535l-3.073 3.072A1 1 0 119.763 25l3.122-3.122h-1.636a1 1 0 01-1-1z"
                       ></path>
                     </svg> */}
-                  </button>
                 </div>
 
                 {!fromVideoPage && (

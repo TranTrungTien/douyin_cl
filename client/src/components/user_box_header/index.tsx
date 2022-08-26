@@ -1,3 +1,4 @@
+import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { RightBarAction } from "../../layouts/video_slide";
 import { useAppDispatch } from "../../redux/app/hooks";
@@ -27,11 +28,16 @@ const UserBoxHeader = ({
   onCloseUserBox,
 }: Props) => {
   const dispatch = useAppDispatch();
+  const [follow, setFollow] = useState(isFollow);
+  useEffect(() => {
+    setFollow(isFollow);
+  }, [isFollow]);
   const onCloseUser = () => {
     onCloseUserBox({ comment: false, isOpen: false, user: false });
   };
   const handleFollow = async () => {
     if (myID && authorVideoID) {
+      setFollow(true);
       const followRes = await postData<any>(
         servicesPath.FOLLOW_USER,
         {
@@ -88,45 +94,45 @@ const UserBoxHeader = ({
           </div>
         </div>
         <div className="flex justify-center text-white items-center desktop:space-x-3 laptop:space-x-2">
-          {!isFollow && (
+          {!follow && (
             <Button
               onClick={handleFollow}
-              borderRadius="rounded"
-              fontSize="text-sm"
-              backgroundColor="bg-fresh_red"
-              height="h-8"
-              px="px-5"
-              width="auto"
-              className="font-normal"
+              className="font-normal rounded px-5 bg-fresh_red h-8"
               text="关注"
             />
           )}
           <div className="flex justify-start items-center">
-            <button className="laptop:hidden desktop:block text-white opacity-50 hover:opacity-100">
-              <svg
-                width="36"
-                height="36"
-                xmlns="http://www.w3.org/2000/svg"
-                className="fill-current"
-                viewBox="0 0 36 36"
-              >
-                <path d="M19.63 21.11a.5.5 0 00.777.417l5.031-3.334a.5.5 0 00-.028-.85l-5.032-2.87a.5.5 0 00-.747.434v6.203zm4.485 2.533h-12.9c-.668 0-1.215.547-1.215 1.215s.547 1.215 1.215 1.215h12.9c.668 0 1.215-.547 1.215-1.215s-.547-1.215-1.215-1.215zM11.2 12.43h12.915c.668 0 1.215-.547 1.215-1.215S24.783 10 24.115 10h-12.9c-.668 0-1.215.547-1.215 1.215s.531 1.215 1.2 1.215zm0 6.53h5.15c.668 0 1.215-.547 1.215-1.216 0-.668-.547-1.214-1.215-1.214h-5.135c-.668 0-1.215.546-1.215 1.214 0 .669.531 1.215 1.2 1.215z"></path>
-              </svg>
-            </button>
-            <button
+            <Button
+              text=""
+              className="laptop:hidden desktop:block text-white opacity-50 hover:opacity-100"
+              icon={
+                <svg
+                  width="36"
+                  height="36"
+                  xmlns="http://www.w3.org/2000/svg"
+                  className="fill-current"
+                  viewBox="0 0 36 36"
+                >
+                  <path d="M19.63 21.11a.5.5 0 00.777.417l5.031-3.334a.5.5 0 00-.028-.85l-5.032-2.87a.5.5 0 00-.747.434v6.203zm4.485 2.533h-12.9c-.668 0-1.215.547-1.215 1.215s.547 1.215 1.215 1.215h12.9c.668 0 1.215-.547 1.215-1.215s-.547-1.215-1.215-1.215zM11.2 12.43h12.915c.668 0 1.215-.547 1.215-1.215S24.783 10 24.115 10h-12.9c-.668 0-1.215.547-1.215 1.215s.531 1.215 1.2 1.215zm0 6.53h5.15c.668 0 1.215-.547 1.215-1.216 0-.668-.547-1.214-1.215-1.214h-5.135c-.668 0-1.215.546-1.215 1.214 0 .669.531 1.215 1.2 1.215z"></path>
+                </svg>
+              }
+            />
+            <Button
               onClick={onCloseUser}
               className="text-white opacity-50 hover:opacity-100"
-            >
-              <svg
-                width="36"
-                height="36"
-                xmlns="http://www.w3.org/2000/svg"
-                className="fill-current"
-                viewBox="0 0 36 36"
-              >
-                <path d="M22.133 23.776a1.342 1.342 0 101.898-1.898l-4.112-4.113 4.112-4.112a1.342 1.342 0 00-1.898-1.898l-4.112 4.112-4.113-4.112a1.342 1.342 0 10-1.898 1.898l4.113 4.112-4.113 4.113a1.342 1.342 0 001.898 1.898l4.113-4.113 4.112 4.113z"></path>
-              </svg>
-            </button>
+              text=""
+              icon={
+                <svg
+                  width="36"
+                  height="36"
+                  xmlns="http://www.w3.org/2000/svg"
+                  className="fill-current"
+                  viewBox="0 0 36 36"
+                >
+                  <path d="M22.133 23.776a1.342 1.342 0 101.898-1.898l-4.112-4.113 4.112-4.112a1.342 1.342 0 00-1.898-1.898l-4.112 4.112-4.113-4.112a1.342 1.342 0 10-1.898 1.898l4.113 4.112-4.113 4.113a1.342 1.342 0 001.898 1.898l4.113-4.113 4.112 4.113z"></path>
+                </svg>
+              }
+            />
           </div>
         </div>
       </div>

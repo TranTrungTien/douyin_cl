@@ -4,6 +4,7 @@ import { Button, SelectFile } from "../../components";
 import { servicesPath } from "../../services/services_path";
 import { postData } from "../../services/app_services";
 import "./style.css";
+import Input from "../../components/input";
 
 type IInputOpts = {
   cmt: {
@@ -266,7 +267,7 @@ const UploadContainer = () => {
                       className="cursor-pointer text-base font-normal leading-[22px] flex-1 text-[rgb(22,24,35)] flex justify-start items-center gap-x-2"
                     >
                       <div className="">
-                        <input
+                        <Input
                           className="hidden appearance-none cmt-input"
                           name="cmt"
                           id="cmt"
@@ -297,7 +298,7 @@ const UploadContainer = () => {
                       className=" cursor-pointer  text-base text-[rgb(22,24,35)] font-normal leading-[22px] flex-1 flex items-center gap-x-2 justify-center"
                       htmlFor="duet"
                     >
-                      <input
+                      <Input
                         className="hidden appearance-none duet-input"
                         name="duet"
                         id="duet"
@@ -327,7 +328,7 @@ const UploadContainer = () => {
                       htmlFor="stich"
                       className=" cursor-pointer text-base font-normal text-[rgb(22,24,35)] leading-[22px] flex-1 flex items-center justify-start gap-x-2"
                     >
-                      <input
+                      <Input
                         className="hidden appearance-none stich-input"
                         name="stich"
                         id="stich"
@@ -362,14 +363,16 @@ const UploadContainer = () => {
                   htmlFor="copyright-check"
                   className="relative w-[44px] h-[24px] rounded-full bg-[rgba(22,24,35,0.12)] p-[2px] cursor-pointer"
                 >
-                  <input
-                    type="checkbox"
-                    className="appearance-none hidden copyright-input"
-                    id="copyright-check"
-                    name="copyrightCheck"
-                  />
-                  <span className="absolute h-5 w-5 rounded-full bg-white top-[2px] left-[2px] copyright-circle transition-all"></span>
+                  <input />
                 </label>
+                <Input
+                  type="checkbox"
+                  className="appearance-none hidden copyright-input"
+                  id="copyright-check"
+                  name="copyrightCheck"
+                >
+                  <span className="absolute h-5 w-5 rounded-full bg-white top-[2px] left-[2px] copyright-circle transition-all"></span>
+                </Input>
               </div>
               <div>
                 <p className="font-normal text-[rgba(22,24,35,0.75)] text-xs leading-[22px]">
@@ -387,24 +390,15 @@ const UploadContainer = () => {
               <div className="flex justify-start gap-x-4 items-center ">
                 <div className="w-[168px]">
                   <Button
-                    onClick={() => {}}
                     text="Discard"
-                    borderRadius="rounded-sm"
-                    backgroundColor="bg-transparent"
-                    className="border border-[rgb(242,242,242)] w-full px-5 font-semibold"
-                    width="min-w-[72px]"
-                    height="h-11"
+                    className="h-11 min-w-[72px] border border-[rgb(242,242,242)] w-full px-5 font-semibold rounded-sm"
                   />
                 </div>
                 <div className="w-[168px]">
                   <Button
                     text="Post"
                     type="submit"
-                    borderRadius="rounded-sm"
-                    backgroundColor="bg-[rgb(242,242,242)]"
-                    width="min-w-[72px]"
-                    className="font-semibold w-full px-5 border-[rgb(242,242,242)] cursor-not-allowed"
-                    height="h-11"
+                    className="min-w-[72px] rounded-sm h-11 bg-[rgb(242,242,242)] font-semibold w-full px-5 border-[rgb(242,242,242)] cursor-not-allowed"
                   />
                 </div>
               </div>

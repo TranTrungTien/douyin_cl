@@ -67,12 +67,7 @@ const Nav = (props: Props) => {
               dispatch(setIsLogin(true));
             }}
             text="登录"
-            backgroundColor="bg-fresh_red"
-            borderRadius="rounded-[5px]"
-            width="laptop:w-[90px] desktop:w-[104px]"
-            height="laptop:h-[36px] desktop:h-[38px]"
-            px="px-4"
-            className="font-medium leading-[23px] border border-fresh_red flex justify-center items-center text-white"
+            className="laptop:w-[90px] desktop:w-[104px] laptop:h-[36px] desktop:h-[38px] px-4 font-medium leading-[23px] border border-fresh_red flex justify-center items-center text-white bg-fresh_red rounded-[5px]"
           />
         </li>
       )}

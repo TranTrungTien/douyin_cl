@@ -11,6 +11,7 @@ import {
   UserInfoContainer,
   UserVideoContainer,
 } from "../../layouts";
+import { useAppSelector } from "../../redux/app/hooks";
 import { servicesPath } from "../../services/services_path";
 
 type Props = {};
@@ -30,6 +31,7 @@ export interface ICursorState {
 
 const UserPage = (props: Props) => {
   const { user_id } = useParams();
+  const me = useAppSelector((state) => state.user);
   const userInfoParams = useMemo(() => {
     return {
       uid: user_id,
@@ -40,10 +42,10 @@ const UserPage = (props: Props) => {
     servicesPath.GET_USER_INFO,
     userInfoParams,
     false,
-    true
+    me.data?.uid !== user_id ? true : false
   );
 
-  const user = userRes && userRes.doc;
+  const user = userRes ? userRes.doc : me.data;
 
   const [cursorState, setCursorState] = useState<ICursorState>({
     viewOwn: {

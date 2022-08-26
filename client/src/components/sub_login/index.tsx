@@ -4,6 +4,8 @@ import { servicesPath } from "../../services/services_path";
 import { IUser } from "../../interfaces/user.interface";
 import { postData } from "../../services/app_services";
 import { getUserInfoSuccessfully } from "../../redux/slice/user_slice";
+import Button from "../button";
+import Input from "../input";
 
 type Props = {
   onVerifyEmail: (emailVerified: string, code: string | null) => void;
@@ -63,12 +65,11 @@ const SubRegisterOrLogin = ({ onVerifyEmail }: Props) => {
             </span>
           </div>
           <div className="flex-1">
-            <input
+            <Input
               ref={emailRef}
               type="email"
               name="email"
               id="email"
-              required
               placeholder="输入电子邮件"
               className="inline-block w-full outline-none bg-transparent border-none rounded-sm font-light text-[11px] text-black px-4 py-2"
             />
@@ -76,7 +77,7 @@ const SubRegisterOrLogin = ({ onVerifyEmail }: Props) => {
         </div>
         <div className="bg-[#eff0f3] w-full flex justify-start items-center h-9 ">
           <div className="flex-1">
-            <input
+            <Input
               ref={codeRef}
               type="text"
               name="code"
@@ -86,14 +87,13 @@ const SubRegisterOrLogin = ({ onVerifyEmail }: Props) => {
             />
           </div>
           <div className="w-16 h-full">
-            <button
+            <Button
+              text="获取验证码"
               onClick={handleSendCode}
               type="button"
               title="code"
               className="text-[10px] w-full h-full font-light text-black pr-2"
-            >
-              获取验证码
-            </button>
+            />
           </div>
         </div>
       </div>
@@ -104,14 +104,13 @@ const SubRegisterOrLogin = ({ onVerifyEmail }: Props) => {
           <span>和</span>
           <a href="/">隐私政策</a>
         </div>
-        <button
+        <Button
+          text="登录/注册"
           onClick={handleSubmit}
           type="submit"
           title="login"
           className="w-full py-2 text center text-xs text-white opacity-75 bg-fresh_red rounded-sm"
-        >
-          登录/注册
-        </button>
+        />
       </div>
     </>
   );

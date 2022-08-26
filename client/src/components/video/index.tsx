@@ -11,6 +11,7 @@ import { toggleFullScreen } from "../../utils/fullscreen";
 import { timeFormat } from "../../utils/timeFormat";
 import AvatarCardButton from "../avatar_card_button";
 import BottomVideoAction from "../bottom_video_action";
+import Button from "../button";
 import LikeCmtShare from "../like_cmt_share_action";
 import NextVideoButton from "../next_video_button";
 import Plus from "../plus";
@@ -59,9 +60,9 @@ const Video = ({
   onChangeVideo,
   onOpenRightBar,
 }: Props) => {
+  console.log("video rerender");
   const dispatch = useAppDispatch();
   const videoRef = useRef<HTMLVideoElement>(null);
-  console.log("video rerender");
 
   const progressBarRef = useRef<HTMLDivElement>(null);
   const progressRef = useRef<HTMLDivElement>(null);
@@ -184,20 +185,22 @@ const Video = ({
       ></video>
       {/* Pause when clicking */}
       {(!isPlay || !allowedPlay) && (
-        <button
-          data-type="center_play_clickable"
+        <Button
+          text=""
           className="absolute top-1/2 left-1/2 text-white opacity-70 transform -translate-x-1/2 -translate-y-1/2"
-        >
-          <svg
-            width="100"
-            height="100"
-            className="fill-current"
-            xmlns="http://www.w3.org/2000/svg"
-            viewBox="0 0 39 39"
-          >
-            <path d="M10 10.693c0-1.7 0-2.549.354-3.013A1.729 1.729 0 0111.64 7c.582-.03 1.284.45 2.687 1.409l9.697 6.63c1.097.75 1.646 1.126 1.843 1.598.172.414.177.878.014 1.296-.187.476-.727.863-1.808 1.638l-9.697 6.945c-1.413 1.013-2.12 1.52-2.71 1.498a1.728 1.728 0 01-1.305-.67C10 26.877 10 26.007 10 24.268V10.693z"></path>
-          </svg>
-        </button>
+          data-type="center_play_clickable"
+          icon={
+            <svg
+              width="100"
+              height="100"
+              className="fill-current"
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 39 39"
+            >
+              <path d="M10 10.693c0-1.7 0-2.549.354-3.013A1.729 1.729 0 0111.64 7c.582-.03 1.284.45 2.687 1.409l9.697 6.63c1.097.75 1.646 1.126 1.843 1.598.172.414.177.878.014 1.296-.187.476-.727.863-1.808 1.638l-9.697 6.945c-1.413 1.013-2.12 1.52-2.71 1.498a1.728 1.728 0 01-1.305-.67C10 26.877 10 26.007 10 24.268V10.693z"></path>
+            </svg>
+          }
+        />
       )}
       {/* Action's video */}
       <BottomVideoAction

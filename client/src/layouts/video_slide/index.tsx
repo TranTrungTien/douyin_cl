@@ -35,7 +35,6 @@ const VideoSlide = ({
 }: Props) => {
   console.log("video slide rerender");
   const myID = useAppSelector((state) => state.user.data?._id);
-  console.log({ myID });
   const [isPlay, setIsPlay] = useState(true);
   const swiper = useSwiper();
   const swiperSlide = useSwiperSlide();
@@ -48,8 +47,6 @@ const VideoSlide = ({
   const { isActive, isVisible, isNext, isPrev } = swiperSlide;
 
   const handleOpenRightBar = (action: RightBarAction) => {
-    console.log({ action });
-
     if (action.isOpen === openRightBar.isOpen) return;
     setOpenRightBar((pre) => {
       const newState = {
@@ -61,8 +58,6 @@ const VideoSlide = ({
     });
   };
   const handleChangeVideo = (isNextAction: boolean) => {
-    console.log({ isNextAction });
-
     if (isNextAction) {
       swiper.slideNext(300);
     } else {
@@ -88,7 +83,7 @@ const VideoSlide = ({
       return;
     else {
       if (!allowedPlay) onStart();
-      else setIsPlay((pre) => !pre);
+      else setIsPlay((prev) => !prev);
     }
   };
   console.log({ isActive, isVisible, isPrev, isNext });
