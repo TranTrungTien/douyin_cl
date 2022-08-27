@@ -1,11 +1,34 @@
+import { SyntheticEvent } from "react";
+import { postData } from "../../services/app_services";
+import { servicesPath } from "../../services/services_path";
 import Button from "../button";
 import Input from "../input";
 
 type Props = {};
 
 const Search = (props: Props) => {
+  const handleSearch = (e: SyntheticEvent) => {
+    e.preventDefault();
+    const target = e.target as typeof e.target & {
+      search: {
+        value: string;
+      };
+      reset: () => void;
+    };
+    console.log(target.search.value);
+    const data = postData(servicesPath.GET_SEARCH_RECOMMENDED, {
+      text: target.search.value,
+      limit: 25,
+    });
+    console.log({ data });
+
+    target.reset();
+  };
   return (
-    <form className="text-base font-medium text-white laptop:w-[400px] desktop:w-[500px] flex justify-center item-center h-[42px] bg-darkslategray rounded-[5px]">
+    <form
+      onSubmit={handleSearch}
+      className="text-base font-medium text-white laptop:w-[400px] desktop:w-[500px] flex justify-center item-center h-[42px] bg-darkslategray rounded-[5px]"
+    >
       <div className="h-full flex justify-start items-center p-2">
         <svg
           width="18"
@@ -25,8 +48,8 @@ const Search = (props: Props) => {
         <Input
           className="focus:outline-none focus:border-none border-none outline-none bg-transparent text-white w-full"
           type="text"
-          name="search-box"
-          id="search-box"
+          name="search"
+          id="search"
           placeholder="搜索你感兴趣的内容"
         />
       </div>

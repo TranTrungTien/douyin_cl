@@ -4,31 +4,10 @@ import { fork } from "child_process";
 import path from "path";
 import { HMMModel, IDF, JiebaDict, StopWords, UserDict } from "jieba-zh-tw";
 import createJieba from "js-jieba";
+import { BestMatch } from "string-similarity";
 
 const jieba = createJieba(JiebaDict, HMMModel, UserDict, IDF, StopWords);
 
-const videoMetaData = [
-  "花开花落自有时#飞花#要像飞花一样洒脱",
-  "我是真的讨厌异地恋 也是真的喜欢你#异地恋",
-  "6月13日，浙江余姚。女子突发疾病倒地抽搐，好心小伙询问120后先行急救。感谢好人带给我们的感动",
-  "이쁘면 된다 ?",
-  "给大家播个猫片  #铲屎官的乐趣 #猫咪的迷惑行为",
-  "“突破感觉后背发凉”#猫咪",
-  "“猫猫吵架后生气的样子”#猫咪#萌宠#猫",
-  "一个平平无奇安静拍照的乖宝宝罢了#毕业",
-  "长按复制此条消息，打开抖音搜索，查看TA的更多作品",
-  "哥们儿真乃性情中人#原谅我不厚道的笑了 #一定要看到最后 #看一遍笑一遍 #惊不惊喜意不意外 #猝不及防 #人间奇趣记录仪 #流鼻血",
-  "狗子竟然把房东的裙子夹在门上了😓我真的栓q了……#哈士奇",
-  "挺急的这件事》#情侣日常",
-  "#有你是我的福气 有我是你的福气",
-  "#家有傻狗 #动物的迷惑行为 直接嚼了，还呑了？#这操作都看傻了 #后续来啦",
-  "快进来躲雨啊",
-  "虎门销包 #内容过于真实 #看一遍笑一遍 后续在下一个视频",
-  "长按复制此条消息，打开抖音搜索，查看TA的更多作品。",
-  "声音稍微有点小 可以戴上耳机然后调大一点点哦～戴耳机听更有感觉",
-  "也是真的喜欢你 讨厌异地恋",
-  "讨厌异地恋",
-];
 class Tfidf {
   constructor() {}
   private _tf(word: string, sentence: string[]): number {
@@ -139,7 +118,7 @@ export default class Recommendation {
       const cosineArray: number[] = [];
       this._tfidfMatrix.forEach((rowInner) => {
         const value = this._cosineSim.cosineSimilarity(row, rowInner);
-        cosineArray.push(value ?? 0);
+        cosineArray.push(value || 0);
       });
       this._cosineMatrix.push(cosineArray);
     });
@@ -149,18 +128,6 @@ export default class Recommendation {
     return this._cosineMatrix;
   }
 }
-
-// const recommendationEngine = new Recommendation(videoMetaData);
-
-// const recommendedIndexes = recommendationEngine.getRecommendation();
-// console.log(recommendedIndexes);
-
-// console.log("Recommended for you :");
-
-// recommendedIndexes.forEach((recommendedIndex) => {
-//   console.log(videoMetaData[recommendedIndex]);
-// });
-
 export class RecommendationUtils {
   public static index = 0;
   public static cosineMatrix: number[][];
@@ -194,8 +161,6 @@ export class RecommendationUtils {
         .map((value) => {
           return value.id;
         });
-      console.log({ recommendedIndexes });
-
       recommendedIndexes.splice(0, 1);
       return recommendedIndexes;
     } else {
@@ -220,4 +185,23 @@ export class RecommendationUtils {
       });
     });
   }
+  public static getSearchRecommended = (text: string, limit: string) => {
+    return new Promise<string[]>((resolve, reject) => {
+      const childProcess = fork(path.join(__dirname, "search.ts"));
+      childProcess.send({ text, limit });
+      childProcess.on("close", (c) => {
+        console.log({ c });
+      });
+      childProcess.on("message", (data: string[]) => {
+        if (!data) {
+          reject(new Error("No match found"));
+        } else {
+          resolve(data);
+        }
+      });
+      childProcess.on("error", (err) => {
+        reject(err);
+      });
+    });
+  };
 }

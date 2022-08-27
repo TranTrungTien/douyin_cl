@@ -7,7 +7,6 @@ type Props = {
   className?: string;
   id?: string;
   autoComplete?: "on" | "off";
-  children?: ReactNode;
   onChange?: (event: FormEvent<HTMLInputElement>) => void;
 };
 const Input = forwardRef<HTMLInputElement, Props>(
@@ -20,7 +19,6 @@ const Input = forwardRef<HTMLInputElement, Props>(
       name,
       placeholder,
       onChange,
-      children,
       ...props
     }: Props,
     ref
@@ -37,9 +35,7 @@ const Input = forwardRef<HTMLInputElement, Props>(
           name={name}
           id={id}
           placeholder={placeholder}
-        >
-          {children}
-        </input>
+        />
       </div>
     );
   }

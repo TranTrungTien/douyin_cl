@@ -1,23 +1,11 @@
 import { Request, Response } from "express";
 import * as fs from "fs";
 import { metaPath } from "../const/path";
-import { IVideo } from "../interface/video.interface";
 import LikedModel from "../models/liked.model";
 import StatisticsModel from "../models/statistics.model";
 import VideoModel from "../models/video.model";
 import { dayOfTwoDate } from "../utils/day_of_two_date";
 import { RecommendationUtils } from "../utils/recommendation";
-
-///just for development
-
-const shuffleArray = (array: IVideo[]) => {
-  const listCopy = [...array];
-  for (let i = listCopy.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [listCopy[i], listCopy[j]] = [listCopy[j], listCopy[i]];
-  }
-  return listCopy;
-};
 
 async function getRecommendationDef(req: Request, res: Response) {
   const userID = req.query.user_id as string;
@@ -153,9 +141,60 @@ function getRecommendationFromVideo(req: Request, res: Response) {
     });
 }
 
+function getSearchRecommended(req: Request, res: Response) {
+  const text = req.body.text as string;
+  const limit = req.query.limit as string;
+  RecommendationUtils.getSearchRecommended(text, limit)
+    .then((videoIdfs) => {
+      console.log(videoIdfs[0]);
+
+      VideoModel.find(
+        {
+          id_f: {
+            $in: videoIdfs,
+          },
+        },
+        { createdAt: 0, updatedAt: 0, __v: 0 }
+      )
+        .populate("author_id")
+        .exec((err, list) => {
+          if (err) res.status(500).send({ message: "Error", err });
+          else {
+            if (!list)
+              return res.status(404).send({ message: "List not found" });
+            else {
+              const ids = list.map((v) => v._id);
+              StatisticsModel.find(
+                {
+                  video_id: {
+                    $in: ids,
+                  },
+                },
+                { createdAt: 0, updatedAt: 0, __v: 0 },
+                null,
+                (err, statistics) => {
+                  if (err)
+                    res
+                      .status(500)
+                      .send({ message: "not found statistics", err });
+                  else {
+                    res
+                      .status(200)
+                      .send({ message: "Successfully", list, statistics });
+                  }
+                }
+              );
+            }
+          }
+        });
+    })
+    .catch((err) => res.status(500).send(err));
+}
+
 const RecommendationController = {
   getRecommendationDef,
   getRecommendationFromVideo,
+  getSearchRecommended,
 };
 
 export default RecommendationController;

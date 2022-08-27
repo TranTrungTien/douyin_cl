@@ -298,26 +298,28 @@ const UploadContainer = () => {
                       className=" cursor-pointer  text-base text-[rgb(22,24,35)] font-normal leading-[22px] flex-1 flex items-center gap-x-2 justify-center"
                       htmlFor="duet"
                     >
-                      <Input
-                        className="hidden appearance-none duet-input"
-                        name="duet"
-                        id="duet"
-                        type="checkbox"
-                      />
-                      <div className="relative w-4 h-4 rounded-sm border border-[rgba(24,25,35,0.12)] duet-box">
-                        <div className=" absolute top-0 left-0 w-full h-full grid place-content-center text-white">
-                          <svg
-                            width="14"
-                            height="14"
-                            viewBox="-1.2 -3 12.3 14"
-                            fill="none"
-                            xmlns="http://www.w3.org/2000/svg"
-                          >
-                            <path
-                              d="M3.88632 5.95189L8.77465 0.915431C8.96697 0.717276 9.28352 0.712552 9.48168 0.904878L9.67738 1.09483C9.87553 1.28715 9.88026 1.6037 9.68793 1.80185L4.34296 7.3088C4.093 7.56633 3.67963 7.56633 3.42967 7.3088L0.948335 4.75227C0.756009 4.55411 0.760734 4.23757 0.958888 4.04524L1.15459 3.85529C1.35275 3.66297 1.66929 3.66769 1.86162 3.86584L3.88632 5.95189Z"
-                              fill="currentColor"
-                            ></path>
-                          </svg>
+                      <div>
+                        <Input
+                          className="hidden appearance-none duet-input"
+                          name="duet"
+                          id="duet"
+                          type="checkbox"
+                        />
+                        <div className="relative w-4 h-4 rounded-sm border border-[rgba(24,25,35,0.12)] duet-box">
+                          <div className=" absolute top-0 left-0 w-full h-full grid place-content-center text-white">
+                            <svg
+                              width="14"
+                              height="14"
+                              viewBox="-1.2 -3 12.3 14"
+                              fill="none"
+                              xmlns="http://www.w3.org/2000/svg"
+                            >
+                              <path
+                                d="M3.88632 5.95189L8.77465 0.915431C8.96697 0.717276 9.28352 0.712552 9.48168 0.904878L9.67738 1.09483C9.87553 1.28715 9.88026 1.6037 9.68793 1.80185L4.34296 7.3088C4.093 7.56633 3.67963 7.56633 3.42967 7.3088L0.948335 4.75227C0.756009 4.55411 0.760734 4.23757 0.958888 4.04524L1.15459 3.85529C1.35275 3.66297 1.66929 3.66769 1.86162 3.86584L3.88632 5.95189Z"
+                                fill="currentColor"
+                              ></path>
+                            </svg>
+                          </div>
                         </div>
                       </div>
                       <span>Duet</span>
@@ -328,26 +330,28 @@ const UploadContainer = () => {
                       htmlFor="stich"
                       className=" cursor-pointer text-base font-normal text-[rgb(22,24,35)] leading-[22px] flex-1 flex items-center justify-start gap-x-2"
                     >
-                      <Input
-                        className="hidden appearance-none stich-input"
-                        name="stich"
-                        id="stich"
-                        type="checkbox"
-                      />
-                      <div className="relative w-4 h-4 rounded-sm border stich-box border-[rgba(24,25,35,0.12)]">
-                        <div className=" absolute top-0 left-0 w-full h-full grid place-content-center text-white">
-                          <svg
-                            width="14"
-                            height="14"
-                            viewBox="-1.2 -3 12.3 14"
-                            fill="none"
-                            xmlns="http://www.w3.org/2000/svg"
-                          >
-                            <path
-                              d="M3.88632 5.95189L8.77465 0.915431C8.96697 0.717276 9.28352 0.712552 9.48168 0.904878L9.67738 1.09483C9.87553 1.28715 9.88026 1.6037 9.68793 1.80185L4.34296 7.3088C4.093 7.56633 3.67963 7.56633 3.42967 7.3088L0.948335 4.75227C0.756009 4.55411 0.760734 4.23757 0.958888 4.04524L1.15459 3.85529C1.35275 3.66297 1.66929 3.66769 1.86162 3.86584L3.88632 5.95189Z"
-                              fill="currentColor"
-                            ></path>
-                          </svg>
+                      <div>
+                        <Input
+                          className="hidden appearance-none stich-input"
+                          name="stich"
+                          id="stich"
+                          type="checkbox"
+                        />
+                        <div className="relative w-4 h-4 rounded-sm border stich-box border-[rgba(24,25,35,0.12)]">
+                          <div className=" absolute top-0 left-0 w-full h-full grid place-content-center text-white">
+                            <svg
+                              width="14"
+                              height="14"
+                              viewBox="-1.2 -3 12.3 14"
+                              fill="none"
+                              xmlns="http://www.w3.org/2000/svg"
+                            >
+                              <path
+                                d="M3.88632 5.95189L8.77465 0.915431C8.96697 0.717276 9.28352 0.712552 9.48168 0.904878L9.67738 1.09483C9.87553 1.28715 9.88026 1.6037 9.68793 1.80185L4.34296 7.3088C4.093 7.56633 3.67963 7.56633 3.42967 7.3088L0.948335 4.75227C0.756009 4.55411 0.760734 4.23757 0.958888 4.04524L1.15459 3.85529C1.35275 3.66297 1.66929 3.66769 1.86162 3.86584L3.88632 5.95189Z"
+                                fill="currentColor"
+                              ></path>
+                            </svg>
+                          </div>
                         </div>
                       </div>
                       <span>Stich</span>
@@ -363,16 +367,14 @@ const UploadContainer = () => {
                   htmlFor="copyright-check"
                   className="relative w-[44px] h-[24px] rounded-full bg-[rgba(22,24,35,0.12)] p-[2px] cursor-pointer"
                 >
-                  <input />
-                </label>
-                <Input
-                  type="checkbox"
-                  className="appearance-none hidden copyright-input"
-                  id="copyright-check"
-                  name="copyrightCheck"
-                >
+                  <Input
+                    type="checkbox"
+                    className="appearance-none hidden copyright-input"
+                    id="copyright-check"
+                    name="copyrightCheck"
+                  />
                   <span className="absolute h-5 w-5 rounded-full bg-white top-[2px] left-[2px] copyright-circle transition-all"></span>
-                </Input>
+                </label>
               </div>
               <div>
                 <p className="font-normal text-[rgba(22,24,35,0.75)] text-xs leading-[22px]">
