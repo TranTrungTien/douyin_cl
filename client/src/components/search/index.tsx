@@ -1,8 +1,4 @@
 import { SyntheticEvent } from "react";
-import { IStatistics } from "../../interfaces/statistic";
-import { IVideo } from "../../interfaces/video.interface";
-import { postData } from "../../services/app_services";
-import { servicesPath } from "../../services/services_path";
 import Button from "../button";
 import Input from "../input";
 
@@ -16,16 +12,7 @@ const Search = (props: Props) => {
         value: string;
       };
     };
-    console.log(target.search.value);
-    const data = await postData<{
-      message: string;
-      list: IVideo[];
-      statistics: IStatistics[];
-    }>(servicesPath.GET_SEARCH_RECOMMENDED, {
-      text: target.search.value,
-      limit: 25,
-    });
-    console.log({ data });
+    window.open("/search?k=" + target.search.value, "_blank");
   };
   return (
     <form

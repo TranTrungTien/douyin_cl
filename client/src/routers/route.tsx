@@ -1,5 +1,6 @@
 import { lazy, Suspense } from "react";
 import { Loading } from "../components";
+const SearchPage = lazy(() => import("../pages/search_page"));
 const HomePage = lazy(() => import("../pages/homepage"));
 const Lives = lazy(() => import("../pages/lives"));
 const UploadVideo = lazy(() => import("../pages/upload_videopage"));
@@ -24,7 +25,7 @@ export const routesPath = [
     element: SuspenseComponent(Lives),
   },
   {
-    path: "//user/:user_id",
+    path: "/user/:user_id",
     element: SuspenseComponent(UserPage),
   },
   {
@@ -34,5 +35,9 @@ export const routesPath = [
   {
     path: "/upload",
     element: SuspenseComponent(UploadVideo),
+  },
+  {
+    path: "/search",
+    element: SuspenseComponent(SearchPage),
   },
 ];
