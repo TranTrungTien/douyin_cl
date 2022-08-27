@@ -1,4 +1,6 @@
 import { SyntheticEvent } from "react";
+import { IStatistics } from "../../interfaces/statistic";
+import { IVideo } from "../../interfaces/video.interface";
 import { postData } from "../../services/app_services";
 import { servicesPath } from "../../services/services_path";
 import Button from "../button";
@@ -7,22 +9,23 @@ import Input from "../input";
 type Props = {};
 
 const Search = (props: Props) => {
-  const handleSearch = (e: SyntheticEvent) => {
+  const handleSearch = async (e: SyntheticEvent) => {
     e.preventDefault();
     const target = e.target as typeof e.target & {
       search: {
         value: string;
       };
-      reset: () => void;
     };
     console.log(target.search.value);
-    const data = postData(servicesPath.GET_SEARCH_RECOMMENDED, {
+    const data = await postData<{
+      message: string;
+      list: IVideo[];
+      statistics: IStatistics[];
+    }>(servicesPath.GET_SEARCH_RECOMMENDED, {
       text: target.search.value,
       limit: 25,
     });
     console.log({ data });
-
-    target.reset();
   };
   return (
     <form

@@ -17,12 +17,16 @@ const metaData = data.map((value, idx) => {
 process.on("message", (dataOptions: { text: string; limit: string }) => {
   const match = similarity.findBestMatch(dataOptions.text, metaData);
   if (process.send) {
-    match.ratings.sort((x, y) => y.rating - x.rating);
-    const videoIdf = match.ratings
+    const videoData = match.ratings.map((r, index) => {
+      return {
+        rating: r.rating,
+        idf: data[index].video_id,
+      };
+    });
+    videoData.sort((x, y) => y.rating - x.rating);
+    const videoIdf = videoData
       .slice(0, parseInt(dataOptions.limit) || 20)
-      .map((d) => {
-        return data.find((v) => v.desc === d.target)?.video_id;
-      });
+      .map((d) => d.idf);
     process.send(videoIdf);
   }
 });

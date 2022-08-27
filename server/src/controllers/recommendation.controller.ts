@@ -146,8 +146,6 @@ function getSearchRecommended(req: Request, res: Response) {
   const limit = req.query.limit as string;
   RecommendationUtils.getSearchRecommended(text, limit)
     .then((videoIdfs) => {
-      console.log(videoIdfs[0]);
-
       VideoModel.find(
         {
           id_f: {
