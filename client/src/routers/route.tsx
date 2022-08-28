@@ -21,7 +21,7 @@ export const routesPath = [
     element: SuspenseComponent(HomePage),
   },
   {
-    path: "/lives",
+    path: "/live",
     element: SuspenseComponent(Lives),
   },
   {

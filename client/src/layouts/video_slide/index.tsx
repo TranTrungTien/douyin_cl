@@ -14,10 +14,17 @@ import UserContainer from "../user_container";
 type Props = {
   avatarThumb: string;
   nickname: string;
-  video: IVideo;
-  onStart: () => void;
   allowedPlay: boolean;
+  searchPageData?: {
+    isActive: boolean;
+    isVisible: boolean;
+    isNext: boolean;
+    isPrev: boolean;
+  };
+  className?: string;
+  video: IVideo;
   statistics?: IStatistics;
+  onStart: () => void;
 };
 export interface RightBarAction {
   isOpen: boolean;
@@ -29,9 +36,11 @@ const VideoSlide = ({
   avatarThumb,
   statistics,
   nickname,
-  onStart,
   video,
   allowedPlay,
+  searchPageData,
+  className = "w-full h-full",
+  onStart,
 }: Props) => {
   console.log("video slide rerender");
   const myID = useAppSelector((state) => state.user.data?._id);
@@ -43,9 +52,10 @@ const VideoSlide = ({
     comment: false,
     user: false,
   });
-
-  const { isActive, isVisible, isNext, isPrev } = swiperSlide;
-
+  const { isActive, isVisible, isNext, isPrev } = searchPageData
+    ? searchPageData
+    : swiperSlide;
+  console.log(video._id);
   const handleOpenRightBar = (action: RightBarAction) => {
     if (action.isOpen === openRightBar.isOpen) return;
     setOpenRightBar((pre) => {
@@ -93,11 +103,12 @@ const VideoSlide = ({
   ) as boolean | undefined;
 
   return (
-    <div className="flex justify-between items-center w-full h-full rounded-md">
+    <div
+      className={`flex justify-between items-center rounded-md ${className}`}
+    >
       <section
         onClick={handlePlayOrPause}
-        data-type="clickable"
-        className="w-full h-full flex-1 relative grid place-content-center overflow-hidden rounded-md"
+        className="w-full h-full flex-1 relative grid place-content-center overflow-hidden rounded-md z-0 bg-transparent"
       >
         <BackgroundVideo coverImage={video.origin_cover.url_list[0]} />
         {isVisible && (
@@ -111,26 +122,28 @@ const VideoSlide = ({
                 </Modal>
               }
             >
-              <Video
-                statistics={statistics}
-                myID={myID}
-                isFollow={isFollow}
-                authorVideoID={video.author_id._id}
-                authorUid={video.author_id.uid}
-                nickname={video.author_id.nickname}
-                videoAddr={video.play_addr.url_list[0]}
-                videoDesc={video.desc}
-                videoDuration={video.duration}
-                videoID={video._id}
-                videoIdf={video.id_f}
-                avatarThumb={avatarThumb}
-                fromVideoPage={false}
-                allowedPlay={allowedPlay}
-                isPlay={isPlay}
-                isActive={isActive}
-                onChangeVideo={handleChangeVideo}
-                onOpenRightBar={handleOpenRightBar}
-              />
+              {isActive && (
+                <Video
+                  statistics={statistics}
+                  myID={myID}
+                  isFollow={isFollow}
+                  authorVideoID={video.author_id._id}
+                  authorUid={video.author_id.uid}
+                  nickname={video.author_id.nickname}
+                  videoAddr={video.play_addr.url_list[0]}
+                  videoDesc={video.desc}
+                  videoDuration={video.duration}
+                  videoID={video._id}
+                  videoIdf={video.id_f}
+                  avatarThumb={avatarThumb}
+                  fromVideoPage={false}
+                  allowedPlay={allowedPlay}
+                  isPlay={isPlay}
+                  isActive={isActive}
+                  onChangeVideo={handleChangeVideo}
+                  onOpenRightBar={handleOpenRightBar}
+                />
+              )}
             </ErrorBoundary>
           </Suspense>
         )}

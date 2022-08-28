@@ -63,7 +63,6 @@ const Video = ({
   console.log("video rerender");
   const dispatch = useAppDispatch();
   const videoRef = useRef<HTMLVideoElement>(null);
-
   const progressBarRef = useRef<HTMLDivElement>(null);
   const progressRef = useRef<HTMLDivElement>(null);
   const timeCounterRef = useRef<HTMLSpanElement>(null);
@@ -178,7 +177,7 @@ const Video = ({
         ref={videoRef}
         data-type="clickable"
         playsInline
-        className="max-h-full min-h-full h-full w-auto  object-contain object-center rounded-md absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 hover:cursor-pointer"
+        className="z-40 max-h-full min-h-full h-full w-auto  object-contain object-center rounded-md absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 hover:cursor-pointer"
         loop={isActive && true}
         autoPlay={isActive && allowedPlay}
         onTimeUpdate={handleTimeUpdate}
@@ -187,7 +186,7 @@ const Video = ({
       {(!isPlay || !allowedPlay) && (
         <Button
           text=""
-          className="absolute top-1/2 left-1/2 text-white opacity-70 transform -translate-x-1/2 -translate-y-1/2"
+          className="z-50 absolute top-1/2 left-1/2 text-white opacity-70 transform -translate-x-1/2 -translate-y-1/2"
           data-type="center_play_clickable"
           icon={
             <svg

@@ -1,78 +1,78 @@
 type sidebarType = {
   actionImage: string;
   actionName: string;
-  path : string;
+  path: string;
 };
 
 export const sidebarAction: sidebarType[] = [
   {
     actionImage: "/images/home_icon.png",
     actionName: "首页",
-    path : "/",
+    path: "/home",
   },
   {
     actionImage: "/images/recommended_icon.png",
     actionName: "推荐",
-    path : "/",
+    path: "/",
   },
   {
     actionImage: "/images/follow_icon.png",
     actionName: "关注",
-    path : "/",
+    path: "/follow",
   },
   {
     actionImage: "/images/live_icon.png",
     actionName: "直播",
-    path : "/lives",
+    path: "/live",
   },
   {
     actionImage: "/images/variety_icon.png",
     actionName: "综艺",
-    path : "/",
+    path: "/variety",
   },
   {
     actionImage: "/images/hot_icon.png",
     actionName: "热点",
-    path : "/",
+    path: "/hot",
   },
   {
     actionImage: "/images/entertainment_icon.png",
     actionName: "娱乐",
-    path : "/",
+    path: "/entertainment",
   },
   {
     actionImage: "/images/knowledge_icon.png",
     actionName: "知识",
-    path : "/",
+    path: "/knowledge",
   },
   {
     actionImage: "/images/quadratic_icon.png",
     actionName: "二次元",
-    path : "/",
+    path: "/abc",
   },
   {
     actionImage: "/images/game_icon.png",
     actionName: "游戏",
-    path : "/",
+    path: "/avs",
   },
   {
     actionImage: "/images/food_icon.png",
     actionName: "美食",
-    path : "/",
+    path: "/vsa",
   },
   {
     actionImage: "/images/sport_icon.png",
     actionName: "体育",
-    path : "/",
+    path: "/sda",
   },
   {
     actionImage: "/images/fashion_icon.png",
     actionName: "时尚",
-    path : "/",
+    path: "/wfa",
   },
   {
     actionImage: "/images/music_icon.png",
     actionName: "音乐",
-    path : "/",
+    path: "/ggg",
   },
 ];

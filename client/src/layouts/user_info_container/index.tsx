@@ -116,14 +116,12 @@ const UserInfoContainer = ({
             icon={isFollowing && <FollowingIcon />}
             text={isFollowing ? "" : "关注"}
             onClick={handleFollow}
-            className={`
+            className={`w-[68px] h-36px rounded text-sm
               ${
                 isFollowing &&
                 `border-darkslategray2 border flex justify-center items-center`
               }
-              ${
-                isFollowing ? "w-36px h-36px bg-darkslategray3" : "bg-fresh_red"
-              }
+              ${isFollowing ? " bg-darkslategray3" : "bg-fresh_red"}
             `}
           />
         )}
