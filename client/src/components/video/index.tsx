@@ -34,8 +34,9 @@ type Props = {
   isLiked?: boolean;
   isActive: boolean;
   avatarThumb: string;
-  statistics?: IStatistics;
   fromSearchPage?: boolean;
+  playerId: string;
+  statistics?: IStatistics;
   onChangeVideo?: (action: boolean) => void;
   onOpenRightBar?: (action: RightBarAction) => void;
 };
@@ -59,6 +60,7 @@ const Video = ({
   statistics,
   avatarThumb,
   fromSearchPage,
+  playerId,
   onChangeVideo,
   onOpenRightBar,
 }: Props) => {
@@ -147,13 +149,12 @@ const Video = ({
     }
   };
   const handleChangeVolume = (volume: number) => {
-    console.log(volume);
     videoRef.current && (videoRef.current.volume = volume);
     localStorage.setItem("volume", JSON.stringify(volume));
   };
 
   const handleToggleFullscreenMode = () => {
-    const player = document.querySelector("#fullscreen") as HTMLElement;
+    const player = document.getElementById(playerId) as HTMLElement;
     toggleFullScreen(player);
   };
 

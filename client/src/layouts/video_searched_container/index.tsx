@@ -28,7 +28,7 @@ const VideoSearchedContainer = ({
     "-50% 0% -30% 0%"
   );
   console.log({ onScreen });
-
+  const playerId = video._id.toString();
   return (
     <div className="w-auto h-auto mb-16 space-y-4">
       <div className="w-full h-auto space-y-4">
@@ -58,16 +58,18 @@ const VideoSearchedContainer = ({
           <p className="text-base text-gray-200">{video.desc}</p>
         </div>
       </div>
-      <div ref={onScreenRef} className="w-full h-auto">
-        <VideoSlide
-          searchPageData={onScreen}
-          allowedPlay={onScreen.isActive ? true : false}
-          statistics={statistics}
-          avatarThumb={avatarThumb}
-          nickname={nickname}
-          video={video}
-          className={className}
-        />
+      <div className={className}>
+        <div ref={onScreenRef} id={playerId} className="w-full h-full">
+          <VideoSlide
+            playerId={playerId}
+            searchPageData={onScreen}
+            allowedPlay={onScreen.isActive ? true : false}
+            statistics={statistics}
+            avatarThumb={avatarThumb}
+            nickname={nickname}
+            video={video}
+          />
+        </div>
       </div>
     </div>
   );

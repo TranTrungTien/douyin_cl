@@ -16,8 +16,9 @@ type Props = {
   avatarThumb: string;
   nickname: string;
   allowedPlay: boolean;
-  searchPageData?: ISearchPapeData;
   className?: string;
+  playerId: string;
+  searchPageData?: ISearchPapeData;
   video: IVideo;
   statistics?: IStatistics;
   onStart?: () => void;
@@ -34,6 +35,7 @@ const VideoSlide = ({
   nickname,
   video,
   allowedPlay,
+  playerId,
   searchPageData,
   className = "w-full h-full",
   onStart,
@@ -122,6 +124,7 @@ const VideoSlide = ({
             >
               {isActive && (
                 <Video
+                  playerId={playerId}
                   statistics={statistics}
                   myID={myID}
                   isFollow={isFollow}

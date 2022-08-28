@@ -123,6 +123,7 @@ const VideoPage = (props: Props) => {
                   >
                     {video && (
                       <Video
+                        playerId="fullscreen"
                         myID={myID}
                         nickname={video.doc.author_id.nickname}
                         videoAddr={video.doc.play_addr.url_list[0]}

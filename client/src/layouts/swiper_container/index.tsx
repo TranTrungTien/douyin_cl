@@ -54,6 +54,7 @@ const SwiperWrapper = () => {
               virtualIndex={index}
             >
               <VideoSlide
+                playerId={"fullscreen"}
                 statistics={video.statistics}
                 avatarThumb={video.video.author_id.avatar_thumb.url_list[0]}
                 nickname={video.video.author_id.nickname}
