@@ -1,19 +1,12 @@
-import {
-  memo,
-  MouseEvent,
-  SyntheticEvent,
-  useEffect,
-  useMemo,
-  useState,
-} from "react";
+import { memo, SyntheticEvent, useEffect, useMemo, useState } from "react";
 import SmallHeartIcon from "../../assets/icons/small_heart_icon";
-import { useFetchAppend } from "../../hooks/useFetchAppend";
+import { useFetchAppend } from "../../hooks/use_fetch_append";
 import { IComment } from "../../interfaces/comment";
 import { ILikedComment } from "../../interfaces/liked_video.interface";
 import { useAppSelector } from "../../redux/app/hooks";
 import { deleteData, postData } from "../../services/app_services";
 import { servicesPath } from "../../services/services_path";
-import { convertDate } from "../../utils/covert_date";
+import { convertDateToTime } from "../../utils/time";
 import AvatarCardLink from "../avatar_card_link";
 import Button from "../button";
 import Heart from "../heart";
@@ -235,7 +228,7 @@ const Comment = ({
               {nickname}
             </h4>
             <span className="text-inherit font-normal text-xs leading-[21px] opacity-50">
-              {convertDate(datePosted)}
+              {convertDateToTime(datePosted)}
             </span>
           </div>
           {/* Text msg */}

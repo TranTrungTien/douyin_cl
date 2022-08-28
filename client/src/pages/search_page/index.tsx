@@ -1,12 +1,19 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useSearchParams } from "react-router-dom";
-import { Swiper, SwiperSlide } from "swiper/react";
 import { Logo, Nav, Search } from "../../components";
 import { IStatistics } from "../../interfaces/statistic";
 import { IVideo } from "../../interfaces/video.interface";
-import { HeaderContainer, VideoSlide } from "../../layouts";
+import { HeaderContainer } from "../../layouts";
+import VideoSearchedContainer from "../../layouts/video_searched_container";
 import { postData } from "../../services/app_services";
 import { servicesPath } from "../../services/services_path";
+
+export interface ISearchPapeData {
+  isActive: boolean;
+  isVisible: boolean;
+  isNext: boolean;
+  isPrev: boolean;
+}
 
 const SearchPage = () => {
   const [searchParams] = useSearchParams();
@@ -28,48 +35,30 @@ const SearchPage = () => {
       });
       setVideos(data.data);
     };
-    keyWord && fetchData();
-  }, [keyWord]);
-  console.log({ videos });
+    keyWord && !videos?.list.length && fetchData();
+  }, [keyWord, videos?.list.length]);
 
   return (
     <section className="w-full h-full overflow-y-auto">
-      <HeaderContainer className="py-[9px]">
+      <HeaderContainer className="py-[5px]">
         <Logo />
-        <Search />
+        <Search className="-ml-52" value={keyWord ? keyWord : undefined} />
         <Nav />
       </HeaderContainer>
-      <div className="w-[50%] h-full mx-auto">
+      <div className="w-[55%] h-full mx-auto">
         {videos &&
           videos.list.map((v, index) => {
             const stat = videos.statistics.find(
               (stat) => stat.video_id === v._id
             );
             return (
-              <VideoSlide
-                searchPageData={
-                  index === 0
-                    ? {
-                        isActive: true,
-                        isNext: false,
-                        isPrev: false,
-                        isVisible: true,
-                      }
-                    : {
-                        isActive: false,
-                        isNext: false,
-                        isPrev: false,
-                        isVisible: true,
-                      }
-                }
+              <VideoSearchedContainer
                 key={v._id}
-                allowedPlay={false}
                 statistics={stat}
                 avatarThumb={v.author_id.avatar_thumb.url_list[0]}
                 nickname={v.author_id.nickname}
                 video={v}
-                onStart={() => {}}
-                className="w-full h-[600px] my-40"
+                className="w-full h-[650px]"
               />
             );
           })}

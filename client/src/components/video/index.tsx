@@ -1,5 +1,5 @@
 import { useEffect, useRef } from "react";
-import { useFetchSuspense } from "../../hooks/useFetchSuspense";
+import { useFetchSuspense } from "../../hooks/use_fetch_suspense";
 import { IStatistics } from "../../interfaces/statistic";
 import RightVideoAction from "../../layouts/right_video_action_container";
 import { RightBarAction } from "../../layouts/video_slide";
@@ -8,7 +8,7 @@ import { setIsLogin } from "../../redux/slice/login_slice";
 import { postData } from "../../services/app_services";
 import { servicesPath } from "../../services/services_path";
 import { toggleFullScreen } from "../../utils/fullscreen";
-import { timeFormat } from "../../utils/timeFormat";
+import { timeFormat } from "../../utils/time";
 import AvatarCardButton from "../avatar_card_button";
 import BottomVideoAction from "../bottom_video_action";
 import Button from "../button";
@@ -35,6 +35,7 @@ type Props = {
   isActive: boolean;
   avatarThumb: string;
   statistics?: IStatistics;
+  fromSearchPage?: boolean;
   onChangeVideo?: (action: boolean) => void;
   onOpenRightBar?: (action: RightBarAction) => void;
 };
@@ -57,6 +58,7 @@ const Video = ({
   isActive,
   statistics,
   avatarThumb,
+  fromSearchPage,
   onChangeVideo,
   onOpenRightBar,
 }: Props) => {
@@ -203,6 +205,7 @@ const Video = ({
       )}
       {/* Action's video */}
       <BottomVideoAction
+        fromSearchPage={fromSearchPage}
         authorUid={authorUid}
         onToggleFullscreenMode={handleToggleFullscreenMode}
         nickname={nickname}
@@ -227,18 +230,20 @@ const Video = ({
       {!fromVideoPage && onOpenRightBar && (
         <RightVideoAction>
           {/* next, pre button */}
-          <NextVideoButton onChangeVideo={onChangeVideo} />
-          <AvatarCardButton
-            firstNickNameCharacter={nickname[0]}
-            image={avatarThumb}
-            borderRadius="rounded-full"
-            onOpenRightBar={onOpenRightBar}
-            height="h-10"
-            width="w-10"
-            hint="User Cover"
-          >
-            {!isFollow && <Plus onClick={handleFollow} />}
-          </AvatarCardButton>
+          {!fromSearchPage && <NextVideoButton onChangeVideo={onChangeVideo} />}
+          {!fromSearchPage && (
+            <AvatarCardButton
+              firstNickNameCharacter={nickname[0]}
+              image={avatarThumb}
+              borderRadius="rounded-full"
+              onOpenRightBar={onOpenRightBar}
+              height="h-10"
+              width="w-10"
+              hint={nickname}
+            >
+              {!isFollow && <Plus onClick={handleFollow} />}
+            </AvatarCardButton>
+          )}
           {/* like share, cmt,.,,, */}
           <LikeCmtShare
             statistics={statistics}

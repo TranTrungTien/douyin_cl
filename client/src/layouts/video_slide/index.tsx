@@ -1,10 +1,11 @@
 // @flow
-import { memo, MouseEvent, Suspense, useState } from "react";
+import { memo, MouseEvent, Suspense, useEffect, useState } from "react";
 import { useSwiper, useSwiperSlide } from "swiper/react";
 import { BackgroundVideo, Loading, Video } from "../../components";
 import Modal from "../../components/modal";
 import { IStatistics } from "../../interfaces/statistic";
 import { IVideo } from "../../interfaces/video.interface";
+import { ISearchPapeData } from "../../pages/search_page";
 import { isFollowUser, useAppSelector } from "../../redux/app/hooks";
 import ErrorBoundary from "../../utils/error-boundaries";
 import CommentContainer from "../comment_container";
@@ -15,16 +16,11 @@ type Props = {
   avatarThumb: string;
   nickname: string;
   allowedPlay: boolean;
-  searchPageData?: {
-    isActive: boolean;
-    isVisible: boolean;
-    isNext: boolean;
-    isPrev: boolean;
-  };
+  searchPageData?: ISearchPapeData;
   className?: string;
   video: IVideo;
   statistics?: IStatistics;
-  onStart: () => void;
+  onStart?: () => void;
 };
 export interface RightBarAction {
   isOpen: boolean;
@@ -52,10 +48,12 @@ const VideoSlide = ({
     comment: false,
     user: false,
   });
+  useEffect(() => {
+    setIsPlay((_) => allowedPlay);
+  }, [allowedPlay]);
   const { isActive, isVisible, isNext, isPrev } = searchPageData
     ? searchPageData
     : swiperSlide;
-  console.log(video._id);
   const handleOpenRightBar = (action: RightBarAction) => {
     if (action.isOpen === openRightBar.isOpen) return;
     setOpenRightBar((pre) => {
@@ -92,7 +90,7 @@ const VideoSlide = ({
     )
       return;
     else {
-      if (!allowedPlay) onStart();
+      if (!allowedPlay && onStart) onStart();
       else setIsPlay((prev) => !prev);
     }
   };
@@ -142,6 +140,7 @@ const VideoSlide = ({
                   isActive={isActive}
                   onChangeVideo={handleChangeVideo}
                   onOpenRightBar={handleOpenRightBar}
+                  fromSearchPage={searchPageData ? true : false}
                 />
               )}
             </ErrorBoundary>

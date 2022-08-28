@@ -5,7 +5,7 @@ import "swiper/css/bundle";
 import "swiper/css/virtual";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { VideoSlide } from "..";
-import { useFetchSuspense } from "../../hooks/useFetchSuspense";
+import { useFetchSuspense } from "../../hooks/use_fetch_suspense";
 import { IStatistics } from "../../interfaces/statistic";
 import { IVideo } from "../../interfaces/video.interface";
 import { useAppSelector } from "../../redux/app/hooks";

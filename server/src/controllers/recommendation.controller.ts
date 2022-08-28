@@ -152,7 +152,7 @@ function getSearchRecommended(req: Request, res: Response) {
             $in: videoIdfs,
           },
         },
-        { createdAt: 0, updatedAt: 0, __v: 0 }
+        { updatedAt: 0, __v: 0 }
       )
         .populate("author_id")
         .exec((err, list) => {

@@ -23,7 +23,7 @@ import {
 import ErrorBoundary from "../../utils/error-boundaries";
 
 import VideoPageUserBox from "../../components/video_page_user_box";
-import { useFetch } from "../../hooks/useFetch";
+import { useFetch } from "../../hooks/use_fetch";
 import { IVideo } from "../../interfaces/video.interface";
 import { servicesPath } from "../../services/services_path";
 import { useAppSelector } from "../../redux/app/hooks";

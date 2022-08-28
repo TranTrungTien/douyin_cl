@@ -18,4 +18,6 @@ export interface IVideo {
     url_list: string[];
   };
   music_id: IMusic;
+  createdAt?: string;
+  updatedAt?: string;
 }

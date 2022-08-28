@@ -1,10 +1,10 @@
 import { useMemo } from "react";
 import { RelatedVideo } from "../../components";
 import { servicesPath } from "../../services/services_path";
-import { useFetchSuspense } from "../../hooks/useFetchSuspense";
+import { useFetchSuspense } from "../../hooks/use_fetch_suspense";
 import { IVideo } from "../../interfaces/video.interface";
-import { covertVideoTime } from "../../utils/covert_date";
 import { IStatistics } from "../../interfaces/statistic";
+import { covertVideoTime } from "../../utils/time";
 
 type Props = {
   videoIdf: string;
