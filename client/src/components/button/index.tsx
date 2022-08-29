@@ -1,4 +1,4 @@
-import { MouseEvent, ReactNode } from "react";
+import { HTMLAttributes, MouseEvent, ReactNode } from "react";
 
 type Props = {
   title?: string;
@@ -8,7 +8,7 @@ type Props = {
   icon?: ReactNode;
   children?: ReactNode;
   onClick?: (e: MouseEvent<HTMLButtonElement>) => void;
-};
+} & HTMLAttributes<HTMLButtonElement>;
 
 const Button = ({
   text,
@@ -28,10 +28,12 @@ const Button = ({
       type={type}
       className={`${className} leading-5`}
     >
-      <div className={`${icon && "flex justify-center items-center"}`}>
-        {icon}
-        <span> {text}</span>
-      </div>
+      {(icon || text) && (
+        <div className={`${icon && "flex justify-center items-center"}`}>
+          {icon}
+          <span> {text}</span>
+        </div>
+      )}
       {children}
     </button>
   );
