@@ -10,8 +10,6 @@ const DeleteIcon = () => {
       y="0px"
       viewBox="0 0 25 24.8"
       xmlSpace="preserve"
-      data-ember-action=""
-      data-ember-action-1015="1015"
     >
       <g className="trashcan-open">
         <path d="M18.7,24.4H5.9L4.9,7h14.9L18.7,24.4z M7.6,22.6H17l0.8-13.7h-11L7.6,22.6z"></path>

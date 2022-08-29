@@ -287,7 +287,22 @@ const SearchPage = () => {
                 </div>
               </div>
             </div>
-            <div className="w-full h-[650px] bg-black"></div>
+            {videos &&
+              videos.list.map((v, index) => {
+                const stat = videos.statistics.find(
+                  (stat) => stat.video_id === v._id
+                );
+                return (
+                  <VideoSearchedContainer
+                    key={v._id}
+                    statistics={stat}
+                    avatarThumb={v.author_id.avatar_thumb.url_list[0]}
+                    nickname={v.author_id.nickname}
+                    video={v}
+                    className="w-full h-[550px]"
+                  />
+                );
+              })}
           </div>
           {/* key words hot now */}
           <div className="text-white sticky top-0 max-w-[250px]">
@@ -364,20 +379,3 @@ const SearchPage = () => {
 };
 
 export default SearchPage;
-
-// {
-//   videos &&
-//     videos.list.map((v, index) => {
-//       const stat = videos.statistics.find((stat) => stat.video_id === v._id);
-//       return (
-//         <VideoSearchedContainer
-//           key={v._id}
-//           statistics={stat}
-//           avatarThumb={v.author_id.avatar_thumb.url_list[0]}
-//           nickname={v.author_id.nickname}
-//           video={v}
-//           className="w-full h-[650px]"
-//         />
-//       );
-//     });
-// }
