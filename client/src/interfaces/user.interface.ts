@@ -11,7 +11,6 @@ export interface IUser {
   cover_url: {
     url_list: string[];
   };
-  favoriting_count: number;
   follower_count: number;
   follower_request_status: number;
   following_count: number;

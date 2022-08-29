@@ -1,10 +1,5 @@
-type sidebarType = {
-  actionImage: string;
-  actionName: string;
-  path: string;
-};
-
-export const sidebarAction: sidebarType[] = [
+import { ISidebarType } from "../interfaces";
+export const sidebarAction: ISidebarType[] = [
   {
     actionImage: "/images/home_icon.png",
     actionName: "首页",

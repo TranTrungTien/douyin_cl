@@ -36,6 +36,7 @@ export function useOnScreen<T extends Element>(
     return () => {
       if (observerRefValue) observer.unobserve(observerRefValue);
     };
+    // eslint-disable-next-line
   }, []); // Empty array ensures that effect is only run on mount and unmount
   return isIntersecting;
 }

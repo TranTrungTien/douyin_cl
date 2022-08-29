@@ -5,7 +5,6 @@ import { setIsLogin } from "../../redux/slice/login_slice";
 import { deleteData, postData } from "../../services/app_services";
 import { servicesPath } from "../../services/services_path";
 import Button from "../button";
-import DeleteIcon from "../../assets/icons/delete_icon.svg";
 import Heart from "../heart";
 import LargeHeart from "../../assets/icons/large_heart_icon";
 import CommentIcon from "../../assets/icons/comment_icon";

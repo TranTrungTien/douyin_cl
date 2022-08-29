@@ -1,8 +1,8 @@
-import { useMemo, useState } from "react";
-import SwiperCore, { Virtual } from "swiper";
 import "swiper/css";
 import "swiper/css/bundle";
 import "swiper/css/virtual";
+import { useMemo, useState } from "react";
+import SwiperCore, { Virtual } from "swiper";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { VideoSlide } from "..";
 import { useFetchSuspense } from "../../hooks/use_fetch_suspense";

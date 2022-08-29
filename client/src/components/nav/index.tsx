@@ -2,6 +2,11 @@ import { MouseEvent, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useAppDispatch, useAppSelector } from "../../redux/app/hooks";
 import { setIsLogin } from "../../redux/slice/login_slice";
+import CoOperateIcon from "../../assets/icons/co_operate_icon";
+import ClientIcon from "../../assets/icons/client_icon";
+import BellIcon from "../../assets/icons/bell_icon";
+import MessageIcon from "../../assets/icons/message_icon";
+import UploadIcon from "../../assets/icons/upload_icon";
 import AvatarCardLink from "../avatar_card_link";
 import BasicInfo from "../basic_info";
 import Button from "../button";
@@ -28,13 +33,89 @@ const Nav = (props: Props) => {
     if (user.data) navigate("/upload");
     else dispatch(setIsLogin(true));
   };
+
   return (
     <ul className="flex justify-between items-center">
-      <li className="opacity-80 hover:opacity-100 cursor-pointer desktop:block laptop:hidden ">
-        <span>关于抖音</span>
+      <li className="opacity-80 hover:opacity-100 cursor-pointer desktop:flex laptop:hidden ml-8  desktop:flex-col desktop:justify-center desktop:items-center">
+        <div className="bg-gray-700 w-[22px] h-[22px] grid place-content-center rounded-full">
+          <CoOperateIcon />
+        </div>
+        <div className="leading-[20px]">
+          <span className="text-white opacity-70 text-[10px] leading-[20px] font-medium text-center">
+            合作
+          </span>
+        </div>
       </li>
-      <li className="opacity-80 hover:opacity-100 cursor-pointer desktop:block laptop:hidden ml-8">
-        <span>创作者服务</span>
+      <li className="opacity-80 hover:opacity-100 cursor-pointer desktop:flex laptop:hidden ml-8  desktop:flex-col desktop:justify-center desktop:items-center">
+        <div className="bg-gray-700 w-[22px] h-[22px] grid place-content-center rounded-full">
+          <ClientIcon />
+        </div>
+        <div className="leading-[20px]">
+          <span className="text-white opacity-70 text-[10px] leading-[20px] font-medium text-center">
+            客户端
+          </span>
+        </div>
+      </li>
+      <li className="opacity-80 hover:opacity-100 cursor-pointer desktop:flex laptop:hidden ml-8  desktop:flex-col desktop:justify-center desktop:items-center">
+        <div className="bg-gray-700 w-[22px] h-[22px] grid place-content-center rounded-full">
+          <BellIcon />
+        </div>
+        <div className="leading-[20px]">
+          <span className="text-white opacity-70 text-[10px] leading-[20px] font-medium text-center">
+            通知
+          </span>
+        </div>
+      </li>
+      <li className="opacity-80 hover:opacity-100 cursor-pointer desktop:flex laptop:hidden ml-8  desktop:flex-col desktop:justify-center desktop:items-center">
+        <div className="bg-gray-700 w-[22px] h-[22px] grid place-content-center rounded-full">
+          <MessageIcon />
+        </div>
+        <div className="leading-[20px]">
+          <span className="text-white opacity-70 text-[10px] leading-[20px] font-medium text-center">
+            私信
+          </span>
+        </div>
+      </li>
+      <li className="opacity-80 hover:opacity-100 cursor-pointer desktop:flex laptop:hidden ml-8  desktop:flex-col desktop:justify-center desktop:items-center relative group">
+        <div className="bg-gray-700 w-[22px] h-[22px] grid place-content-center rounded-full">
+          <UploadIcon />
+        </div>
+        <div className="leading-[20px]">
+          <span className="text-white opacity-70 text-[10px] leading-[20px] font-medium text-center">
+            投稿
+          </span>
+        </div>
+        <div className="absolute top-full left-1/2 -translate-x-1/2 pt-2 group-hover:block hidden">
+          <div className=" bg-[#252632] rounded py-4">
+            <Link target="_blank" onClick={handleLoginChecking} to="/upload">
+              <div className="h-[46px] px-6">
+                <span className="text-sm text-center font-medium leading-[46px] text-white opacity-80 whitespace-nowrap">
+                  发布视频
+                </span>
+              </div>
+            </Link>
+            <div className="h-[46px] px-6">
+              <span className="text-sm text-center font-medium leading-[46px] text-white opacity-80 whitespace-nowrap">
+                视频管理
+              </span>
+            </div>
+            <div className="h-[46px] px-6">
+              <span className="text-sm text-center font-medium leading-[46px] text-white opacity-80 whitespace-nowrap">
+                作品数据
+              </span>
+            </div>
+            <div className="h-[46px] px-6">
+              <span className="text-sm text-center font-medium leading-[46px] text-white opacity-80 whitespace-nowrap">
+                创作者学习中心
+              </span>
+            </div>
+            <div className="h-[46px] px-6">
+              <span className="text-sm text-center font-medium leading-[46px] text-white opacity-80 whitespace-nowrap">
+                创作者服务平台
+              </span>
+            </div>
+          </div>
+        </div>
       </li>
       {user.data && (
         <li className="opacity-80 hover:opacity-100 cursor-pointer ml-8">
@@ -48,18 +129,18 @@ const Nav = (props: Props) => {
           />
         </li>
       )}
-      <li className="ml-8 relative">
+      {/* <li className="ml-8 relative">
         <Link target="_blank" onClick={handleLoginChecking} to={"/upload"}>
-          {/* <div className="absolute top-0 z-[-1] -left-px w-[3px] h-full bg-bright_blue"></div> */}
+          <div className="absolute top-0 z-[-1] -left-px w-[3px] h-full bg-bright_blue"></div>
           <div className="laptop:w-[100px] desktop:w-[104px] laptop:h-[36px] desktop:h-[38px] bg-light_blue flex justify-center item-center border-2 border-white w-[104px] h-[38px] rounded-[5px] before:absolute before:top-0 before:z-[-1] before:-right-[3px] before:w-full before:rounded-[5px]  before:h-full before:bg-fresh_red after:absolute after:top-0 after:z-[-1] after:-left-[3px] after:w-full after:rounded-[5px] after:h-full after:bg-bright_blue">
             <span className="laptop:leading-8 desktop:leading-9 text-lg mr-2">
               +
             </span>
             <span className="laptop:leading-8 desktop:leading-9">发布视频</span>
           </div>
-          {/* <div className="absolute top-0 z-[-1] -right-px w-[3px] h-full bg-fresh_red"></div> */}
+          <div className="absolute top-0 z-[-1] -right-px w-[3px] h-full bg-fresh_red"></div>
         </Link>
-      </li>
+      </li> */}
       {!user.data && (
         <li className="ml-8">
           <Button
