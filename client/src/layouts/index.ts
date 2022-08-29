@@ -18,3 +18,4 @@ export { default as RightVideoActionContainer } from "../layouts/right_video_act
 export { default as VideoContainer } from "../layouts/video_container";
 export { default as VideoActionContainer } from "../layouts/video_action_container";
 export { default as LeftHeaderContainer } from "../layouts/left_header_container";
+export { default as HotSearchedContainer } from "../layouts/hot_searched_container";

@@ -3,7 +3,7 @@ import { useSearchParams } from "react-router-dom";
 import { Button, Logo, Nav, Search } from "../../components";
 import { IStatistics } from "../../interfaces/statistic";
 import { IVideo } from "../../interfaces/video.interface";
-import { HeaderContainer } from "../../layouts";
+import { HeaderContainer, HotSearchedContainer } from "../../layouts";
 import VideoSearchedContainer from "../../layouts/video_searched_container";
 import { postData } from "../../services/app_services";
 import { servicesPath } from "../../services/services_path";
@@ -43,7 +43,7 @@ const SearchPage = () => {
       style={{ overflow: "overlay" }}
       className="w-full h-full overflow-y-auto custom-scrollbar"
     >
-      <HeaderContainer className="py-[5px]">
+      <HeaderContainer id="app_header" className="py-[5px]">
         <div className="flex justify-start items-center">
           <Logo py="py-1" />
           <Search value={keyWord ? keyWord : undefined} className="ml-[74px]" />
@@ -305,73 +305,7 @@ const SearchPage = () => {
               })}
           </div>
           {/* key words hot now */}
-          <div className="text-white sticky top-0 max-w-[250px]">
-            <h2 className="text-white opacity-90 font-medium text-lg mb-6">
-              抖音热榜
-            </h2>
-            <ul className="">
-              <li
-                data-text="2022年中国网络文明大会"
-                className="text-sm font-normal text-white opacity-80 mb-[10px] py-1 px-3 rounded bg-darkslategray2 whitespace-nowrap w-min truncate"
-              >
-                2022年中国网络文明大会
-              </li>
-              <li
-                data-text="唐山打人案主犯审讯视频曝光"
-                className="text-sm font-normal text-white opacity-80 mb-[10px] py-1 px-3 rounded bg-darkslategray2 whitespace-nowrap w-min truncate"
-              >
-                唐山打人案主犯审讯视频曝光
-              </li>
-              <li
-                data-text="曹芳为直播言论道歉"
-                className="text-sm font-normal text-white opacity-80 mb-[10px] py-1 px-3 rounded bg-darkslategray2 whitespace-nowrap w-min truncate"
-              >
-                曹芳为直播言论道歉
-              </li>
-              <li
-                data-text="4K视频看运20歼20有多炫"
-                className="text-sm font-normal text-white opacity-80 mb-[10px] py-1 px-3 rounded bg-darkslategray2 whitespace-nowrap w-min truncate"
-              >
-                4K视频看运20歼20有多炫
-              </li>
-              <li
-                data-text="别惹前女友开播"
-                className="text-sm font-normal text-white opacity-80 mb-[10px] py-1 px-3 rounded bg-darkslategray2 whitespace-nowrap w-min truncate"
-              >
-                别惹前女友开播
-              </li>
-              <li
-                data-text="唐山被打女子回忆事件经过"
-                className="text-sm font-normal text-white opacity-80 mb-[10px] py-1 px-3 rounded bg-darkslategray2 whitespace-nowrap w-min truncate"
-              >
-                唐山被打女子回忆事件经过
-              </li>
-              <li
-                data-text="女生自述坐硬卧疑遭骚扰"
-                className="text-sm font-normal text-white opacity-80 mb-[10px] py-1 px-3 rounded bg-darkslategray2 whitespace-nowrap w-min truncate"
-              >
-                女生自述坐硬卧疑遭骚扰
-              </li>
-              <li
-                data-text="王鹤棣密逃路透"
-                className="text-sm font-normal text-white opacity-80 mb-[10px] py-1 px-3 rounded bg-darkslategray2 whitespace-nowrap w-min truncate"
-              >
-                王鹤棣密逃路透
-              </li>
-              <li
-                data-text="苍兰诀大结局"
-                className="text-sm font-normal text-white opacity-80 mb-[10px] py-1 px-3 rounded bg-darkslategray2 whitespace-nowrap w-min truncate"
-              >
-                苍兰诀大结局
-              </li>
-              <li
-                data-text="消失的孩子开播"
-                className="text-sm font-normal text-white opacity-80 mb-[10px] py-1 px-3 rounded bg-darkslategray2 whitespace-nowrap w-min truncate"
-              >
-                消失的孩子开播
-              </li>
-            </ul>
-          </div>
+          <HotSearchedContainer />
         </div>
       </div>
     </section>
