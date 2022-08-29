@@ -1,0 +1,16 @@
+.trashcan {
+    width: 20px;
+    height: 20px;
+}
+
+.trashcan:hover .trashcan-open {
+    display: inline;
+}
+
+.trashcan:hover .trashcan-closed {
+    display: none;
+}
+
+.trashcan-open {
+    display: none;
+}
