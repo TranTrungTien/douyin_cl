@@ -1,4 +1,4 @@
-import { HTMLAttributes, MouseEvent, ReactNode } from "react";
+import { MouseEvent, ReactNode } from "react";
 
 type Props = {
   title?: string;
