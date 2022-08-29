@@ -2,7 +2,7 @@ import { SyntheticEvent, useMemo } from "react";
 import Comment from "../../components/comment";
 import CommentHeader from "../../components/comment_box_header";
 import Input from "../../components/input";
-import { useFetchAppend } from "../../hooks/useFetchAppend";
+import { useFetchAppend } from "../../hooks/use_fetch_append";
 import { IComment } from "../../interfaces/comment";
 import { ILikedComment } from "../../interfaces/liked_video.interface";
 import { useAppSelector } from "../../redux/app/hooks";

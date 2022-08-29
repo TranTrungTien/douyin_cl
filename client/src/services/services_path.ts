@@ -12,6 +12,7 @@ export const servicesPath = {
 
   GET_NEW_RECOMMENDED: "/api/v1/recommendation/new",
   GET_RELATED_RECOMMENDED: "/api/v1/recommendation/related",
+  GET_SEARCH_RECOMMENDED: "/api/v1/recommendation/search",
 
   POST_METADATA: "/api/v1/media/upload-meta-data",
   POST_FORMDATA: "/api/v1/media/upload-file",

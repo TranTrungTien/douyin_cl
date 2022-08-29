@@ -1,6 +1,6 @@
 import { forwardRef, MouseEvent, useEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";
-import { timeFormat } from "../../utils/timeFormat";
+import { timeFormat } from "../../utils/time";
 import Button from "../button";
 import "./style.css";
 
@@ -14,6 +14,7 @@ type Props = {
   nickname: string;
   isPlay?: boolean;
   allowedPlay?: boolean;
+  fromSearchPage?: boolean;
   progressBar: JSX.Element;
   onTurnOnOffVolume?: (action: boolean) => void;
   onChangeVolume: (volume: number) => void;
@@ -33,6 +34,7 @@ const BottomVideoAction = forwardRef<HTMLSpanElement, Props>(
       isPlay,
       progressBar,
       nickname,
+      fromSearchPage,
       onTurnOnOffVolume,
       onChangeVolume,
       onToggleFullscreenMode,
@@ -92,10 +94,10 @@ const BottomVideoAction = forwardRef<HTMLSpanElement, Props>(
 
     const handleChangeMode = () => setAutoNext(!autoNext);
     return (
-      <div className="progress_bar absolute bottom-0 left-0 w-full z-[2]">
+      <div className="progress_bar absolute bottom-0 left-0 w-full z-[50]">
         <div className="flex flex-col justify-end items-start w-full">
           {/* User name and description */}
-          {!fromVideoPage && (
+          {!fromVideoPage && !fromSearchPage && (
             <div className="flex flex-col items-start w-[95%] h-auto text-white ml-4 mb-4">
               <Link to={`/user/${authorUid}`} target="_blank">
                 <h3 className="font-medium leading-[26px] text-[18px]">

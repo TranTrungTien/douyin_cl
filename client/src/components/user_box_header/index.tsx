@@ -97,7 +97,7 @@ const UserBoxHeader = ({
           {!follow && (
             <Button
               onClick={handleFollow}
-              className="font-normal rounded px-5 bg-fresh_red h-8"
+              className="text-white font-normal rounded px-5 bg-fresh_red h-8"
               text="关注"
             />
           )}

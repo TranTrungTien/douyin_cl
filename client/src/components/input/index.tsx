@@ -1,4 +1,4 @@
-import React, { FormEvent, forwardRef, ReactNode, SyntheticEvent } from "react";
+import { FormEvent, forwardRef } from "react";
 
 type Props = {
   name?: string;
@@ -6,8 +6,8 @@ type Props = {
   type?: string;
   className?: string;
   id?: string;
+  value?: string;
   autoComplete?: "on" | "off";
-  children?: ReactNode;
   onChange?: (event: FormEvent<HTMLInputElement>) => void;
 };
 const Input = forwardRef<HTMLInputElement, Props>(
@@ -19,8 +19,8 @@ const Input = forwardRef<HTMLInputElement, Props>(
       id,
       name,
       placeholder,
+      value,
       onChange,
-      children,
       ...props
     }: Props,
     ref
@@ -29,6 +29,7 @@ const Input = forwardRef<HTMLInputElement, Props>(
       <div className="w-full">
         <input
           {...props}
+          defaultValue={value}
           ref={ref}
           onChange={onChange}
           type={type}
@@ -37,9 +38,7 @@ const Input = forwardRef<HTMLInputElement, Props>(
           name={name}
           id={id}
           placeholder={placeholder}
-        >
-          {children}
-        </input>
+        />
       </div>
     );
   }

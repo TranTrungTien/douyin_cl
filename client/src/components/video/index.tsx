@@ -1,5 +1,5 @@
 import { useEffect, useRef } from "react";
-import { useFetchSuspense } from "../../hooks/useFetchSuspense";
+import { useFetchSuspense } from "../../hooks/use_fetch_suspense";
 import { IStatistics } from "../../interfaces/statistic";
 import RightVideoAction from "../../layouts/right_video_action_container";
 import { RightBarAction } from "../../layouts/video_slide";
@@ -8,7 +8,7 @@ import { setIsLogin } from "../../redux/slice/login_slice";
 import { postData } from "../../services/app_services";
 import { servicesPath } from "../../services/services_path";
 import { toggleFullScreen } from "../../utils/fullscreen";
-import { timeFormat } from "../../utils/timeFormat";
+import { timeFormat } from "../../utils/time";
 import AvatarCardButton from "../avatar_card_button";
 import BottomVideoAction from "../bottom_video_action";
 import Button from "../button";
@@ -34,6 +34,8 @@ type Props = {
   isLiked?: boolean;
   isActive: boolean;
   avatarThumb: string;
+  fromSearchPage?: boolean;
+  playerId: string;
   statistics?: IStatistics;
   onChangeVideo?: (action: boolean) => void;
   onOpenRightBar?: (action: RightBarAction) => void;
@@ -57,13 +59,14 @@ const Video = ({
   isActive,
   statistics,
   avatarThumb,
+  fromSearchPage,
+  playerId,
   onChangeVideo,
   onOpenRightBar,
 }: Props) => {
   console.log("video rerender");
   const dispatch = useAppDispatch();
   const videoRef = useRef<HTMLVideoElement>(null);
-
   const progressBarRef = useRef<HTMLDivElement>(null);
   const progressRef = useRef<HTMLDivElement>(null);
   const timeCounterRef = useRef<HTMLSpanElement>(null);
@@ -146,13 +149,12 @@ const Video = ({
     }
   };
   const handleChangeVolume = (volume: number) => {
-    console.log(volume);
     videoRef.current && (videoRef.current.volume = volume);
     localStorage.setItem("volume", JSON.stringify(volume));
   };
 
   const handleToggleFullscreenMode = () => {
-    const player = document.querySelector("#fullscreen") as HTMLElement;
+    const player = document.getElementById(playerId) as HTMLElement;
     toggleFullScreen(player);
   };
 
@@ -178,7 +180,7 @@ const Video = ({
         ref={videoRef}
         data-type="clickable"
         playsInline
-        className="max-h-full min-h-full h-full w-auto  object-contain object-center rounded-md absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 hover:cursor-pointer"
+        className="z-40 max-h-full min-h-full h-full w-auto  object-contain object-center rounded-md absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 hover:cursor-pointer"
         loop={isActive && true}
         autoPlay={isActive && allowedPlay}
         onTimeUpdate={handleTimeUpdate}
@@ -187,7 +189,7 @@ const Video = ({
       {(!isPlay || !allowedPlay) && (
         <Button
           text=""
-          className="absolute top-1/2 left-1/2 text-white opacity-70 transform -translate-x-1/2 -translate-y-1/2"
+          className="z-50 absolute top-1/2 left-1/2 text-white opacity-70 transform -translate-x-1/2 -translate-y-1/2"
           data-type="center_play_clickable"
           icon={
             <svg
@@ -204,6 +206,7 @@ const Video = ({
       )}
       {/* Action's video */}
       <BottomVideoAction
+        fromSearchPage={fromSearchPage}
         authorUid={authorUid}
         onToggleFullscreenMode={handleToggleFullscreenMode}
         nickname={nickname}
@@ -228,18 +231,20 @@ const Video = ({
       {!fromVideoPage && onOpenRightBar && (
         <RightVideoAction>
           {/* next, pre button */}
-          <NextVideoButton onChangeVideo={onChangeVideo} />
-          <AvatarCardButton
-            firstNickNameCharacter={nickname[0]}
-            image={avatarThumb}
-            borderRadius="rounded-full"
-            onOpenRightBar={onOpenRightBar}
-            height="h-10"
-            width="w-10"
-            hint="User Cover"
-          >
-            {!isFollow && <Plus onClick={handleFollow} />}
-          </AvatarCardButton>
+          {!fromSearchPage && <NextVideoButton onChangeVideo={onChangeVideo} />}
+          {!fromSearchPage && (
+            <AvatarCardButton
+              firstNickNameCharacter={nickname[0]}
+              image={avatarThumb}
+              borderRadius="rounded-full"
+              onOpenRightBar={onOpenRightBar}
+              height="h-10"
+              width="w-10"
+              hint={nickname}
+            >
+              {!isFollow && <Plus onClick={handleFollow} />}
+            </AvatarCardButton>
+          )}
           {/* like share, cmt,.,,, */}
           <LikeCmtShare
             statistics={statistics}

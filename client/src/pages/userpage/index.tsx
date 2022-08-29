@@ -1,7 +1,7 @@
 import { UIEvent, useMemo, useState } from "react";
 import { useParams } from "react-router-dom";
 import { Logo, Nav, Search } from "../../components";
-import { useFetch } from "../../hooks/useFetch";
+import { useFetch } from "../../hooks/use_fetch";
 import { IUser } from "../../interfaces/user.interface";
 import {
   HeaderContainer,

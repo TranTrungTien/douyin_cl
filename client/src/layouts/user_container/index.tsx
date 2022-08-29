@@ -4,7 +4,7 @@ import LikeFooter from "../../components/like_footer";
 import UserBoxHeader from "../../components/user_box_header";
 import VideoBadge from "../../components/video_badge";
 import VideoCard from "../../components/video_card";
-import { useFetchAppend } from "../../hooks/useFetchAppend";
+import { useFetchAppend } from "../../hooks/use_fetch_append";
 import { IStatistics } from "../../interfaces/statistic";
 import { IVideo } from "../../interfaces/video.interface";
 import { servicesPath } from "../../services/services_path";

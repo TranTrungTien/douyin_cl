@@ -5,7 +5,7 @@ import "swiper/css/bundle";
 import "swiper/css/virtual";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { VideoSlide } from "..";
-import { useFetchSuspense } from "../../hooks/useFetchSuspense";
+import { useFetchSuspense } from "../../hooks/use_fetch_suspense";
 import { IStatistics } from "../../interfaces/statistic";
 import { IVideo } from "../../interfaces/video.interface";
 import { useAppSelector } from "../../redux/app/hooks";
@@ -36,7 +36,7 @@ const SwiperWrapper = () => {
   return (
     <Swiper
       id="fullscreen"
-      allowTouchMove={false}
+      allowTouchMove={true}
       direction="vertical"
       slidesPerView={1}
       centeredSlides={true}
@@ -54,6 +54,7 @@ const SwiperWrapper = () => {
               virtualIndex={index}
             >
               <VideoSlide
+                playerId={"fullscreen"}
                 statistics={video.statistics}
                 avatarThumb={video.video.author_id.avatar_thumb.url_list[0]}
                 nickname={video.video.author_id.nickname}
