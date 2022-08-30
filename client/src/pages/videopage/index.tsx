@@ -184,7 +184,7 @@ const VideoPage = (props: Props) => {
                     nickName={video.doc.author_id.nickname}
                   />
                 )}
-                <div className="flex justify-start flex-col items-start text-white mt-10">
+                <div className="flex justify-start flex-col items-start text-white mt-10 relative min-w-full min-h-[calc(100vh/2)]">
                   <h4 className="text-[18px] opacity-90 font-medium leading-[26px]">
                     推荐视频
                   </h4>

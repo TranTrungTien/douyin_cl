@@ -50,12 +50,12 @@ const SearchPage = () => {
           <div className="mr-16 w-[874px] pb-10">
             {/* header */}
             <SearchFilterHeader />
-            <div id="searched_video_root" className="relative min-h-screen">
+            <div className="relative min-h-[calc(100vh/2)]">
               {keyWord && (
                 <Suspense fallback={<Loading />}>
                   <ErrorBoundary
                     fallback={
-                      <Modal root="searched_video_root">
+                      <Modal>
                         <div className="w-96 h-96 rounded bg-white text-center text-black">
                           <h1>Opps we ran into some problems</h1>
                           <Button

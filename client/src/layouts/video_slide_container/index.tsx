@@ -37,7 +37,7 @@ const VideoSlideContainer = (props: Props) => {
   }, []);
   return (
     <main ref={mainRef} className={`w-full flex justify-center items-center`}>
-      <div className="w-full h-[95%] laptop:px-[20px] desktop:px-[30px] overflow-hidden relative">
+      <div className="w-full h-[95%] min-h-[95%] laptop:px-[20px] desktop:px-[30px] overflow-hidden relative">
         <Suspense fallback={<Loading />}>
           <ErrorBoundary
             fallback={
