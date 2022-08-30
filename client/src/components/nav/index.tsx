@@ -36,7 +36,7 @@ const Nav = (props: Props) => {
 
   return (
     <ul className="flex justify-between items-center">
-      <li className="opacity-80 hover:opacity-100 cursor-pointer desktop:flex laptop:hidden ml-8  desktop:flex-col desktop:justify-center desktop:items-center">
+      <li className="opacity-80 hover:opacity-100 cursor-pointer desktop:flex laptop:hidden  desktop:flex-col desktop:justify-center desktop:items-center">
         <div className="bg-gray-700 w-[22px] h-[22px] grid place-content-center rounded-full">
           <CoOperateIcon />
         </div>
@@ -85,7 +85,7 @@ const Nav = (props: Props) => {
             投稿
           </span>
         </div>
-        <div className="absolute top-full left-1/2 -translate-x-1/2 pt-2 group-hover:block hidden">
+        <div className="absolute left-1/2 -translate-x-1/2 pt-2 group-hover:visible group-hover:opacity-100 top-[105%] invisible opacity-0 transition-all duration-200 -z-10">
           <div className=" bg-[#252632] rounded py-4">
             <Link target="_blank" onClick={handleLoginChecking} to="/upload">
               <div className="h-[46px] px-6">
