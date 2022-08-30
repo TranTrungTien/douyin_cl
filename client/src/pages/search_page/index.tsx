@@ -45,7 +45,7 @@ const SearchPage = () => {
         <Nav />
       </HeaderContainer>
       {/* extra-desktop:w-[1020px] over-desktop:w-[1280px] */}
-      <div className="w-max h-full mx-auto mt-6">
+      <div className="w-max h-full mx-auto">
         <div className="flex justify-center items-start text-white">
           <div className="mr-16 w-[874px] pb-10">
             {/* header */}
