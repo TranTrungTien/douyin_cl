@@ -1,4 +1,4 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useMemo, useRef } from "react";
 import { useFetchSuspense } from "../../hooks/use_fetch_suspense";
 import { IStatistics } from "../../interfaces/statistic";
 import RightVideoAction from "../../layouts/right_video_action_container";
@@ -71,8 +71,9 @@ const Video = ({
   const progressRef = useRef<HTMLDivElement>(null);
   const timeCounterRef = useRef<HTMLSpanElement>(null);
   const progressContainerRef = useRef({ progressRef, progressBarRef });
+  const videoUrl = useMemo(() => "/" + videoAddr, [videoAddr]);
   const videoBlob = useFetchSuspense<Blob>(
-    "/" + videoAddr,
+    videoUrl,
     null,
     false,
     "blob",
@@ -80,7 +81,7 @@ const Video = ({
   );
   useEffect(() => {
     let videoRefCl: HTMLVideoElement | null = null;
-    if (videoBlob && videoRef.current && !videoRef.current.src) {
+    if (videoBlob && videoRef.current) {
       videoRefCl = videoRef.current;
       videoRef.current.src = window.URL.createObjectURL(videoBlob);
     }
