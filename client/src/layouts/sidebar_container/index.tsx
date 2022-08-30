@@ -21,7 +21,7 @@ const SidebarContainer = (props: Props) => {
             {sidebarAction.map((action, index) => {
               return (
                 <NavLink to={action.path} key={index}>
-                  <li className="pl-2 flex desktop:justify-start laptop:items-center desktop:items-center leading-9 cursor-pointer opacity-60 hover:opacity-100 desktop:m-3 laptop:m-0 laptop:flex-col desktop:flex-row laptop:space-x-0 desktop:space-x-1  laptop:ml-0 desktop:ml-5 desktop:mx-12 mb-0">
+                  <li className="flex desktop:justify-start laptop:items-center desktop:items-center leading-9 cursor-pointer opacity-60 hover:opacity-100 desktop:m-3 laptop:m-0 laptop:flex-col desktop:flex-row laptop:space-x-0 desktop:space-x-1  laptop:ml-0 desktop:mx-8 mb-0">
                     <div className="w-36px h-36px">
                       <img
                         className="block w-full h-full object-cover object-center"
@@ -40,7 +40,7 @@ const SidebarContainer = (props: Props) => {
             })}
           </ul>
         </div>
-        <div className="laptop:hidden desktop:block py-16 pr-4 pl-3">
+        <div className="laptop:hidden desktop:block pt-12 pb-2 pr-4 pl-3">
           <div className="text-white opacity-50 text-xs">
             <div className="o1h2uP_i">
               <div className="h9hROuDG">
