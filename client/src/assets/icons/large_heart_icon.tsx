@@ -4,7 +4,7 @@ type Props = {
   heightSvg?: number;
   isLiked?: boolean;
 };
-const LargeheartIcon = ({ heightSvg, widthSvg, isLiked }: Props) => {
+const LargeHeartIcon = ({ heightSvg, widthSvg, isLiked }: Props) => {
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"
@@ -168,4 +168,4 @@ const LargeheartIcon = ({ heightSvg, widthSvg, isLiked }: Props) => {
   );
 };
 
-export default LargeheartIcon;
+export default LargeHeartIcon;

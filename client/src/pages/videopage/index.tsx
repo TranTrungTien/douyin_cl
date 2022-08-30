@@ -95,9 +95,9 @@ const VideoPage = (props: Props) => {
           <Nav />
         </HeaderContainer>
         <PageContainer className="pt-6">
-          <div className="laptop:w-full laptop:px-6 desktop:px-0 desktop:max-w-[1080px] extra-desktop:w-[1280px] over-desktop:max-w-[1440px] flex laptop:justify-start desktop:justify-center items-start mx-auto laptop:space-x-3">
+          <div className=" pb-16 laptop:w-full laptop:px-6 desktop:px-0 desktop:w-[1080px] extra-desktop:w-[1280px] over-desktop:w-[1440px] flex laptop:justify-start desktop:justify-center items-start mx-auto laptop:space-x-4">
             <SideContainer
-              width="laptop:w-[75%] desktop:w-[770px] extra-desktop:w-[850px] over-desktop:w-[960px]"
+              width="laptop:w-[75%] desktop:w-[820px] extra-desktop:w-[880px] over-desktop:w-[980px]"
               height="h-full"
             >
               <section
@@ -184,7 +184,7 @@ const VideoPage = (props: Props) => {
                     nickName={video.doc.author_id.nickname}
                   />
                 )}
-                <div className="flex justify-start flex-col items-start text-white mt-10">
+                <div className="flex justify-start flex-col items-start text-white mt-10 relative min-w-full min-h-[calc(100vh/2)]">
                   <h4 className="text-[18px] opacity-90 font-medium leading-[26px]">
                     推荐视频
                   </h4>

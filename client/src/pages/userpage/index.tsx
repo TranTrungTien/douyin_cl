@@ -134,8 +134,8 @@ const UserPage = (props: Props) => {
           </LeftHeaderContainer>
           <Nav />
         </HeaderContainer>
-        <PageContainer className="laptop:w-full laptop:px-5 desktop:max-w-max extra-desktop:max-w-[1280px] over-desktop:max-w-[1440px] mx-auto desktop:space-x-3 extra-desktop:space-x-0">
-          <SideContainer className="desktop:min-w-min  min-h-full flex-1 text-white pt-10">
+        <PageContainer className="laptop:w-full laptop:px-5 desktop:w-max extra-desktop:w-[1280px] over-desktop:w-[1440px] mx-auto desktop:space-x-3 extra-desktop:space-x-0">
+          <SideContainer className="desktop:min-w-min  min-h-full flex-1 text-white pt-10 pb-16 ">
             {user && (
               <UserInfoContainer
                 followerCount={user.follower_count}
@@ -147,7 +147,7 @@ const UserPage = (props: Props) => {
               />
             )}
           </SideContainer>
-          <SideContainer className="over-desktop:w-[900px] text-white shadow-[-18px_0px_80px_#000] h-max">
+          <SideContainer className="over-desktop:w-[900px] text-white shadow-[-18px_0px_80px_#000] h-max pb-16 ">
             {user && (
               <UserVideoContainer
                 viewLikedAllowed={user.show_favorite_list}

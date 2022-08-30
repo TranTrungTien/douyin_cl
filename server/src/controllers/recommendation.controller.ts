@@ -142,7 +142,7 @@ function getRecommendationFromVideo(req: Request, res: Response) {
 }
 
 function getSearchRecommended(req: Request, res: Response) {
-  const text = req.body.text as string;
+  const text = req.query.text as string;
   const limit = req.query.limit as string;
   RecommendationUtils.getSearchRecommended(text, limit)
     .then((videoIdfs) => {

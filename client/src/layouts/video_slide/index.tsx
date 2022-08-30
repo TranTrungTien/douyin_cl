@@ -108,14 +108,14 @@ const VideoSlide = ({
     >
       <section
         onClick={handlePlayOrPause}
-        className="w-full h-full flex-1 relative grid place-content-center overflow-hidden rounded-md z-0 bg-transparent"
+        className="w-full h-full min-h-full flex-1 relative grid place-content-center overflow-hidden rounded-md z-0 bg-transparent"
       >
         <BackgroundVideo coverImage={video.origin_cover.url_list[0]} />
         {isVisible && (
           <Suspense fallback={<Loading />}>
             <ErrorBoundary
               fallback={
-                <Modal>
+                <Modal root="video_lazyload_root">
                   <div className="w-96 h-96 rounded bg-dark_blue text-center text-white flex justify-center items-center">
                     <h1>Opps we ran into some problems</h1>
                   </div>

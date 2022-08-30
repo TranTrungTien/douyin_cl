@@ -111,7 +111,7 @@ const LikeCmtShare = ({
         }
         onClick={handleLikeVideo}
         title="喜欢"
-        className={`${classNameInner} text-white opacity-80 hover:opacity-100`}
+        className={`${classNameInner} icon_animation text-white opacity-80 hover:opacity-100 overflow-visible`}
       >
         <span className="font-medium text-[15px] leading-[23px]">
           {videoData.like_count}
@@ -121,7 +121,7 @@ const LikeCmtShare = ({
       <Button
         text=""
         title="评论"
-        className={`${classNameInner} text-white opacity-80 hover:opacity-100`}
+        className={`${classNameInner} icon_animation text-white opacity-80 hover:opacity-100`}
         onClick={() => {
           if (!onOpenRightBar) return;
           onOpenRightBar({ comment: true, isOpen: true, user: false });
@@ -135,7 +135,7 @@ const LikeCmtShare = ({
       {/* star icon */}
       <Button
         text=""
-        className={`${classNameInner} text-white opacity-80 hover:opacity-100`}
+        className={`${classNameInner} icon_animation text-white opacity-80 hover:opacity-100`}
         icon={<StarsIcon heightSvg={36} widthSvg={36} />}
       >
         <span className="font-medium text-[15px] leading-[23px]">
@@ -146,7 +146,7 @@ const LikeCmtShare = ({
       <Button
         text=""
         title="分享"
-        className={`${classNameInner} text-white opacity-80 hover:opacity-100`}
+        className={`${classNameInner} icon_animation text-white opacity-80 hover:opacity-100`}
         icon={<ShareIcon heightSvg={36} widthSvg={36} />}
       />
       {/* report icon */}

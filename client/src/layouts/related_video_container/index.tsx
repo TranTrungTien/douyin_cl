@@ -38,6 +38,8 @@ const RelatedVideoContainer = ({ videoIdf }: Props) => {
               coverImage={video.origin_cover.url_list[0]}
               desc={video.desc}
               nickname={video.author_id.nickname}
+              videoIdf={video.id_f}
+              videoId={video._id}
             />
           );
         })}

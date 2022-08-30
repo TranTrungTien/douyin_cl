@@ -175,12 +175,18 @@ const Video = ({
   return (
     <>
       {/* Video */}
+      {/* <video
+        src="/download.mp4"
+        controls
+        autoPlay
+        className="z-40 max-h-full min-h-full h-full auto object-contain object-center rounded-md absolute hover:cursor-pointer top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 "
+      ></video> */}
       <video
         id="video"
         ref={videoRef}
         data-type="clickable"
         playsInline
-        className="z-40 max-h-full min-h-full h-full w-auto  object-contain object-center rounded-md absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 hover:cursor-pointer"
+        className="z-40 min-h-full h-full object-contain object-center rounded-md absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 hover:cursor-pointer"
         loop={isActive && true}
         autoPlay={isActive && allowedPlay}
         onTimeUpdate={handleTimeUpdate}
