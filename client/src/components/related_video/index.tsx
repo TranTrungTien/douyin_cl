@@ -10,6 +10,8 @@ type Props = {
   coverImage: string;
   nickname: string;
   time?: string;
+  videoId?: string;
+  videoIdf: string;
   desc: string;
 };
 const RelatedVideo = ({
@@ -17,42 +19,46 @@ const RelatedVideo = ({
   nickname,
   desc,
   likedCount = 0,
+  videoIdf,
+  videoId,
   time = "00:00",
 }: Props) => {
   return (
-    <div className="flex justify-start items-start laptop:flex-col desktop:flex-row desktop:space-x-2 w-full h-full">
-      <VideoCard
-        coverImage={coverImage}
-        className="laptop:self-start laptop:w-[200px] laptop:h-[120px] desktop:w-[110px] desktop:h-[80px] extra-desktop:w-[120px] extra-desktop:h-[90px]"
-      >
-        <VideoCardFooter>
-          <TimeFooter
-            bottom="bottom-1"
-            right="right-2"
-            time={time}
-            className="font-normal text-xs"
-          />
-        </VideoCardFooter>
-      </VideoCard>
-      <div className="flex-1 h-[90px] flex flex-col justify-between items-start space-y-1">
-        <h1 className="block w-full font-medium text-sm opacity-90 leading-[22px] flex-1 truncate-n-line">
-          {desc}
-        </h1>
-        <div className="flex justify-between items-center w-full">
-          <Heart
-            icon={<SmallHeartIcon />}
-            className="font-medium leading-5 text-xs opacity-70 flex justify-start items-center flex-row"
-          >
-            <span>{likedCount}</span>
-          </Heart>
-          <Link to="/user">
-            <span className="font-normal leading-5 text-xs opacity-70 truncate">
-              {nickname}
-            </span>
-          </Link>
+    <Link to={`/video/${videoId}/${videoIdf}`}>
+      <div className="flex justify-start items-start laptop:flex-col desktop:flex-row desktop:space-x-2 w-full h-full">
+        <VideoCard
+          coverImage={coverImage}
+          className="laptop:self-start laptop:w-[200px] laptop:h-[120px] desktop:w-[110px] desktop:h-[80px] extra-desktop:w-[120px] extra-desktop:h-[90px]"
+        >
+          <VideoCardFooter>
+            <TimeFooter
+              bottom="bottom-1"
+              right="right-2"
+              time={time}
+              className="font-normal text-xs"
+            />
+          </VideoCardFooter>
+        </VideoCard>
+        <div className="flex-1 h-[90px] flex flex-col justify-between items-start space-y-1">
+          <h1 className="block w-full font-medium text-sm opacity-90 leading-[22px] flex-1 truncate-n-line">
+            {desc}
+          </h1>
+          <div className="flex justify-between items-center w-full">
+            <Heart
+              icon={<SmallHeartIcon />}
+              className="font-medium leading-5 text-xs opacity-70 flex justify-start items-center flex-row"
+            >
+              <span>{likedCount}</span>
+            </Heart>
+            <div>
+              <span className="font-normal leading-5 text-xs opacity-70 truncate">
+                {nickname}
+              </span>
+            </div>
+          </div>
         </div>
       </div>
-    </div>
+    </Link>
   );
 };
 

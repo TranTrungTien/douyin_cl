@@ -95,7 +95,7 @@ const VideoPage = (props: Props) => {
           <Nav />
         </HeaderContainer>
         <PageContainer className="pt-6">
-          <div className="laptop:w-full laptop:px-6 desktop:px-0 desktop:w-[1080px] extra-desktop:w-[1280px] over-desktop:w-[1440px] flex laptop:justify-start desktop:justify-center items-start mx-auto laptop:space-x-4">
+          <div className=" pb-16 laptop:w-full laptop:px-6 desktop:px-0 desktop:w-[1080px] extra-desktop:w-[1280px] over-desktop:w-[1440px] flex laptop:justify-start desktop:justify-center items-start mx-auto laptop:space-x-4">
             <SideContainer
               width="laptop:w-[75%] desktop:w-[820px] extra-desktop:w-[880px] over-desktop:w-[980px]"
               height="h-full"
