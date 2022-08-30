@@ -71,9 +71,8 @@ const Video = ({
   const progressRef = useRef<HTMLDivElement>(null);
   const timeCounterRef = useRef<HTMLSpanElement>(null);
   const progressContainerRef = useRef({ progressRef, progressBarRef });
-  const videoUrl = useMemo(() => "/" + videoAddr, [videoAddr]);
   const videoBlob = useFetchSuspense<Blob>(
-    videoUrl,
+    "/" + videoAddr,
     null,
     false,
     "blob",
