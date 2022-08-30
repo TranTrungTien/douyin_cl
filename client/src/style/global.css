@@ -62,3 +62,27 @@ video::-webkit-media-controls-enclosure {
   line-clamp: 3;
   -webkit-box-orient: vertical;
 }
+
+.icon_animation:hover svg{
+  transform-origin: 50% 100%;
+  overflow: visible;
+  animation: icon_animate 1s;
+}
+
+@keyframes icon_animate {
+  30% {
+    transform: scale(1.123);
+  }
+
+  65% {
+    transform: rotateZ(-22deg);
+  }
+
+  85% {
+    transform: rotateZ(22deg);
+  }
+
+  100% {
+    transform: rotateZ(0deg) scale(1);
+  }
+}
