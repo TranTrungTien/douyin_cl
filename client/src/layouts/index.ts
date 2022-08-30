@@ -20,3 +20,4 @@ export { default as VideoActionContainer } from "../layouts/video_action_contain
 export { default as LeftHeaderContainer } from "../layouts/left_header_container";
 export { default as HotSearchedContainer } from "../layouts/hot_searched_container";
 export { default as SearchFilterHeader } from "../layouts/search_filter_header";
+export { default as SearchedVideoContainer } from "../layouts/searched_video_container";

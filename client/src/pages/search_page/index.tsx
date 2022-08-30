@@ -1,16 +1,26 @@
-import { useEffect, useState } from "react";
+import { Suspense, useEffect, useState } from "react";
 import { useSearchParams } from "react-router-dom";
-import { Button, Logo, Nav, RelatedSearch, Search } from "../../components";
+import {
+  Button,
+  Loading,
+  Logo,
+  Nav,
+  RelatedSearch,
+  Search,
+} from "../../components";
+import Modal from "../../components/modal";
 import { IStatistics } from "../../interfaces/statistic";
 import { IVideo } from "../../interfaces/video.interface";
 import {
   HeaderContainer,
   HotSearchedContainer,
+  SearchedVideoContainer,
   SearchFilterHeader,
 } from "../../layouts";
 import VideoSearchedContainer from "../../layouts/video_searched_container";
 import { postData } from "../../services/app_services";
 import { servicesPath } from "../../services/services_path";
+import ErrorBoundary from "../../utils/error-boundaries";
 
 export interface ISearchPapeData {
   isActive: boolean;
@@ -22,26 +32,6 @@ export interface ISearchPapeData {
 const SearchPage = () => {
   const [searchParams] = useSearchParams();
   const keyWord = searchParams.get("k");
-  const [videos, setVideos] = useState<{
-    message: string;
-    list: IVideo[];
-    statistics: IStatistics[];
-  } | null>(null);
-  useEffect(() => {
-    const fetchData = async () => {
-      const data = await postData<{
-        message: string;
-        list: IVideo[];
-        statistics: IStatistics[];
-      }>(servicesPath.GET_SEARCH_RECOMMENDED, {
-        text: keyWord,
-        limit: 25,
-      });
-      setVideos(data.data);
-    };
-    keyWord && !videos?.list.length && fetchData();
-  }, [keyWord, videos?.list.length]);
-
   return (
     <section
       style={{ overflow: "overlay" }}
@@ -60,46 +50,30 @@ const SearchPage = () => {
           <div className="mr-16 w-[874px] pb-10">
             {/* header */}
             <SearchFilterHeader />
-            {videos &&
-              videos.list.map((v, index) => {
-                const stat = videos.statistics.find(
-                  (stat) => stat.video_id === v._id
-                );
-                if (index === 2) {
-                  return (
-                    <>
-                      <RelatedSearch />
-                      <VideoSearchedContainer
-                        key={v._id}
-                        statistics={stat}
-                        avatarThumb={v.author_id.avatar_thumb.url_list[0]}
-                        nickname={v.author_id.nickname}
-                        video={v}
-                        className="w-full h-[550px]"
-                      />
-                    </>
-                  );
-                }
-                return (
-                  <VideoSearchedContainer
-                    key={v._id}
-                    statistics={stat}
-                    avatarThumb={v.author_id.avatar_thumb.url_list[0]}
-                    nickname={v.author_id.nickname}
-                    video={v}
-                    className="w-full h-[550px]"
-                  />
-                );
-              })}
-
-            <div className="text-center w-full">
-              <p className="text-white font-xs mb-6">
-                登录后可查看更多精彩视频
-              </p>
-              <Button
-                text="点击登录"
-                className="w-36 h-10 rounded text-white font-semibold bg-fresh_red"
-              />
+            <div id="searched_video_root" className="relative min-h-screen">
+              {keyWord && (
+                <Suspense fallback={<Loading />}>
+                  <ErrorBoundary
+                    fallback={
+                      <Modal root="searched_video_root">
+                        <div className="w-96 h-96 rounded bg-white text-center text-black">
+                          <h1>Opps we ran into some problems</h1>
+                          <Button
+                            text="Refresh page"
+                            onClick={() => window.location.reload()}
+                          />
+                          <Button
+                            text="Comme back home page"
+                            onClick={() => window.location.replace("/")}
+                          />
+                        </div>
+                      </Modal>
+                    }
+                  >
+                    <SearchedVideoContainer keyWord={keyWord} />
+                  </ErrorBoundary>
+                </Suspense>
+              )}
             </div>
           </div>
           {/* key words hot now */}

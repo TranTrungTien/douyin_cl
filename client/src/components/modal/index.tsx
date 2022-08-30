@@ -1,8 +1,12 @@
 import React, { ReactNode } from "react";
 import { createPortal } from "react-dom";
 
-type Props = { className?: string; children: ReactNode | ReactNode[] };
-const Modal = ({ children, className }: Props) => {
+type Props = {
+  root?: string;
+  className?: string;
+  children: ReactNode | ReactNode[];
+};
+const Modal = ({ root, children, className }: Props) => {
   return createPortal(
     <div
       id="modal"
@@ -14,7 +18,7 @@ const Modal = ({ children, className }: Props) => {
         </div>
       </div>
     </div>,
-    document.querySelector("#root") as HTMLDivElement
+    document.querySelector(`#${root || "root"}`) as HTMLDivElement
   );
 };
 

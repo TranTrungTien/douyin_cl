@@ -5,6 +5,6 @@ const router = express.Router();
 
 router.get("/new", RecommendationController.getRecommendationDef);
 router.get("/related", RecommendationController.getRecommendationFromVideo);
-router.post("/search", RecommendationController.getSearchRecommended);
+router.get("/search", RecommendationController.getSearchRecommended);
 
 export default router;
