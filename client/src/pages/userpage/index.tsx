@@ -134,7 +134,7 @@ const UserPage = (props: Props) => {
           </LeftHeaderContainer>
           <Nav />
         </HeaderContainer>
-        <PageContainer className="laptop:w-full laptop:px-5 desktop:max-w-max extra-desktop:max-w-[1280px] over-desktop:max-w-[1440px] mx-auto desktop:space-x-3 extra-desktop:space-x-0">
+        <PageContainer className="laptop:w-full laptop:px-5 desktop:w-max extra-desktop:w-[1280px] over-desktop:w-[1440px] mx-auto desktop:space-x-3 extra-desktop:space-x-0">
           <SideContainer className="desktop:min-w-min  min-h-full flex-1 text-white pt-10">
             {user && (
               <UserInfoContainer

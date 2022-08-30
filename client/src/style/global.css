@@ -75,11 +75,11 @@ video::-webkit-media-controls-enclosure {
   }
 
   65% {
-    transform: rotateZ(-22deg);
+    transform: rotateZ(-20deg);
   }
 
   85% {
-    transform: rotateZ(22deg);
+    transform: rotateZ(20deg);
   }
 
   100% {

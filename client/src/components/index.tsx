@@ -26,3 +26,4 @@ export { default as Loading } from "./loading";
 export { default as BackgroundVideo } from "./background_video";
 export { default as RelatedVideo } from "./related_video";
 export { default as Login } from "./login";
+export { default as RelatedSearch } from "./related_search";
