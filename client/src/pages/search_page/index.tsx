@@ -1,25 +1,13 @@
-import { Suspense, useEffect, useState } from "react";
+import { Suspense } from "react";
 import { useSearchParams } from "react-router-dom";
-import {
-  Button,
-  Loading,
-  Logo,
-  Nav,
-  RelatedSearch,
-  Search,
-} from "../../components";
+import { Button, Loading, Logo, Nav, Search } from "../../components";
 import Modal from "../../components/modal";
-import { IStatistics } from "../../interfaces/statistic";
-import { IVideo } from "../../interfaces/video.interface";
 import {
   HeaderContainer,
   HotSearchedContainer,
   SearchedVideoContainer,
   SearchFilterHeader,
 } from "../../layouts";
-import VideoSearchedContainer from "../../layouts/video_searched_container";
-import { postData } from "../../services/app_services";
-import { servicesPath } from "../../services/services_path";
 import ErrorBoundary from "../../utils/error-boundaries";
 
 export interface ISearchPapeData {
