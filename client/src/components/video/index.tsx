@@ -36,6 +36,10 @@ type Props = {
   avatarThumb: string;
   fromSearchPage?: boolean;
   playerId: string;
+  videoSize: {
+    width: number;
+    height: number;
+  };
   statistics?: IStatistics;
   onChangeVideo?: (action: boolean) => void;
   onOpenRightBar?: (action: RightBarAction) => void;
@@ -61,6 +65,7 @@ const Video = ({
   avatarThumb,
   fromSearchPage,
   playerId,
+  videoSize,
   onChangeVideo,
   onOpenRightBar,
 }: Props) => {
@@ -175,18 +180,18 @@ const Video = ({
   return (
     <>
       {/* Video */}
-      {/* <video
-        src="/download.mp4"
-        controls
-        autoPlay
-        className="z-40 max-h-full min-h-full h-full auto object-contain object-center rounded-md absolute hover:cursor-pointer top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 "
-      ></video> */}
       <video
         id="video"
         ref={videoRef}
         data-type="clickable"
         playsInline
-        className="z-40 min-h-full h-full object-contain object-center rounded-md absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 hover:cursor-pointer"
+        style={{
+          width: videoSize.width > videoSize.height ? "100%" : "auto",
+          height: videoSize.width < videoSize.height ? "100%" : "auto",
+          minHeight: videoSize.width < videoSize.height ? "100%" : "auto",
+          minWidth: videoSize.width > videoSize.height ? "100%" : "auto",
+        }}
+        className="z-[22] min-h-full h-full object-contain object-center rounded-md absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 hover:cursor-pointer"
         loop={isActive && true}
         autoPlay={isActive && allowedPlay}
         onTimeUpdate={handleTimeUpdate}
@@ -195,7 +200,7 @@ const Video = ({
       {(!isPlay || !allowedPlay) && (
         <Button
           text=""
-          className="z-50 absolute top-1/2 left-1/2 text-white opacity-70 transform -translate-x-1/2 -translate-y-1/2"
+          className="z-25 absolute top-1/2 left-1/2 text-white opacity-70 transform -translate-x-1/2 -translate-y-1/2"
           data-type="center_play_clickable"
           icon={
             <svg

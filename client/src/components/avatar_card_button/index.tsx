@@ -1,6 +1,6 @@
 import { ReactNode } from "react";
-import { servicesPath } from "../../services/services_path";
 import { RightBarAction } from "../../layouts/video_slide";
+import { servicesPath } from "../../services/services_path";
 
 type Props = {
   children?: ReactNode[] | ReactNode;

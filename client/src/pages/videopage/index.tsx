@@ -138,6 +138,10 @@ const VideoPage = (props: Props) => {
                         isActive={true}
                         isPlay={isPlay ? true : false}
                         allowedPlay={true}
+                        videoSize={{
+                          width: video.doc.width,
+                          height: video.doc.height,
+                        }}
                       />
                     )}
                   </ErrorBoundary>
