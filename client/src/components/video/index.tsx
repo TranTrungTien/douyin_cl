@@ -200,7 +200,7 @@ const Video = ({
       {(!isPlay || !allowedPlay) && (
         <Button
           text=""
-          className="z-25 absolute top-1/2 left-1/2 text-white opacity-70 transform -translate-x-1/2 -translate-y-1/2"
+          className="z-[25] absolute top-1/2 left-1/2 text-white opacity-70 transform -translate-x-1/2 -translate-y-1/2"
           data-type="center_play_clickable"
           icon={
             <svg

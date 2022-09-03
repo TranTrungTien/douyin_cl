@@ -4,7 +4,6 @@ import { RecommendationUtils } from "./utils/recommendation";
 import express, { Express, Request, Response } from "express";
 import path from "path";
 import dotenv from "dotenv";
-import http from "http";
 import cookieParser from "cookie-parser";
 import RecommendationRouter from "./routers/recommendation.route";
 import UserRouter from "./routers/user.route";
@@ -26,7 +25,7 @@ DBConnect()
         const app: Express = express();
         dotenv.config({ path: path.join(__dirname, "config.env") });
         const PORT = process.env.PORT || 8080;
-        const server = http.createServer(app).listen(PORT, () => {
+        app.listen(PORT, () => {
           console.log("server is running on port", PORT);
         });
 
@@ -53,7 +52,7 @@ DBConnect()
         app.use("/api/v1/following", FollowingRouter);
 
         app.get("/", (req: Request, res: Response) => {
-          res.send("run on https ......");
+          res.send("welcome to my app");
         });
       })
       .catch((_) => {
