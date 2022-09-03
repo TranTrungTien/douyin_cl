@@ -9,7 +9,7 @@ const HotSearchedContainer = () => {
       if (headerBounding) {
         hotSearchedRef.current.style.setProperty(
           "top",
-          headerBounding.height + 10 + "px"
+          headerBounding.height + 25 + "px"
         );
       }
     }

@@ -1,9 +1,25 @@
-import React from "react";
+import React, { useEffect, useRef } from "react";
 import { Button } from "../../components";
+import { getBoundingClientRect } from "../../utils";
 
 const SearchFilterHeader = () => {
+  const searchFilteredRef = useRef<null | HTMLDivElement>(null);
+  useEffect(() => {
+    if (searchFilteredRef.current) {
+      const headerBounding = getBoundingClientRect("app_header");
+      if (headerBounding) {
+        searchFilteredRef.current.style.setProperty(
+          "top",
+          headerBounding.height + "px"
+        );
+      }
+    }
+  }, []);
   return (
-    <>
+    <div
+      ref={searchFilteredRef}
+      className="sticky top-14 z-10 bg-light_blue pt-6 pb-2"
+    >
       <div className="flex justify-between items-center">
         <div className="space-x-16">
           <Button
@@ -257,7 +273,7 @@ const SearchFilterHeader = () => {
           </div>
         </div>
       </div>
-    </>
+    </div>
   );
 };
 

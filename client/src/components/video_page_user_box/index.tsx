@@ -56,7 +56,7 @@ const VideoPageUserBox = ({
   };
   return (
     <div className="flex justify-between items-center space-x-2 w-full border-b border-darkslategray pb-5">
-      <div className="flex justify-start items-center space-x-2">
+      <div className="flex justify-start items-center space-x-2 flex-1">
         <AvatarCardLink
           title={nickName}
           height="h-62px"
@@ -65,9 +65,9 @@ const VideoPageUserBox = ({
           firstNickNameCharacter={nickName[0]}
           href={`/user/${uid}`}
         />
-        <div className="flex flex-col justify-start items-start space-y-1 text-white">
-          <Link to={`/user/${uid}`}>
-            <h4 className="font-medium text-sm opacity-90 leading-[22px] truncate">
+        <div className="flex flex-col justify-start items-start space-y-1 text-white flex-1">
+          <Link to={`/user/${uid}`} className="">
+            <h4 className="font-medium text-sm opacity-90 leading-[22px] w-full laptop:max-w-[260px] truncate">
               {nickName}
             </h4>
           </Link>

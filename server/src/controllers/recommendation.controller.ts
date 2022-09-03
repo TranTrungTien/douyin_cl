@@ -1,11 +1,15 @@
+import { spawn } from "child_process";
 import { Request, Response } from "express";
 import * as fs from "fs";
+import path from "path";
 import { metaPath } from "../const/path";
 import LikedModel from "../models/liked.model";
 import StatisticsModel from "../models/statistics.model";
 import VideoModel from "../models/video.model";
 import { dayOfTwoDate } from "../utils/day_of_two_date";
 import { RecommendationUtils } from "../utils/recommendation";
+import { getFeatureAsMatrix } from "../utils/fetch_data";
+import { IVideo } from "../interface/video.interface";
 
 async function getRecommendationDef(req: Request, res: Response) {
   const userID = req.query.user_id as string;
@@ -51,7 +55,7 @@ async function getRecommendationDef(req: Request, res: Response) {
                 const currentDate = new Date();
                 const weight = list.map((v) => {
                   const stat = statistics.find(
-                    (stat) => v._id.toString() === stat.video_id.toString()
+                    (stat) => v._id?.toString() === stat.video_id.toString()
                   );
                   const diffDays = dayOfTwoDate(
                     currentDate,
@@ -189,7 +193,48 @@ function getSearchRecommended(req: Request, res: Response) {
     .catch((err) => res.status(500).send(err));
 }
 
+async function training(req: Request, res: Response) {
+  const userID = req.query.user_id as string;
+  if (!userID)
+    return res.status(404).send({ message: "user id needed", list: [] });
+  const { matrix, list, userIndex } = await getFeatureAsMatrix(userID);
+  const python = spawn("python", [
+    "src/python/mf.py",
+    JSON.stringify(matrix),
+    userIndex.toString(),
+  ]);
+  let output = "";
+
+  python.stdout.on("data", (chunk) => {
+    output += chunk.toString();
+  });
+  python.stdout.on("error", (err) => {
+    res.status(500).send({ error: err });
+  });
+  python.stdout.on("close", () => {
+    const data: ({ video: IVideo; w: number } | null)[] = output
+      .split(" ")
+      .map((item, index) => {
+        return item
+          ? {
+              video: list[index],
+              w: parseFloat(item),
+            }
+          : null;
+      })
+      .sort((x, y) => {
+        if (x && y) {
+          return y.w - x.w;
+        } else {
+          return 0;
+        }
+      });
+    res.status(200).send({ message: "Successfully", list: data });
+  });
+}
+
 const RecommendationController = {
+  training,
   getRecommendationDef,
   getRecommendationFromVideo,
   getSearchRecommended,

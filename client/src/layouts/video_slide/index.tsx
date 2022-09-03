@@ -108,7 +108,7 @@ const VideoSlide = ({
     >
       <section
         onClick={handlePlayOrPause}
-        className="w-full h-full min-h-full flex-1 relative grid place-content-center overflow-hidden rounded-md z-0 bg-transparent"
+        className="w-full h-full min-h-full flex-1 relative grid place-content-center overflow-hidden rounded-md z-20 bg-transparent"
       >
         <BackgroundVideo coverImage={video.origin_cover.url_list[0]} />
         {isVisible && (
@@ -144,6 +144,10 @@ const VideoSlide = ({
                   onChangeVideo={handleChangeVideo}
                   onOpenRightBar={handleOpenRightBar}
                   fromSearchPage={searchPageData ? true : false}
+                  videoSize={{
+                    width: video.width,
+                    height: video.height,
+                  }}
                 />
               )}
             </ErrorBoundary>

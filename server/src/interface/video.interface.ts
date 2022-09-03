@@ -1,6 +1,7 @@
 import { Types } from "mongoose";
 
 export interface IVideo {
+  _id?: Types.ObjectId;
   id_f: string;
   desc: string;
   author_id: Types.ObjectId;

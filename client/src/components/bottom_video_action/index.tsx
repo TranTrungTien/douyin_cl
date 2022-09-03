@@ -94,7 +94,7 @@ const BottomVideoAction = forwardRef<HTMLSpanElement, Props>(
 
     const handleChangeMode = () => setAutoNext(!autoNext);
     return (
-      <div className="progress_bar absolute bottom-0 left-0 w-full z-[50]">
+      <div className="progress_bar absolute bottom-0 left-0 w-full z-[24]">
         <div className="flex flex-col justify-end items-start w-full">
           {/* User name and description */}
           {!fromVideoPage && !fromSearchPage && (

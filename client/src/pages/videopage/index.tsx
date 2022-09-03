@@ -1,4 +1,4 @@
-import { MouseEvent, Suspense, useMemo, useState } from "react";
+import { MouseEvent, Suspense, useEffect, useMemo, useState } from "react";
 import { useParams } from "react-router-dom";
 import {
   BackgroundVideo,
@@ -35,6 +35,15 @@ const VideoPage = (props: Props) => {
   const myID = useAppSelector((state) => state.user.data?._id);
   const [isPlay, setIsPlay] = useState(true);
   const { video_id: videoID, video_idf: videoIdf } = useParams();
+  useEffect(() => {
+    setIsPlay((prev) => {
+      if (!prev) {
+        return true;
+      } else {
+        return prev;
+      }
+    });
+  }, [videoID, videoIdf]);
   const videoParams = useMemo(() => {
     return {
       video_id: videoID,
@@ -59,7 +68,6 @@ const VideoPage = (props: Props) => {
     false,
     video?.doc ? true : false
   );
-  console.log({ statistics });
   const handlePlayOrPause = (
     e: MouseEvent<HTMLElement> & {
       target: {
@@ -94,17 +102,17 @@ const VideoPage = (props: Props) => {
           </LeftHeaderContainer>
           <Nav />
         </HeaderContainer>
-        <PageContainer className="pt-6">
+        <PageContainer className="pt-6 ">
           <div className=" pb-16 laptop:w-full laptop:px-6 desktop:px-0 desktop:w-[1080px] extra-desktop:w-[1280px] over-desktop:w-[1440px] flex laptop:justify-start desktop:justify-center items-start mx-auto laptop:space-x-4">
             <SideContainer
-              width="laptop:w-[75%] desktop:w-[820px] extra-desktop:w-[880px] over-desktop:w-[980px]"
+              width="laptop:w-[75%] desktop:w-[860px] extra-desktop:w-[920px] over-desktop:w-[1000px]"
               height="h-full"
             >
               <section
                 id="fullscreen"
                 onClick={handlePlayOrPause}
                 data-type="clickable"
-                className="w-full laptop:h-[574px]  flex-1 relative grid place-content-center overflow-hidden rounded-md backdrop-blur-sm"
+                className="w-full laptop:h-[600px]  flex-1 relative grid place-content-center overflow-hidden rounded-md backdrop-blur-sm"
               >
                 {video && (
                   <BackgroundVideo
@@ -138,6 +146,10 @@ const VideoPage = (props: Props) => {
                         isActive={true}
                         isPlay={isPlay ? true : false}
                         allowedPlay={true}
+                        videoSize={{
+                          width: video.doc.width,
+                          height: video.doc.height,
+                        }}
                       />
                     )}
                   </ErrorBoundary>
@@ -171,7 +183,7 @@ const VideoPage = (props: Props) => {
                 </div>
               </div>
             </SideContainer>
-            <SideContainer width="w-auto" className="flex-1">
+            <SideContainer className="flex-1">
               <RelatedContainer>
                 {video && (
                   <VideoPageUserBox
