@@ -15,21 +15,16 @@ SwiperCore.use([Virtual]);
 const SwiperWrapper = () => {
   const myID = useAppSelector((state) => state.user.data?._id);
   const [start, setStart] = useState(false);
-  const videoParams = useMemo(() => {
-    return {
-      user_id: myID,
-    };
-  }, [myID]);
   const videos = useFetchSuspense<{
     message: string;
-    data: [
+    list: [
       {
         video: IVideo;
         statistics: IStatistics;
-        weight?: number;
+        w?: number;
       }
     ];
-  }>(servicesPath.GET_NEW_RECOMMENDED, videoParams);
+  }>(servicesPath.GET_NEW_RECOMMENDED, undefined);
   const handleStart = () => {
     if (!start) setStart(true);
   };
@@ -45,8 +40,8 @@ const SwiperWrapper = () => {
       virtual
     >
       {videos &&
-        Array.isArray(videos.data) &&
-        videos.data.map((video, index) => {
+        Array.isArray(videos.list) &&
+        videos.list.map((video, index) => {
           return (
             <SwiperSlide
               className="w-full h-full rounded-md"

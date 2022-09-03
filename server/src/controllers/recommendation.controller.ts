@@ -12,18 +12,8 @@ import { getFeatureAsMatrix } from "../utils/fetch_data";
 import { IVideo } from "../interface/video.interface";
 
 async function getRecommendationDef(req: Request, res: Response) {
-  const userID = req.query.user_id as string;
-  const likedList = await LikedModel.find(
-    { author_id: userID },
-    { createdAt: 0, updatedAt: 0, __v: 0, _id: 0 },
-    null
-  );
-  const videoIds = likedList.map((x) => x.video_id);
   VideoModel.find(
     {
-      _id: {
-        $nin: videoIds,
-      },
       createdAt: {
         $gt: new Date("2020-03-01"),
       },
@@ -41,11 +31,7 @@ async function getRecommendationDef(req: Request, res: Response) {
         if (!list) return res.status(404).send({ message: "List not found" });
         else {
           StatisticsModel.find(
-            {
-              video_id: {
-                $nin: videoIds,
-              },
-            },
+            {},
             { createdAt: 0, updatedAt: 0, __v: 0 },
             null,
             (err, statistics) => {
@@ -69,11 +55,11 @@ async function getRecommendationDef(req: Request, res: Response) {
                   return {
                     video: v,
                     statistics: stat,
-                    weight: temp / diffDays / 100,
+                    w: temp / diffDays / 100,
                   };
                 });
-                weight.sort((x, y) => y.weight - x.weight);
-                res.status(200).send({ message: "Successfully", data: weight });
+                weight.sort((x, y) => y.w - x.w);
+                res.status(200).send({ message: "Successfully", list: weight });
               }
             }
           );
@@ -197,7 +183,9 @@ async function training(req: Request, res: Response) {
   const userID = req.query.user_id as string;
   if (!userID)
     return res.status(404).send({ message: "user id needed", list: [] });
-  const { matrix, list, userIndex } = await getFeatureAsMatrix(userID);
+  const { matrix, list, userIndex, likedList } = await getFeatureAsMatrix(
+    userID
+  );
   const python = spawn("python", [
     "src/python/mf.py",
     JSON.stringify(matrix),
@@ -222,6 +210,15 @@ async function training(req: Request, res: Response) {
             }
           : null;
       })
+      .filter((item) =>
+        likedList.find(
+          (x) =>
+            x.video_id.toString() === item?.video?._id?.toString() &&
+            x.author_id.toString() === userID
+        )
+          ? false
+          : true
+      )
       .sort((x, y) => {
         if (x && y) {
           return y.w - x.w;
@@ -229,7 +226,38 @@ async function training(req: Request, res: Response) {
           return 0;
         }
       });
-    res.status(200).send({ message: "Successfully", list: data });
+    const videoIds = data.map((x) => x?.video?._id?.toString());
+    StatisticsModel.find(
+      {
+        video_id: {
+          $in: videoIds,
+        },
+      },
+      {
+        updatedAt: 0,
+        __v: 0,
+        createdAt: 0,
+      },
+      null,
+      (err, statistics) => {
+        if (err)
+          return res
+            .status(500)
+            .send({ message: "Something went wrong", error: err });
+        else {
+          const list = data.map((item) => {
+            const stat = statistics.find(
+              (x) => x.video_id.toString() === item?.video?._id?.toString()
+            );
+            return {
+              ...item,
+              statistics: stat,
+            };
+          });
+          res.status(200).send({ message: "Successfully", list });
+        }
+      }
+    );
   });
 }
 
