@@ -37,7 +37,10 @@ const UserContainer = ({
       limit: 15,
     };
   }, [authorVideoID, cursor]);
-  const { data: ownVideos } = useFetchAppend<IVideo, IStatistics>(
+  const { data: ownVideos } = useFetchAppend<{
+    video: IVideo;
+    statistics: IStatistics;
+  }>(
     servicesPath.GET_VIDEO_BY_USER,
     ownVideosParams,
     undefined,
@@ -81,13 +84,13 @@ const UserContainer = ({
             ownVideos.list.map((video) => {
               return (
                 <Link
-                  key={video.id_f}
+                  key={video.video.id_f}
                   className="inline-block overflow-hidden self-center h-full"
                   target="_blank"
-                  to={`/video/${video._id}/${video.id_f}`}
+                  to={`/video/${video.video._id}/${video.video.id_f}`}
                 >
                   <VideoCard
-                    coverImage={video.origin_cover.url_list[0]}
+                    coverImage={video.video.origin_cover.url_list[0]}
                     className="mx-auto laptop:max-w-auto laptop:max-h-[160px] extra-desktop:max-h-[170px] h-full"
                   >
                     <VideoBadge pinned={true} text="置顶" />

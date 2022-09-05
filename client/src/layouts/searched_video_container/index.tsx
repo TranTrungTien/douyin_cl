@@ -20,7 +20,13 @@ const SearchedVideoContainer = ({ keyWord }: Props) => {
     message: string;
     list: IVideo[];
     statistics: IStatistics[];
-  } | null>(servicesPath.GET_SEARCH_RECOMMENDED, videosParams, false, "json");
+  } | null>(
+    servicesPath.GET_SEARCH_RECOMMENDED,
+    videosParams,
+    true,
+    false,
+    "json"
+  );
   return (
     <>
       {videos &&

@@ -79,6 +79,7 @@ const Video = ({
   const videoBlob = useFetchSuspense<Blob>(
     "/" + videoAddr,
     null,
+    true,
     false,
     "blob",
     "video/mp4"

@@ -76,28 +76,26 @@ const Comment = ({
       cursor: 0,
     };
   }, [videoID, commentID]);
-  const { data: replyComments, setData: setReplyComments } = useFetchAppend<
-    IComment,
-    any
-  >(
-    servicesPath.GET_REPLY_OF_COMMENT,
-    commentParams,
-    undefined,
-    undefined,
-    typeof replyCount === "number" &&
-      replyCount > 0 &&
-      videoID &&
-      showReply.isShow
-      ? true
-      : false
-  );
+  const { data: replyComments, setData: setReplyComments } =
+    useFetchAppend<IComment>(
+      servicesPath.GET_REPLY_OF_COMMENT,
+      commentParams,
+      undefined,
+      undefined,
+      typeof replyCount === "number" &&
+        replyCount > 0 &&
+        videoID &&
+        showReply.isShow
+        ? true
+        : false
+    );
   const likedCommentInCommentsParams = useMemo(() => {
     return {
       video_id: videoID,
       reply_comment_id: commentID,
     };
   }, [videoID, commentID]);
-  const { data: likedCommentInComments } = useFetchAppend<ILikedComment, any>(
+  const { data: likedCommentInComments } = useFetchAppend<ILikedComment>(
     servicesPath.GET_ALL_LIKED_COMMENT_IN_OTHER_COMMENT,
     likedCommentInCommentsParams,
     undefined,
@@ -146,13 +144,14 @@ const Comment = ({
           if (state)
             return {
               ...state,
+              status: "success",
               list: [...state.list, newComment],
             };
           else
             return {
+              status: "success",
               message: commentRes.data.message,
               list: [newComment],
-              statistics: [],
             };
         });
       }

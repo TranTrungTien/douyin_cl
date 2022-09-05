@@ -29,10 +29,7 @@ const CommentContainer = ({
       video_id: videoID,
     };
   }, [videoID]);
-  const { data: comments, setData: setComments } = useFetchAppend<
-    IComment,
-    any
-  >(
+  const { data: comments, setData: setComments } = useFetchAppend<IComment>(
     servicesPath.GET_ALL_COMMENTS_OF_VIDEO,
     commentParams,
     undefined,
@@ -40,7 +37,7 @@ const CommentContainer = ({
     videoID ? true : false
   );
 
-  const { data: likedComments } = useFetchAppend<ILikedComment, any>(
+  const { data: likedComments } = useFetchAppend<ILikedComment>(
     servicesPath.GET_ALL_LIKED_COMMENT_OF_VIDEO_BY_AUTHOR,
     commentParams,
     undefined,
@@ -75,13 +72,14 @@ const CommentContainer = ({
         if (state)
           return {
             ...state,
+            status: "success",
             list: [...state.list, newComment],
           };
         else
           return {
+            status: "success",
             message: commentRes.data.message,
             list: [newComment],
-            statistics: [],
           };
       });
     }

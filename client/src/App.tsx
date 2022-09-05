@@ -1,23 +1,16 @@
 import { useEffect } from "react";
-import "./style/global.css";
-import { useAppDispatch, useAppSelector } from "./redux/app/hooks";
-import Routers from "./routers";
-import { getUserInfoRequested } from "./redux/slice/user_slice";
-import { getAllFollowingRequested } from "./redux/slice/following_slice";
 import { setDefaultSettings } from "./config/config";
-import axios from "axios";
+import { useAppDispatch, useAppSelector } from "./redux/app/hooks";
+import { getAllFollowingRequested } from "./redux/slice/following_slice";
+import { getUserInfoRequested } from "./redux/slice/user_slice";
+import Routers from "./routers";
+import "./style/global.css";
 
 setDefaultSettings();
 
 function App() {
   const dispatch = useAppDispatch();
   const user = useAppSelector((state) => state.user.data);
-  useEffect(() => {
-    axios
-      .get("http://localhost:8080/api/v1/recommendation/list")
-      .then((res) => console.log(res.data))
-      .catch(console.error);
-  }, []);
   useEffect(() => {
     const fetchFollowing = () => {
       dispatch(getAllFollowingRequested());

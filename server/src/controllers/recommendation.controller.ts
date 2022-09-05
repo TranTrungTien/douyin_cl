@@ -180,7 +180,8 @@ function getSearchRecommended(req: Request, res: Response) {
 }
 
 async function training(req: Request, res: Response) {
-  const userID = req.query.user_id as string;
+  const userID = req.body._id as string;
+  const limit = parseInt(req.query.limit as string) ?? 100;
   if (!userID)
     return res.status(404).send({ message: "user id needed", list: [] });
   const { matrix, list, userIndex, likedList } = await getFeatureAsMatrix(
@@ -219,6 +220,7 @@ async function training(req: Request, res: Response) {
           ? false
           : true
       )
+      .slice(0, limit)
       .sort((x, y) => {
         if (x && y) {
           return y.w - x.w;

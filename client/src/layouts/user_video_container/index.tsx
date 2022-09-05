@@ -1,7 +1,8 @@
 import { useMemo, useRef, useState } from "react";
 import { Link } from "react-router-dom";
-import { Button } from "../../components";
+import { Button, Loading } from "../../components";
 import LikeFooter from "../../components/like_footer";
+import Modal from "../../components/modal";
 import VideoBadge from "../../components/video_badge";
 import VideoCard from "../../components/video_card";
 import { useFetch } from "../../hooks/use_fetch";
@@ -60,7 +61,10 @@ const UserVideoContainer = ({
     };
   }, [authorID, cursor.viewOwn.cursorPosition]);
 
-  const { data: ownVideos } = useFetchAppend<IVideo, IStatistics>(
+  const { data: ownVideos } = useFetchAppend<{
+    video: IVideo;
+    statistics: IStatistics;
+  }>(
     servicesPath.GET_VIDEO_BY_USER,
     ownVideosParams,
     onStopFetchingMoreVideo,
@@ -77,7 +81,10 @@ const UserVideoContainer = ({
     };
   }, [authorID, cursor.viewLiked.cursorPosition]);
 
-  const { data: likedVideos } = useFetchAppend<IYourVideoLiked, IStatistics>(
+  const { data: likedVideos } = useFetchAppend<{
+    video: IYourVideoLiked;
+    statistics: IStatistics;
+  }>(
     servicesPath.GET_ALL_VIDEO_LIKED_BY_USER,
     likedVideosParams,
     onStopFetchingMoreVideo,
@@ -100,8 +107,10 @@ const UserVideoContainer = ({
       setViewOpt({ viewOwn: false, viewLiked: true });
     }
   };
+  console.log({ ownVideos });
+
   return (
-    <div className="extra-desktop:px-12 over-desktop:px-16 py-8 space-y-6">
+    <div className="extra-desktop:px-12 over-desktop:px-16 py-8 space-y-6 relative min-h-screen">
       <header className="laptop:px-3 desktop:px-5 extra-desktop:px-0 flex justify-start items-center space-x-10 leading-[26px] font-medium text-[18px] opacity-90">
         <Button
           text=""
@@ -145,7 +154,7 @@ const UserVideoContainer = ({
           )}
         </Button>
       </header>
-      <div className="laptop:max-w-[620px] desktop:max-w-[680px] extra-desktop:max-w-[776px]">
+      <div className="laptop:max-w-[620px] laptop:min-w-[620px] desktop:max-w-[680px] desktop:min-w-[680px] extra-desktop:max-w-[776px] extra-desktop:min-w-[776px]">
         <VideoContainer
           gapX="laptop:gap-x-5 desktop:gap-x-3"
           gapY="laptop:gap-y-5 desktop:gap-y-3"
@@ -154,53 +163,89 @@ const UserVideoContainer = ({
         >
           {viewOpt.viewOwn
             ? ownVideos &&
-              ownVideos.list.map((video) => {
-                const likedCount = ownVideos.statistics?.find(
-                  (statistic) => statistic.video_id === video._id
-                );
-                return (
-                  <Link
-                    target="_blank"
-                    to={`/video/${video._id}/${video.id_f}`}
-                    key={video._id}
-                    className="block w-full  extra-desktop:h-full"
-                  >
-                    <VideoCard
-                      className="laptop:h-[320px] desktop:h-[280px] extra-desktop:h-[328px] overflow-hidden"
-                      coverImage={video.origin_cover.url_list[0]}
+              (ownVideos.status === "success" ? (
+                ownVideos.list.map((video) => {
+                  return (
+                    <Link
+                      target="_blank"
+                      to={`/video/${video.video._id}/${video.video.id_f}`}
+                      key={video.video._id}
+                      className="block w-full  extra-desktop:h-full"
                     >
-                      <VideoBadge pinned={true} text="置顶" />
-                      <VideoCardFooter px="px-4" pb="pb-2">
-                        <LikeFooter likedCount={likedCount?.like_count} />
-                      </VideoCardFooter>
-                    </VideoCard>
-                  </Link>
-                );
-              })
+                      <VideoCard
+                        className="laptop:h-[320px] desktop:h-[280px] extra-desktop:h-[328px] overflow-hidden"
+                        coverImage={video.video.origin_cover.url_list[0]}
+                      >
+                        <VideoBadge pinned={true} text="置顶" />
+                        <VideoCardFooter px="px-4" pb="pb-2">
+                          <LikeFooter
+                            likedCount={video.statistics.like_count || 0}
+                          />
+                        </VideoCardFooter>
+                      </VideoCard>
+                    </Link>
+                  );
+                })
+              ) : ownVideos.status === "loading" ? (
+                <Loading />
+              ) : (
+                <Modal>
+                  <div className="w-96 h-96 rounded bg-white text-center text-black">
+                    <h1>Opps we ran into some problems</h1>
+                    <Button
+                      text="Refresh page"
+                      onClick={() => window.location.reload()}
+                    />
+                    <Button
+                      text="Comme back home page"
+                      onClick={() => window.location.replace("/")}
+                    />
+                  </div>
+                </Modal>
+              ))
             : likedVideos &&
-              likedVideos.list.map((video) => {
-                const likedCount = likedVideos.statistics?.find(
-                  (statistic) => statistic.video_id === video.video_id._id
-                );
-                return (
-                  <Link
-                    target="_blank"
-                    to={`/video/${video.video_id._id}/${video.video_id.id_f}`}
-                    key={video._id}
-                    className="block w-full  extra-desktop:h-full"
-                  >
-                    <VideoCard
-                      className="laptop:h-[320px] desktop:h-[280px] extra-desktop:h-[328px] overflow-hidden"
-                      coverImage={video.video_id.origin_cover.url_list[0]}
+              (likedVideos.status === "success" ? (
+                likedVideos.list.map((video) => {
+                  return (
+                    <Link
+                      target="_blank"
+                      to={`/video/${video.video.video_id._id}/${video.video.video_id.id_f}`}
+                      key={video.video._id}
+                      className="block w-full  extra-desktop:h-full"
                     >
-                      <VideoBadge pinned={true} text="置顶" />
-                      <VideoCardFooter px="px-4" pb="pb-2">
-                        <LikeFooter likedCount={likedCount?.like_count} />
-                      </VideoCardFooter>
-                    </VideoCard>
-                  </Link>
-                );
-              })}
+                      <VideoCard
+                        className="laptop:h-[320px] desktop:h-[280px] extra-desktop:h-[328px] overflow-hidden"
+                        coverImage={
+                          video.video.video_id.origin_cover.url_list[0]
+                        }
+                      >
+                        <VideoBadge pinned={true} text="置顶" />
+                        <VideoCardFooter px="px-4" pb="pb-2">
+                          <LikeFooter
+                            likedCount={video.statistics.like_count || 0}
+                          />
+                        </VideoCardFooter>
+                      </VideoCard>
+                    </Link>
+                  );
+                })
+              ) : likedVideos.status === "loading" ? (
+                <Loading />
+              ) : (
+                <Modal>
+                  <div className="w-96 h-96 rounded bg-white text-center text-black">
+                    <h1>Opps we ran into some problems</h1>
+                    <Button
+                      text="Refresh page"
+                      onClick={() => window.location.reload()}
+                    />
+                    <Button
+                      text="Comme back home page"
+                      onClick={() => window.location.replace("/")}
+                    />
+                  </div>
+                </Modal>
+              ))}
         </VideoContainer>
       </div>
     </div>

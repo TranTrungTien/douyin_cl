@@ -5,6 +5,7 @@ import { promiseWrapper } from "../utils/promise-wrapper";
 export function useFetchSuspense<T>(
   url: string,
   params: any,
+  conditionQuery: boolean = false,
   withCredentials: boolean = false,
   responseType: "text" | "json" | "blob" | "arraybuffer" = "json",
   contentType: string = "application/json"
@@ -26,11 +27,11 @@ export function useFetchSuspense<T>(
         })
       ).data;
     };
-    if (url) {
+    if (url && conditionQuery) {
       const _resource = promiseWrapper<T>(fetchData());
       setResource(_resource);
     }
-  }, [url, params, withCredentials, responseType, contentType]);
+  }, [url, params, withCredentials, conditionQuery, responseType, contentType]);
 
   return resource?.read();
 }

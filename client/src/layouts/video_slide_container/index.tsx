@@ -1,8 +1,5 @@
-import { Suspense, useEffect, useRef } from "react";
-import { Button, Loading } from "../../components";
-import Modal from "../../components/modal";
+import { useEffect, useRef } from "react";
 import { getBoundingClientRect } from "../../utils";
-import ErrorBoundary from "../../utils/error-boundaries";
 import SwiperWrapper from "../swiper_container";
 type Props = {};
 const VideoSlideContainer = (props: Props) => {
@@ -38,27 +35,7 @@ const VideoSlideContainer = (props: Props) => {
   return (
     <main ref={mainRef} className={`w-full flex justify-center items-center`}>
       <div className="w-full h-[95%] min-h-[95%] laptop:px-[20px] desktop:px-[30px] overflow-hidden relative">
-        <Suspense fallback={<Loading />}>
-          <ErrorBoundary
-            fallback={
-              <Modal>
-                <div className="w-96 h-96 rounded bg-white text-center text-black">
-                  <h1>Opps we ran into some problems</h1>
-                  <Button
-                    text="Refresh page"
-                    onClick={() => window.location.reload()}
-                  />
-                  <Button
-                    text="Comme back home page"
-                    onClick={() => window.location.replace("/")}
-                  />
-                </div>
-              </Modal>
-            }
-          >
-            <SwiperWrapper />
-          </ErrorBoundary>
-        </Suspense>
+        <SwiperWrapper />
       </div>
     </main>
   );

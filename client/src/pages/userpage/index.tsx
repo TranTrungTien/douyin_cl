@@ -60,40 +60,39 @@ const UserPage = (props: Props) => {
     },
   });
   const handleScroll = (e: UIEvent<HTMLDivElement>) => {
-    const isScrollToBottom =
-      e.currentTarget.scrollHeight -
-      window.innerHeight -
-      e.currentTarget.scrollTop;
-
-    if (isScrollToBottom === 0) {
-      if (cursorState.viewOwn.isCurrent) {
-        if (!cursorState.viewOwn.reachToEnd) {
-          setCursorState((preState) => {
-            return {
-              ...preState,
-              viewOwn: {
-                cursorPosition: preState.viewOwn.cursorPosition + 1,
-                isCurrent: true,
-                reachToEnd: false,
-              },
-            };
-          });
-        }
-      } else if (!cursorState.viewLiked.isCurrent) {
-        if (!cursorState.viewLiked.reachToEnd) {
-          setCursorState((preState) => {
-            return {
-              ...preState,
-              viewLiked: {
-                cursorPosition: preState.viewOwn.cursorPosition + 1,
-                isCurrent: true,
-                reachToEnd: false,
-              },
-            };
-          });
-        }
-      }
-    }
+    // const isScrollToBottom =
+    //   e.currentTarget.scrollHeight -
+    //   window.innerHeight -
+    //   e.currentTarget.scrollTop;
+    // if (isScrollToBottom === 0) {
+    //   if (cursorState.viewOwn.isCurrent) {
+    //     if (!cursorState.viewOwn.reachToEnd) {
+    //       setCursorState((preState) => {
+    //         return {
+    //           ...preState,
+    //           viewOwn: {
+    //             cursorPosition: preState.viewOwn.cursorPosition + 1,
+    //             isCurrent: true,
+    //             reachToEnd: false,
+    //           },
+    //         };
+    //       });
+    //     }
+    //   } else if (!cursorState.viewLiked.isCurrent) {
+    //     if (!cursorState.viewLiked.reachToEnd) {
+    //       setCursorState((preState) => {
+    //         return {
+    //           ...preState,
+    //           viewLiked: {
+    //             cursorPosition: preState.viewOwn.cursorPosition + 1,
+    //             isCurrent: true,
+    //             reachToEnd: false,
+    //           },
+    //         };
+    //       });
+    //     }
+    //   }
+    // }
   };
   const handleStopFetchingMoreVideo = () => {
     if (cursorState.viewOwn.isCurrent) {

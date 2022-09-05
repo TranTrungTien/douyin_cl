@@ -11,6 +11,7 @@ export const servicesPath = {
   LOGIN_WITHOUT_PASSWORD: "/api/v1/user/login-without-password",
 
   GET_NEW_RECOMMENDED: "/api/v1/recommendation/new",
+  GET_RECOMMENDED_BASED_ON_USER: "/api/v1/recommendation/list",
   GET_RELATED_RECOMMENDED: "/api/v1/recommendation/related",
   GET_SEARCH_RECOMMENDED: "/api/v1/recommendation/search",
 

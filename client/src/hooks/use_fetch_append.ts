@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { getData, ResponseType } from "../services/app_services";
 
-export function useFetchAppend<T1, T2>(
+export function useFetchAppend<T1>(
   url: string,
   params: any,
   errorHandler?: (args?: any) => void,
@@ -12,18 +12,24 @@ export function useFetchAppend<T1, T2>(
   contentType: string = "application/json"
 ) {
   const [data, setData] = useState<{
-    message: string;
+    status: "loading" | "success" | "error";
+    message?: string;
     list: T1[];
-    statistics: T2[];
   } | null>(null);
   useEffect(() => {
     const fetchData = async () => {
       const response = await getData<{
         message: string;
         list: T1[];
-        statistics: T2[];
       }>(url, params, withCredentials, responseType, contentType).catch(
         (err) => {
+          setData((prev) => {
+            return {
+              list: [],
+              status: "error",
+              message: "Something went wrong",
+            };
+          });
           errorHandler && errorHandler();
         }
       );
@@ -31,18 +37,29 @@ export function useFetchAppend<T1, T2>(
         const d = response.data;
         setData((prev) => {
           if (!prev) {
-            return d;
+            return {
+              status: "success",
+              ...d,
+            };
           } else {
             return {
               ...prev,
+              status: "success",
+              message: d.message,
               list: [...(prev.list || []), ...(d.list || [])],
-              statistics: [...(prev.statistics || []), ...(d.statistics || [])],
             };
           }
         });
       }
     };
     if (queryCondition) {
+      setData((prev) => {
+        return {
+          ...prev,
+          list: [],
+          status: "loading",
+        };
+      });
       callbackHandler && callbackHandler();
       fetchData();
     }
