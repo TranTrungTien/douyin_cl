@@ -1,5 +1,6 @@
 import { UIEvent, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
+import { Loading } from "../../components";
 import LikeFooter from "../../components/like_footer";
 import UserBoxHeader from "../../components/user_box_header";
 import VideoBadge from "../../components/video_badge";
@@ -73,13 +74,7 @@ const UserContainer = ({
         onScroll={handleScroll}
         className="h-[calc(100%-70px)] w-full overflow-x-hidden overflow-y-auto hidden-scrollbar"
       >
-        <VideoContainer
-          gridCol="laptop:grid-cols-2 desktop:grid-cols-3"
-          px="laptop:px-3 "
-          py="py-2"
-          gapY="laptop:gap-y-2 desktop:gap-y-3"
-          gapX="laptop:gap-x-2 desktop:gap-x-3"
-        >
+        <VideoContainer className="relative grid laptop:grid-cols-2 desktop:grid-cols-3 laptop:px-3 py-2 laptop:gap-y-2 desktop:gap-y-3 laptop:gap-x-2 desktop:gap-x-3">
           {ownVideos &&
             ownVideos.list.map((video) => {
               return (
@@ -101,6 +96,11 @@ const UserContainer = ({
                 </Link>
               );
             })}
+          <div className="absolute bottom-0 left-0 right-0 z-10">
+            <div className="w-full h-14 relative">
+              {ownVideos?.status === "loading" && <Loading />}
+            </div>
+          </div>
         </VideoContainer>
       </div>
     </section>

@@ -56,7 +56,7 @@ export function useFetchAppend<T1>(
       setData((prev) => {
         return {
           ...prev,
-          list: [],
+          list: prev ? [...prev.list] : [],
           status: "loading",
         };
       });

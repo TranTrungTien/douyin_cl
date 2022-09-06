@@ -29,7 +29,6 @@ const UserVideoContainer = ({
   viewLikedAllowed,
   onStopFetchingMoreVideo,
 }: Props) => {
-  console.log({ cursor });
   const currentCursorPosition = useRef({
     viewOwn: -1,
     viewLiked: -1,
@@ -57,7 +56,7 @@ const UserVideoContainer = ({
     return {
       author_id: authorID,
       cursor: cursor.viewOwn.cursorPosition,
-      limit: 15,
+      limit: 20,
     };
   }, [authorID, cursor.viewOwn.cursorPosition]);
 
@@ -77,7 +76,7 @@ const UserVideoContainer = ({
     return {
       author_id: authorID,
       cursor: cursor.viewLiked.cursorPosition,
-      limit: 15,
+      limit: 20,
     };
   }, [authorID, cursor.viewLiked.cursorPosition]);
 
@@ -110,7 +109,7 @@ const UserVideoContainer = ({
   console.log({ ownVideos });
 
   return (
-    <div className="extra-desktop:px-12 over-desktop:px-16 py-8 space-y-6 relative min-h-screen">
+    <div className="extra-desktop:px-12 over-desktop:px-16 py-8 space-y-6  min-h-[calc(100vh*0.85)]">
       <header className="laptop:px-3 desktop:px-5 extra-desktop:px-0 flex justify-start items-center space-x-10 leading-[26px] font-medium text-[18px] opacity-90">
         <Button
           text=""
@@ -155,97 +154,102 @@ const UserVideoContainer = ({
         </Button>
       </header>
       <div className="laptop:max-w-[620px] laptop:min-w-[620px] desktop:max-w-[680px] desktop:min-w-[680px] extra-desktop:max-w-[776px] extra-desktop:min-w-[776px]">
-        <VideoContainer
-          gapX="laptop:gap-x-5 desktop:gap-x-3"
-          gapY="laptop:gap-y-5 desktop:gap-y-3"
-          px="laptop:px-10 desktop:px-5 extra-desktop:px-0"
-          gridCol="laptop:grid-cols-2 desktop:grid-cols-3"
-        >
+        <VideoContainer className="relative grid laptop:gap-x-5 desktop:gap-x-3 laptop:gap-y-5 desktop:gap-y-3 laptop:px-10 desktop:px-5 extra-desktop:px-0 laptop:grid-cols-2 desktop:grid-cols-3">
+          {viewOpt.viewOwn
+            ? ownVideos?.status === "error" && (
+                <Modal>
+                  <div className="w-96 h-96 rounded bg-white text-center text-black">
+                    <h1>OWn Videos Opps we ran into some problems</h1>
+                    <Button
+                      text="Refresh page"
+                      onClick={() => window.location.reload()}
+                    />
+                    <Button
+                      text="Comme back home page"
+                      onClick={() => window.location.replace("/")}
+                    />
+                  </div>
+                </Modal>
+              )
+            : likedVideos?.status === "error" && (
+                <Modal>
+                  <div className="w-96 h-96 rounded bg-white text-center text-black">
+                    <h1> Liked Videos Opps we ran into some problems</h1>
+                    <Button
+                      text="Refresh page"
+                      onClick={() => window.location.reload()}
+                    />
+                    <Button
+                      text="Comme back home page"
+                      onClick={() => window.location.replace("/")}
+                    />
+                  </div>
+                </Modal>
+              )}
           {viewOpt.viewOwn
             ? ownVideos &&
-              (ownVideos.status === "success" ? (
-                ownVideos.list.map((video) => {
-                  return (
-                    <Link
-                      target="_blank"
-                      to={`/video/${video.video._id}/${video.video.id_f}`}
-                      key={video.video._id}
-                      className="block w-full  extra-desktop:h-full"
+              ownVideos.list.map((video, index) => {
+                return (
+                  <Link
+                    // ref={
+                    //   index === ownVideos.list.length - 1
+                    //     ? ownVideosRef
+                    //     : undefined
+                    // }
+                    target="_blank"
+                    to={`/video/${video.video._id}/${video.video.id_f}`}
+                    key={video.video._id}
+                    className="block w-full  extra-desktop:h-full"
+                  >
+                    <VideoCard
+                      className="laptop:h-[320px] desktop:h-[280px] extra-desktop:h-[328px] overflow-hidden"
+                      coverImage={video.video.origin_cover.url_list[0]}
                     >
-                      <VideoCard
-                        className="laptop:h-[320px] desktop:h-[280px] extra-desktop:h-[328px] overflow-hidden"
-                        coverImage={video.video.origin_cover.url_list[0]}
-                      >
-                        <VideoBadge pinned={true} text="置顶" />
-                        <VideoCardFooter px="px-4" pb="pb-2">
-                          <LikeFooter
-                            likedCount={video.statistics.like_count || 0}
-                          />
-                        </VideoCardFooter>
-                      </VideoCard>
-                    </Link>
-                  );
-                })
-              ) : ownVideos.status === "loading" ? (
-                <Loading />
-              ) : (
-                <Modal>
-                  <div className="w-96 h-96 rounded bg-white text-center text-black">
-                    <h1>Opps we ran into some problems</h1>
-                    <Button
-                      text="Refresh page"
-                      onClick={() => window.location.reload()}
-                    />
-                    <Button
-                      text="Comme back home page"
-                      onClick={() => window.location.replace("/")}
-                    />
-                  </div>
-                </Modal>
-              ))
+                      <VideoBadge pinned={true} text="置顶" />
+                      <VideoCardFooter px="px-4" pb="pb-2">
+                        <LikeFooter
+                          likedCount={video.statistics.like_count || 0}
+                        />
+                      </VideoCardFooter>
+                    </VideoCard>
+                  </Link>
+                );
+              })
             : likedVideos &&
-              (likedVideos.status === "success" ? (
-                likedVideos.list.map((video) => {
-                  return (
-                    <Link
-                      target="_blank"
-                      to={`/video/${video.video.video_id._id}/${video.video.video_id.id_f}`}
-                      key={video.video._id}
-                      className="block w-full  extra-desktop:h-full"
+              likedVideos.list.map((video, index) => {
+                return (
+                  <Link
+                    // ref={
+                    //   index === likedVideos.list.length - 1
+                    //     ? likedVideosRef
+                    //     : undefined
+                    // }
+                    target="_blank"
+                    to={`/video/${video.video.video_id._id}/${video.video.video_id.id_f}`}
+                    key={video.video._id}
+                    className="block w-full  extra-desktop:h-full"
+                  >
+                    <VideoCard
+                      className="laptop:h-[320px] desktop:h-[280px] extra-desktop:h-[328px] overflow-hidden"
+                      coverImage={video.video.video_id.origin_cover.url_list[0]}
                     >
-                      <VideoCard
-                        className="laptop:h-[320px] desktop:h-[280px] extra-desktop:h-[328px] overflow-hidden"
-                        coverImage={
-                          video.video.video_id.origin_cover.url_list[0]
-                        }
-                      >
-                        <VideoBadge pinned={true} text="置顶" />
-                        <VideoCardFooter px="px-4" pb="pb-2">
-                          <LikeFooter
-                            likedCount={video.statistics.like_count || 0}
-                          />
-                        </VideoCardFooter>
-                      </VideoCard>
-                    </Link>
-                  );
-                })
-              ) : likedVideos.status === "loading" ? (
-                <Loading />
-              ) : (
-                <Modal>
-                  <div className="w-96 h-96 rounded bg-white text-center text-black">
-                    <h1>Opps we ran into some problems</h1>
-                    <Button
-                      text="Refresh page"
-                      onClick={() => window.location.reload()}
-                    />
-                    <Button
-                      text="Comme back home page"
-                      onClick={() => window.location.replace("/")}
-                    />
-                  </div>
-                </Modal>
-              ))}
+                      <VideoBadge pinned={true} text="置顶" />
+                      <VideoCardFooter px="px-4" pb="pb-2">
+                        <LikeFooter
+                          likedCount={video.statistics.like_count || 0}
+                        />
+                      </VideoCardFooter>
+                    </VideoCard>
+                  </Link>
+                );
+              })}
+          <div className="absolute bottom-0 left-0 right-0 z-10">
+            <div className="relative f-full h-14">
+              {viewOpt.viewOwn
+                ? ownVideos?.status === "loading" && <Loading />
+                : likedVideos?.status === "loading" && <Loading />}
+            </div>
+          </div>
         </VideoContainer>
       </div>
     </div>

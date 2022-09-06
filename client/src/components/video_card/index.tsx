@@ -1,4 +1,4 @@
-import { ReactNode } from "react";
+import { HTMLAttributes, ReactNode } from "react";
 import { servicesPath } from "../../services/services_path";
 
 type Props = {
@@ -6,10 +6,16 @@ type Props = {
   title?: string;
   className?: string;
   coverImage?: string;
-};
-const VideoCard = ({ coverImage, children, className, title }: Props) => {
+} & HTMLAttributes<HTMLDivElement>;
+const VideoCard = ({
+  coverImage,
+  children,
+  className,
+  title,
+  ...props
+}: Props) => {
   return (
-    <div className={`${className} relative place-self-center`}>
+    <div className={`${className} relative place-self-center`} {...props}>
       <img
         src={coverImage && `${servicesPath.BASE_URL}/${coverImage}`}
         onError={({ currentTarget }) => {
