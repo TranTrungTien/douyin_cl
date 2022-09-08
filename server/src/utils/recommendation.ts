@@ -5,6 +5,8 @@ import path from "path";
 import { HMMModel, IDF, JiebaDict, StopWords, UserDict } from "jieba-zh-tw";
 import createJieba from "js-jieba";
 import { BestMatch } from "string-similarity";
+import { IVideo } from "../interface/video.interface";
+import { IYourVideoLiked } from "../interface/liked.interface";
 
 const jieba = createJieba(JiebaDict, HMMModel, UserDict, IDF, StopWords);
 
@@ -128,9 +130,18 @@ export default class Recommendation {
     return this._cosineMatrix;
   }
 }
+
+interface ITrainingData {
+  [key: string]: {
+    data: string;
+    list: IVideo[];
+    likedList: IYourVideoLiked[];
+  };
+}
 export class RecommendationUtils {
-  public static index = 0;
-  public static cosineMatrix: number[][];
+  private static index = 0;
+  private static cosineMatrix: number[][] = [];
+  private static trainingData: ITrainingData | null = null;
   private static _sortCosine(cosineSimMap: { id: number; value: number }[]) {
     cosineSimMap.sort((x, y) => {
       if (x.value > y.value) return -1;
@@ -138,7 +149,20 @@ export class RecommendationUtils {
       else return 0;
     });
   }
-  public static getRecommendedIndexes(index: number) {
+  public static saveTrainingData(
+    key: string,
+    data: { data: string; list: IVideo[]; likedList: IYourVideoLiked[] }
+  ) {
+    if (!RecommendationUtils.trainingData)
+      RecommendationUtils.trainingData = { [key]: data };
+    else RecommendationUtils.trainingData[key] = data;
+  }
+  public static getTrainingData(key: string) {
+    return (
+      RecommendationUtils.trainingData && RecommendationUtils.trainingData[key]
+    );
+  }
+  public static getRecommendedBasedOnVideoIndexes(index: number) {
     if (this.cosineMatrix) {
       const cosineSimMap = RecommendationUtils.cosineMatrix[index].map(
         (value, index) => {
@@ -167,7 +191,7 @@ export class RecommendationUtils {
       return undefined;
     }
   }
-  public static train(): Promise<boolean> {
+  public static trainRecommendedBasedOnVideo(): Promise<boolean> {
     console.log("training ...");
 
     return new Promise((resolve, reject) => {

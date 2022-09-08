@@ -85,7 +85,7 @@ function getRecommendationFromVideo(req: Request, res: Response) {
     }
   }
 
-  const indexes = RecommendationUtils.getRecommendedIndexes(index);
+  const indexes = RecommendationUtils.getRecommendedBasedOnVideoIndexes(index);
   const videoIdList = indexes?.map((idx, _) => {
     return data[idx].video_id;
   });
@@ -181,7 +181,6 @@ function getSearchRecommended(req: Request, res: Response) {
 
 async function training(req: Request, res: Response) {
   const userID = req.body._id as string;
-  const limit = parseInt(req.query.limit as string) ?? 100;
   if (!userID)
     return res.status(404).send({ message: "user id needed", list: [] });
   const { matrix, list, userIndex, likedList } = await getFeatureAsMatrix(
@@ -201,7 +200,24 @@ async function training(req: Request, res: Response) {
     res.status(500).send({ error: err });
   });
   python.stdout.on("close", () => {
-    const data: ({ video: IVideo; w: number } | null)[] = output
+    RecommendationUtils.saveTrainingData(userID, {
+      data: output,
+      likedList,
+      list,
+    });
+    res.status(200).send({ message: "Successfully" });
+  });
+}
+
+function list(req: Request, res: Response) {
+  const userID = req.body._id as string;
+  const limit = parseInt(req.query.limit as string) ?? 100;
+  if (!userID)
+    return res.status(404).send({ message: "user id needed", list: [] });
+  const output = RecommendationUtils.getTrainingData(userID);
+  if (output) {
+    const { data: trainingData, likedList, list } = output;
+    const data: ({ video: IVideo; w: number } | null)[] = trainingData
       .split(" ")
       .map((item, index) => {
         return item
@@ -260,10 +276,12 @@ async function training(req: Request, res: Response) {
         }
       }
     );
-  });
+  } else {
+    return res.status(500).send({ message: "Server error" });
+  }
 }
-
 const RecommendationController = {
+  list,
   training,
   getRecommendationDef,
   getRecommendationFromVideo,

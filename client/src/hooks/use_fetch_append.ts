@@ -9,7 +9,8 @@ export function useFetchAppend<T1>(
   queryCondition: boolean = false,
   withCredentials: boolean = false,
   responseType: ResponseType = "json",
-  contentType: string = "application/json"
+  contentType: string = "application/json",
+  reFetchTrigger?: boolean
 ) {
   const [data, setData] = useState<{
     status: "loading" | "success" | "error";
@@ -72,6 +73,7 @@ export function useFetchAppend<T1>(
     withCredentials,
     responseType,
     contentType,
+    reFetchTrigger,
   ]);
   return { data, setData };
 }

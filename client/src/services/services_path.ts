@@ -12,6 +12,7 @@ export const servicesPath = {
 
   GET_NEW_RECOMMENDED: "/api/v1/recommendation/new",
   GET_RECOMMENDED_BASED_ON_USER: "/api/v1/recommendation/list",
+  RECOMMENDATION_TRAINING: "/api/v1/recommendation/training",
   GET_RELATED_RECOMMENDED: "/api/v1/recommendation/related",
   GET_SEARCH_RECOMMENDED: "/api/v1/recommendation/search",
 

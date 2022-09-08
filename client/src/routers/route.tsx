@@ -6,6 +6,7 @@ const Lives = lazy(() => import("../pages/lives"));
 const UploadVideo = lazy(() => import("../pages/upload_videopage"));
 const UserPage = lazy(() => import("../pages/userpage"));
 const VideoPage = lazy(() => import("../pages/videopage"));
+const ErrorPage = lazy(() => import("../pages/error_page"));
 
 const SuspenseComponent = (Component: any) => (props: any) => {
   return (
@@ -39,5 +40,9 @@ export const routesPath = [
   {
     path: "/search",
     element: SuspenseComponent(SearchPage),
+  },
+  {
+    path: "*",
+    element: SuspenseComponent(ErrorPage),
   },
 ];

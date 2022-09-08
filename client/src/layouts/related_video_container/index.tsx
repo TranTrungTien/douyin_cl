@@ -20,7 +20,11 @@ const RelatedVideoContainer = ({ videoIdf }: Props) => {
     message: string;
     list: IVideo[];
     statistics: IStatistics[];
-  }>(servicesPath.GET_RELATED_RECOMMENDED, relatedVideoParams);
+  }>(
+    servicesPath.GET_RELATED_RECOMMENDED,
+    relatedVideoParams,
+    videoIdf ? true : false
+  );
 
   return (
     <div className="flex flex-col justify-start items-start space-y-6 w-full h-full mt-6">
