@@ -8,12 +8,14 @@ import VideoModel from "../models/video.model";
 
 const findData = () => {
   const videoPs = new Promise<IVideo[]>((resolve, reject) => {
-    VideoModel.find({}, (err, list) => {
-      if (err) console;
-      else {
-        resolve(list);
-      }
-    });
+    VideoModel.find({})
+      .populate("author_id")
+      .exec((err, list) => {
+        if (err) console;
+        else {
+          resolve(list);
+        }
+      });
   });
   const userPs = new Promise<string[]>((resolve, reject) => {
     UserModel.find({}, (err, list) => {
@@ -48,6 +50,7 @@ export const getFeatureAsMatrix = (
 ): Promise<{
   matrix: number[][];
   list: IVideo[];
+  likedList: IYourVideoLiked[];
   userIndex: number;
 }> => {
   return new Promise((resolve, reject) => {
@@ -84,7 +87,7 @@ export const getFeatureAsMatrix = (
           }
           d.push(row);
         }
-        resolve({ matrix: d, list: videoPs, userIndex });
+        resolve({ matrix: d, list: videoPs, userIndex, likedList: likedPs });
       })
       .catch((err) => reject(err));
   });

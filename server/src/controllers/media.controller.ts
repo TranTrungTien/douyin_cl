@@ -194,7 +194,7 @@ function getAllVideoByUser(req: Request, res: Response) {
   VideoModel.find(
     { author_id: author_id },
     { createdAt: 0, updatedAt: 0, __v: 0 },
-    { skip: Number(cursor) * limit, limit: limit },
+    { skip: Number(cursor) * limit, limit: limit, sort: { createdAt: -1 } },
     (err, list) => {
       if (err)
         return res.status(500).send({ err, message: "Something went wrong" });
@@ -217,10 +217,18 @@ function getAllVideoByUser(req: Request, res: Response) {
                   .status(500)
                   .send({ message: "Something went wrong", err });
               else {
+                const videos = list.map((v) => {
+                  const stat = statistics.find(
+                    (stat) => stat.video_id.toString() === v._id?.toString()
+                  );
+                  return {
+                    video: v,
+                    statistics: stat,
+                  };
+                });
                 return res.status(200).send({
                   message: "Found videos Successfully",
-                  list,
-                  statistics,
+                  list: videos,
                 });
               }
             }
@@ -265,10 +273,19 @@ function getAllLikedVideoByUser(req: Request, res: Response) {
                   .status(500)
                   .send({ err, message: "Something went wrong" });
               else {
+                const videos = list.map((v) => {
+                  const stat = statistics.find(
+                    (stat) =>
+                      stat.video_id.toString() === v.video_id._id.toString()
+                  );
+                  return {
+                    video: v,
+                    statistics: stat,
+                  };
+                });
                 return res.status(200).send({
                   message: "Found liked video Successfully",
-                  list,
-                  statistics,
+                  list: videos,
                 });
               }
             }

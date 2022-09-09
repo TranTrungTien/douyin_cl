@@ -6,6 +6,7 @@ const Lives = lazy(() => import("../pages/lives"));
 const UploadVideo = lazy(() => import("../pages/upload_videopage"));
 const UserPage = lazy(() => import("../pages/userpage"));
 const VideoPage = lazy(() => import("../pages/videopage"));
+const ErrorPage = lazy(() => import("../pages/error_page"));
 
 const SuspenseComponent = (Component: any) => (props: any) => {
   return (
@@ -18,26 +19,37 @@ const SuspenseComponent = (Component: any) => (props: any) => {
 export const routesPath = [
   {
     path: "/",
+    authRequired: false,
     element: SuspenseComponent(HomePage),
   },
   {
     path: "/live",
+    authRequired: false,
     element: SuspenseComponent(Lives),
   },
   {
     path: "/user/:user_id",
+    authRequired: false,
     element: SuspenseComponent(UserPage),
   },
   {
     path: "/video/:video_id/:video_idf",
+    authRequired: false,
     element: SuspenseComponent(VideoPage),
   },
   {
     path: "/upload",
+    authRequired: true,
     element: SuspenseComponent(UploadVideo),
   },
   {
     path: "/search",
+    authRequired: false,
     element: SuspenseComponent(SearchPage),
+  },
+  {
+    path: "*",
+    authRequired: false,
+    element: SuspenseComponent(ErrorPage),
   },
 ];

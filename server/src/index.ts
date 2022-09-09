@@ -19,7 +19,7 @@ import FollowingRouter from "./routers/following.route";
 
 DBConnect()
   .then((_) => {
-    RecommendationUtils.train()
+    RecommendationUtils.trainRecommendedBasedOnVideo()
       .then((done) => {
         console.log("trained : ", done);
         const app: Express = express();

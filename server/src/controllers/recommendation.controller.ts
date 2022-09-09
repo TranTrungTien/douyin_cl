@@ -6,24 +6,15 @@ import { metaPath } from "../const/path";
 import LikedModel from "../models/liked.model";
 import StatisticsModel from "../models/statistics.model";
 import VideoModel from "../models/video.model";
+import IHadSeenModel from "../models/had_seen_video.model";
 import { dayOfTwoDate } from "../utils/day_of_two_date";
 import { RecommendationUtils } from "../utils/recommendation";
 import { getFeatureAsMatrix } from "../utils/fetch_data";
 import { IVideo } from "../interface/video.interface";
 
 async function getRecommendationDef(req: Request, res: Response) {
-  const userID = req.query.user_id as string;
-  const likedList = await LikedModel.find(
-    { author_id: userID },
-    { createdAt: 0, updatedAt: 0, __v: 0, _id: 0 },
-    null
-  );
-  const videoIds = likedList.map((x) => x.video_id);
   VideoModel.find(
     {
-      _id: {
-        $nin: videoIds,
-      },
       createdAt: {
         $gt: new Date("2020-03-01"),
       },
@@ -41,11 +32,7 @@ async function getRecommendationDef(req: Request, res: Response) {
         if (!list) return res.status(404).send({ message: "List not found" });
         else {
           StatisticsModel.find(
-            {
-              video_id: {
-                $nin: videoIds,
-              },
-            },
+            {},
             { createdAt: 0, updatedAt: 0, __v: 0 },
             null,
             (err, statistics) => {
@@ -69,11 +56,11 @@ async function getRecommendationDef(req: Request, res: Response) {
                   return {
                     video: v,
                     statistics: stat,
-                    weight: temp / diffDays / 100,
+                    w: temp / diffDays / 100,
                   };
                 });
-                weight.sort((x, y) => y.weight - x.weight);
-                res.status(200).send({ message: "Successfully", data: weight });
+                weight.sort((x, y) => y.w - x.w);
+                res.status(200).send({ message: "Successfully", list: weight });
               }
             }
           );
@@ -99,7 +86,7 @@ function getRecommendationFromVideo(req: Request, res: Response) {
     }
   }
 
-  const indexes = RecommendationUtils.getRecommendedIndexes(index);
+  const indexes = RecommendationUtils.getRecommendedBasedOnVideoIndexes(index);
   const videoIdList = indexes?.map((idx, _) => {
     return data[idx].video_id;
   });
@@ -194,10 +181,12 @@ function getSearchRecommended(req: Request, res: Response) {
 }
 
 async function training(req: Request, res: Response) {
-  const userID = req.query.user_id as string;
+  const userID = req.body._id as string;
   if (!userID)
     return res.status(404).send({ message: "user id needed", list: [] });
-  const { matrix, list, userIndex } = await getFeatureAsMatrix(userID);
+  const { matrix, list, userIndex, likedList } = await getFeatureAsMatrix(
+    userID
+  );
   const python = spawn("python", [
     "src/python/mf.py",
     JSON.stringify(matrix),
@@ -212,28 +201,120 @@ async function training(req: Request, res: Response) {
     res.status(500).send({ error: err });
   });
   python.stdout.on("close", () => {
-    const data: ({ video: IVideo; w: number } | null)[] = output
-      .split(" ")
-      .map((item, index) => {
-        return item
-          ? {
-              video: list[index],
-              w: parseFloat(item),
-            }
-          : null;
-      })
-      .sort((x, y) => {
-        if (x && y) {
-          return y.w - x.w;
-        } else {
-          return 0;
-        }
-      });
-    res.status(200).send({ message: "Successfully", list: data });
+    RecommendationUtils.saveTrainingData(userID, {
+      data: output,
+      likedList,
+      list,
+    });
+    res.status(200).send({ message: "Successfully" });
   });
 }
 
+function list(req: Request, res: Response) {
+  const userID = req.body._id as string;
+  const { limit, ...rest } = req.query;
+  const hadSeenVideos = Object.values(
+    rest as {
+      [key: string]: string;
+    }
+  ).map((data) => data);
+  const limitParsed = parseInt(limit as string) || 10;
+  if (!userID)
+    return res.status(404).send({ message: "user id needed", list: [] });
+  IHadSeenModel.findOneAndUpdate(
+    {
+      author_id: userID,
+    },
+    {
+      $push: {
+        had_seen_videos: hadSeenVideos,
+      },
+    },
+    {
+      new: true,
+      upsert: true,
+    },
+    (err, hadSeen) => {
+      if (err)
+        return res
+          .status(500)
+          .send({ message: "Error updating had seen video", err: err });
+      else {
+        const output = RecommendationUtils.getTrainingData(userID);
+        if (output) {
+          const { data: trainingData, likedList, list } = output;
+          const data: ({ video: IVideo; w: number } | null)[] = trainingData
+            .split(" ")
+            .map((item, index) => {
+              return item
+                ? {
+                    video: list[index],
+                    w: parseFloat(item),
+                  }
+                : null;
+            })
+            .filter((item) =>
+              likedList.find(
+                (x) =>
+                  x.video_id.toString() === item?.video?._id?.toString() &&
+                  x.author_id.toString() === userID
+              ) ||
+              hadSeen?.had_seen_videos.find(
+                (videoId) => videoId.toString() === item?.video?._id?.toString()
+              )
+                ? false
+                : true
+            )
+            .slice(0, limitParsed)
+            .sort((x, y) => {
+              if (x && y) {
+                return y.w - x.w;
+              } else {
+                return 0;
+              }
+            });
+          const videoIds = data.map((x) => x?.video?._id?.toString());
+          StatisticsModel.find(
+            {
+              video_id: {
+                $in: videoIds,
+              },
+            },
+            {
+              updatedAt: 0,
+              __v: 0,
+              createdAt: 0,
+            },
+            null,
+            (err, statistics) => {
+              if (err)
+                return res
+                  .status(500)
+                  .send({ message: "Something went wrong", error: err });
+              else {
+                const list = data.map((item) => {
+                  const stat = statistics.find(
+                    (x) =>
+                      x.video_id.toString() === item?.video?._id?.toString()
+                  );
+                  return {
+                    ...item,
+                    statistics: stat,
+                  };
+                });
+                res.status(200).send({ message: "Successfully", list });
+              }
+            }
+          );
+        } else {
+          return res.status(500).send({ message: "Server error" });
+        }
+      }
+    }
+  );
+}
 const RecommendationController = {
+  list,
   training,
   getRecommendationDef,
   getRecommendationFromVideo,

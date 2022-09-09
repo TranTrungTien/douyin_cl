@@ -45,7 +45,7 @@ const UserPage = (props: Props) => {
     me.data?.uid !== user_id ? true : false
   );
 
-  const user = userRes ? userRes.doc : me.data;
+  const user = me.data?.uid !== user_id ? userRes?.doc : me.data;
 
   const [cursorState, setCursorState] = useState<ICursorState>({
     viewOwn: {
@@ -64,7 +64,6 @@ const UserPage = (props: Props) => {
       e.currentTarget.scrollHeight -
       window.innerHeight -
       e.currentTarget.scrollTop;
-
     if (isScrollToBottom === 0) {
       if (cursorState.viewOwn.isCurrent) {
         if (!cursorState.viewOwn.reachToEnd) {
