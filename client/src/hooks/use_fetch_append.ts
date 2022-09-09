@@ -8,6 +8,7 @@ export function useFetchAppend<T1>(
   callbackHandler?: (args?: any) => void,
   queryCondition: boolean = false,
   withCredentials: boolean = false,
+  responseDataHandler?: (data: T1[]) => void,
   responseType: ResponseType = "json",
   contentType: string = "application/json",
   reFetchTrigger?: boolean
@@ -51,6 +52,7 @@ export function useFetchAppend<T1>(
             };
           }
         });
+        responseDataHandler && responseDataHandler(d.list);
       }
     };
     if (queryCondition) {
@@ -71,6 +73,7 @@ export function useFetchAppend<T1>(
     errorHandler,
     callbackHandler,
     withCredentials,
+    responseDataHandler,
     responseType,
     contentType,
     reFetchTrigger,

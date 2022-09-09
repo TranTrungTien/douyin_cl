@@ -45,7 +45,7 @@ const UserPage = (props: Props) => {
     me.data?.uid !== user_id ? true : false
   );
 
-  const user = userRes ? userRes.doc : me.data;
+  const user = me.data?.uid !== user_id ? userRes?.doc : me.data;
 
   const [cursorState, setCursorState] = useState<ICursorState>({
     viewOwn: {

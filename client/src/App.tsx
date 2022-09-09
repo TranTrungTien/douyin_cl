@@ -3,6 +3,7 @@ import Routers from "./routers";
 import "./style/global.css";
 
 setDefaultSettings();
+localStorage.removeItem("had_seen");
 
 function App() {
   return (

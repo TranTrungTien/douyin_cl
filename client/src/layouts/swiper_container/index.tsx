@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import SwiperCore, { Virtual } from "swiper";
 import "swiper/css";
 import "swiper/css/bundle";
@@ -33,15 +33,36 @@ const SwiperWrapper = () => {
     undefined,
     myID ? false : true
   );
-  const [reFetchVideoTrigger, setReFetchVideoTrigger] = useState({
+  const [reFetchVideoTrigger, setReFetchVideoTrigger] = useState<{
+    allowedFetchVideo: boolean;
+    hadSeenVideos: { [key: number]: string };
+  }>({
     allowedFetchVideo: false,
-    trigger: false,
+    hadSeenVideos: {},
   });
   const videoParams = useMemo(() => {
     return {
       limit: 10,
+      ...reFetchVideoTrigger.hadSeenVideos,
     };
-  }, []);
+  }, [reFetchVideoTrigger.hadSeenVideos]);
+  const handleResponse = (
+    list: {
+      video?: IVideo | undefined;
+      statistics: IStatistics;
+      w?: number;
+    }[]
+  ) => {
+    localStorage.removeItem("had_seen");
+    const hadSeenVideos: { [key: number]: string } = {};
+    list.forEach((v, index) => {
+      hadSeenVideos[index] = v.video?._id || "";
+    });
+    console.log(hadSeenVideos);
+
+    localStorage.setItem("had_seen", JSON.stringify(hadSeenVideos));
+  };
+  const responseHandler = useCallback(handleResponse, []);
   const { data: recommendedForUser } = useFetchAppend<{
     video?: IVideo;
     statistics: IStatistics;
@@ -53,14 +74,16 @@ const SwiperWrapper = () => {
     undefined,
     myID && reFetchVideoTrigger.allowedFetchVideo ? true : false,
     true,
-    "json",
-    "application/json",
-    reFetchVideoTrigger.trigger
+    responseHandler
   );
   useEffect(() => {
     let intervalId: any;
     if (myID) {
       const handleTraining = () => {
+        if (!myID) {
+          clearInterval(intervalId);
+          return;
+        }
         getData<{ message: string }>(
           servicesPath.RECOMMENDATION_TRAINING,
           undefined,
@@ -80,22 +103,27 @@ const SwiperWrapper = () => {
       };
       handleTraining();
       intervalId = setInterval(handleTraining, TRAINING_DELAY);
-    } else {
-      clearInterval(intervalId);
     }
     return () => clearInterval(intervalId);
   }, [myID]);
 
   const videos = myID ? recommendedForUser : recommendedDefault;
   const handleSlideChange = (swiper: SwiperCore) => {
-    if (videos) {
-      if (videos.list.length - swiper.activeIndex === 3)
-        setReFetchVideoTrigger((prev) => {
-          return {
-            ...prev,
-            trigger: !prev.trigger,
-          };
-        });
+    if (myID && videos) {
+      if (videos.list.length - swiper.activeIndex === 2) {
+        const rawData = localStorage.getItem("had_seen") || "";
+        if (rawData) {
+          const hadSeenVideos = JSON.parse(rawData);
+          if (hadSeenVideos) {
+            setReFetchVideoTrigger((prev) => {
+              return {
+                ...prev,
+                hadSeenVideos: hadSeenVideos,
+              };
+            });
+          }
+        }
+      }
     }
   };
   return (
@@ -110,7 +138,8 @@ const SwiperWrapper = () => {
       virtual
       onSlideChange={handleSlideChange}
     >
-      {videos && videos.status === "loading" && <Loading />}
+      {((videos && videos.status === "loading") ||
+        (myID && !reFetchVideoTrigger.allowedFetchVideo)) && <Loading />}
       {videos && videos.status === "error" && (
         <Modal>
           <div className="w-96 h-96 rounded bg-white text-center text-black">

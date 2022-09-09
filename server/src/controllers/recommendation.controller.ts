@@ -6,6 +6,7 @@ import { metaPath } from "../const/path";
 import LikedModel from "../models/liked.model";
 import StatisticsModel from "../models/statistics.model";
 import VideoModel from "../models/video.model";
+import IHadSeenModel from "../models/had_seen_video.model";
 import { dayOfTwoDate } from "../utils/day_of_two_date";
 import { RecommendationUtils } from "../utils/recommendation";
 import { getFeatureAsMatrix } from "../utils/fetch_data";
@@ -211,74 +212,106 @@ async function training(req: Request, res: Response) {
 
 function list(req: Request, res: Response) {
   const userID = req.body._id as string;
-  const limit = parseInt(req.query.limit as string) ?? 100;
+  const { limit, ...rest } = req.query;
+  const hadSeenVideos = Object.values(
+    rest as {
+      [key: string]: string;
+    }
+  ).map((data) => data);
+  const limitParsed = parseInt(limit as string) || 10;
   if (!userID)
     return res.status(404).send({ message: "user id needed", list: [] });
-  const output = RecommendationUtils.getTrainingData(userID);
-  if (output) {
-    const { data: trainingData, likedList, list } = output;
-    const data: ({ video: IVideo; w: number } | null)[] = trainingData
-      .split(" ")
-      .map((item, index) => {
-        return item
-          ? {
-              video: list[index],
-              w: parseFloat(item),
+  IHadSeenModel.findOneAndUpdate(
+    {
+      author_id: userID,
+    },
+    {
+      $push: {
+        had_seen_videos: hadSeenVideos,
+      },
+    },
+    {
+      new: true,
+      upsert: true,
+    },
+    (err, hadSeen) => {
+      if (err)
+        return res
+          .status(500)
+          .send({ message: "Error updating had seen video", err: err });
+      else {
+        const output = RecommendationUtils.getTrainingData(userID);
+        if (output) {
+          const { data: trainingData, likedList, list } = output;
+          const data: ({ video: IVideo; w: number } | null)[] = trainingData
+            .split(" ")
+            .map((item, index) => {
+              return item
+                ? {
+                    video: list[index],
+                    w: parseFloat(item),
+                  }
+                : null;
+            })
+            .filter((item) =>
+              likedList.find(
+                (x) =>
+                  x.video_id.toString() === item?.video?._id?.toString() &&
+                  x.author_id.toString() === userID
+              ) ||
+              hadSeen?.had_seen_videos.find(
+                (videoId) => videoId.toString() === item?.video?._id?.toString()
+              )
+                ? false
+                : true
+            )
+            .slice(0, limitParsed)
+            .sort((x, y) => {
+              if (x && y) {
+                return y.w - x.w;
+              } else {
+                return 0;
+              }
+            });
+          const videoIds = data.map((x) => x?.video?._id?.toString());
+          StatisticsModel.find(
+            {
+              video_id: {
+                $in: videoIds,
+              },
+            },
+            {
+              updatedAt: 0,
+              __v: 0,
+              createdAt: 0,
+            },
+            null,
+            (err, statistics) => {
+              if (err)
+                return res
+                  .status(500)
+                  .send({ message: "Something went wrong", error: err });
+              else {
+                const list = data.map((item) => {
+                  const stat = statistics.find(
+                    (x) =>
+                      x.video_id.toString() === item?.video?._id?.toString()
+                  );
+                  return {
+                    ...item,
+                    statistics: stat,
+                  };
+                });
+                res.status(200).send({ message: "Successfully", list });
+              }
             }
-          : null;
-      })
-      .filter((item) =>
-        likedList.find(
-          (x) =>
-            x.video_id.toString() === item?.video?._id?.toString() &&
-            x.author_id.toString() === userID
-        )
-          ? false
-          : true
-      )
-      .slice(0, limit)
-      .sort((x, y) => {
-        if (x && y) {
-          return y.w - x.w;
+          );
         } else {
-          return 0;
-        }
-      });
-    const videoIds = data.map((x) => x?.video?._id?.toString());
-    StatisticsModel.find(
-      {
-        video_id: {
-          $in: videoIds,
-        },
-      },
-      {
-        updatedAt: 0,
-        __v: 0,
-        createdAt: 0,
-      },
-      null,
-      (err, statistics) => {
-        if (err)
-          return res
-            .status(500)
-            .send({ message: "Something went wrong", error: err });
-        else {
-          const list = data.map((item) => {
-            const stat = statistics.find(
-              (x) => x.video_id.toString() === item?.video?._id?.toString()
-            );
-            return {
-              ...item,
-              statistics: stat,
-            };
-          });
-          res.status(200).send({ message: "Successfully", list });
+          return res.status(500).send({ message: "Server error" });
         }
       }
-    );
-  } else {
-    return res.status(500).send({ message: "Server error" });
-  }
+    }
+  );
 }
 const RecommendationController = {
   list,

@@ -78,7 +78,7 @@ const Video = ({
   const progressContainerRef = useRef({ progressRef, progressBarRef });
   const videoBlob = useFetchSuspense<Blob>(
     "/" + videoAddr,
-    null,
+    undefined,
     true,
     false,
     "blob",

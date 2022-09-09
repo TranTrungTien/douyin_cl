@@ -194,7 +194,7 @@ function getAllVideoByUser(req: Request, res: Response) {
   VideoModel.find(
     { author_id: author_id },
     { createdAt: 0, updatedAt: 0, __v: 0 },
-    { skip: Number(cursor) * limit, limit: limit },
+    { skip: Number(cursor) * limit, limit: limit, sort: { createdAt: -1 } },
     (err, list) => {
       if (err)
         return res.status(500).send({ err, message: "Something went wrong" });
