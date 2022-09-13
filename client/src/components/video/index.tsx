@@ -43,6 +43,7 @@ type Props = {
   statistics?: IStatistics;
   onChangeVideo?: (action: boolean) => void;
   onOpenRightBar?: (action: RightBarAction) => void;
+  onOpenVideoDetail?: (url: string) => void;
 };
 
 const Video = ({
@@ -68,6 +69,7 @@ const Video = ({
   videoSize,
   onChangeVideo,
   onOpenRightBar,
+  onOpenVideoDetail,
 }: Props) => {
   console.log("video rerender");
   const dispatch = useAppDispatch();
@@ -231,6 +233,7 @@ const Video = ({
         allowedPlay={allowedPlay}
         ref={timeCounterRef}
         isPlay={isPlay}
+        onOpenVideoDetail={onOpenVideoDetail}
         progressBar={
           <ProgressBar
             onChangeVideoTime={handleChangeVideoTime}

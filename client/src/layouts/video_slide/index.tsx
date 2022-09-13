@@ -6,11 +6,14 @@ import Modal from "../../components/modal";
 import { IStatistics } from "../../interfaces/statistic";
 import { IVideo } from "../../interfaces/video.interface";
 import { ISearchPapeData } from "../../pages/search_page";
-import { isFollowUser, useAppSelector } from "../../redux/app/hooks";
+import {
+  isFollowUser,
+  useAppDispatch,
+  useAppSelector,
+} from "../../redux/app/hooks";
+import { setVideo } from "../../redux/slice/current_view_slice";
 import ErrorBoundary from "../../utils/error-boundaries";
-import CommentContainer from "../comment_container";
 import RightContainer from "../right_container";
-import UserContainer from "../user_container";
 
 type Props = {
   avatarThumb: string;
@@ -42,6 +45,7 @@ const VideoSlide = ({
 }: Props) => {
   console.log("video slide rerender");
   const myID = useAppSelector((state) => state.user.data?._id);
+  const dispatch = useAppDispatch();
   const [isPlay, setIsPlay] = useState(true);
   const swiper = useSwiper();
   const swiperSlide = useSwiperSlide();
@@ -101,7 +105,10 @@ const VideoSlide = ({
   const isFollow = useAppSelector((state) =>
     isFollowUser(state, myID, video.author_id._id)
   ) as boolean | undefined;
-
+  const handleOpenVideoDetail = (url: string) => {
+    dispatch(setVideo({ doc: video, statistics: statistics }));
+    window.open(url, "_blank");
+  };
   return (
     <div
       className={`flex justify-between items-center rounded-md ${className}`}
@@ -148,32 +155,26 @@ const VideoSlide = ({
                     width: video.width,
                     height: video.height,
                   }}
+                  onOpenVideoDetail={handleOpenVideoDetail}
                 />
               )}
             </ErrorBoundary>
           </Suspense>
         )}
       </section>
-      {openRightBar.isOpen && (
-        <RightContainer>
-          {openRightBar.user ? (
-            <UserContainer
-              myID={myID}
-              isFollow={isFollow}
-              uid={video.author_id.uid}
-              authorVideoID={video.author_id._id}
-              avatarThumb={avatarThumb}
-              nickname={nickname}
-              onCloseUserBox={handleOpenRightBar}
-            />
-          ) : (
-            <CommentContainer
-              videoID={video._id}
-              onCloseComment={handleOpenRightBar}
-            />
-          )}
-        </RightContainer>
-      )}
+      <RightContainer
+        isOpenBox={openRightBar.isOpen}
+        uid={video.author_id.uid}
+        authorVideoID={video.author_id._id}
+        avatarThumb={avatarThumb}
+        nickname={nickname}
+        onCloseContainer={handleOpenRightBar}
+        videoID={video._id}
+        isFollow={isFollow ? true : false}
+        isOpenComment={openRightBar.user ? false : true}
+        isOpenUser={openRightBar.user ? true : false}
+        myID={myID ? myID : ""}
+      />
     </div>
   );
 };

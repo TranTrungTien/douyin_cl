@@ -8,7 +8,7 @@ export function useFetchAppend<T1>(
   callbackHandler?: (args?: any) => void,
   queryCondition: boolean = false,
   withCredentials: boolean = false,
-  responseDataHandler?: (data: T1[]) => void,
+  responseDataHandler?: (responseData: T1[]) => void,
   responseType: ResponseType = "json",
   contentType: string = "application/json",
   reFetchTrigger?: boolean

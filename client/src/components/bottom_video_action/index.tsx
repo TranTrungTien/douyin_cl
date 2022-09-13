@@ -1,4 +1,11 @@
-import { forwardRef, MouseEvent, useEffect, useRef, useState } from "react";
+import {
+  forwardRef,
+  MouseEvent,
+  MouseEventHandler,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
 import { Link } from "react-router-dom";
 import { timeFormat } from "../../utils/time";
 import Button from "../button";
@@ -19,6 +26,7 @@ type Props = {
   onTurnOnOffVolume?: (action: boolean) => void;
   onChangeVolume: (volume: number) => void;
   onToggleFullscreenMode: () => void;
+  onOpenVideoDetail?: (url: string) => void;
 };
 
 const BottomVideoAction = forwardRef<HTMLSpanElement, Props>(
@@ -38,6 +46,7 @@ const BottomVideoAction = forwardRef<HTMLSpanElement, Props>(
       onTurnOnOffVolume,
       onChangeVolume,
       onToggleFullscreenMode,
+      onOpenVideoDetail,
     }: Props,
     timeCounterRef
   ) => {
@@ -93,6 +102,11 @@ const BottomVideoAction = forwardRef<HTMLSpanElement, Props>(
     };
 
     const handleChangeMode = () => setAutoNext(!autoNext);
+    const videoUrlDetail = `/video/${videoID}/${videoIdf}`;
+    const handleOpenVideoDetail: MouseEventHandler<HTMLAnchorElement> = (e) => {
+      e.preventDefault();
+      onOpenVideoDetail && onOpenVideoDetail(videoUrlDetail);
+    };
     return (
       <div className="progress_bar absolute bottom-0 left-0 w-full z-[24]">
         <div className="flex flex-col justify-end items-start w-full">
@@ -271,7 +285,11 @@ const BottomVideoAction = forwardRef<HTMLSpanElement, Props>(
                 </div>
 
                 {!fromVideoPage && (
-                  <Link target="_blank" to={`/video/${videoID}/${videoIdf}`}>
+                  <Link
+                    onClick={handleOpenVideoDetail}
+                    target="_blank"
+                    to={`${videoUrlDetail}`}
+                  >
                     <div className="flex justify-center items-center group-hover: opacity-100">
                       {/* link to video's page */}
                       <span className="text-xs font-normal mr-2">详情</span>
