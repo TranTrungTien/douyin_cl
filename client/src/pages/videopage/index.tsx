@@ -28,11 +28,15 @@ import { IVideo } from "../../interfaces/video.interface";
 import { servicesPath } from "../../services/services_path";
 import { useAppSelector } from "../../redux/app/hooks";
 import { IStatistics } from "../../interfaces/statistic";
+import { useFetchAppend } from "../../hooks/use_fetch_append";
+import { ILikedComment } from "../../interfaces/liked_video.interface";
+import { IComment } from "../../interfaces/comment";
 
 type Props = {};
 
 const VideoPage = (props: Props) => {
-  const myID = useAppSelector((state) => state.user.data?._id);
+  const user = useAppSelector((state) => state.user);
+  const videoInfo = useAppSelector((state) => state.currentView.video);
   const [isPlay, setIsPlay] = useState(true);
   const { video_id: videoID, video_idf: videoIdf } = useParams();
   useEffect(() => {
@@ -49,18 +53,20 @@ const VideoPage = (props: Props) => {
       video_id: videoID,
     };
   }, [videoID]);
-  const video = useFetch<{ message: string; doc: IVideo }>(
+  const videoResponse = useFetch<{ message: string; doc: IVideo }>(
     servicesPath.GET_METADATA,
     videoParams,
     false,
-    videoID ? true : false
+    videoID && !videoInfo ? true : false
   );
+
+  const video = videoInfo ? videoInfo : videoResponse;
 
   const isLikedVideo = useFetch<{ message: string; like?: boolean }>(
     servicesPath.CHECK_LIKED,
     videoParams,
     true,
-    videoID && myID ? true : false
+    videoID && user.data ? true : false
   );
   const statistics = useFetch<{ message: string; statistics: IStatistics }>(
     servicesPath.GET_STATISTICS_OF_VIDEO,
@@ -89,6 +95,27 @@ const VideoPage = (props: Props) => {
       setIsPlay((pre) => !pre);
     }
   };
+  const commentParams = useMemo(() => {
+    return {
+      video_id: videoID,
+    };
+  }, [videoID]);
+
+  const { data: comments, setData: setComments } = useFetchAppend<IComment>(
+    servicesPath.GET_ALL_COMMENTS_OF_VIDEO,
+    commentParams,
+    undefined,
+    undefined,
+    videoID ? true : false
+  );
+  const { data: likedComments } = useFetchAppend<ILikedComment>(
+    servicesPath.GET_ALL_LIKED_COMMENT_OF_VIDEO_BY_AUTHOR,
+    commentParams,
+    undefined,
+    undefined,
+    user.data?.uid ? true : false,
+    true
+  );
   return (
     <section className="w-full h-screen">
       <div
@@ -132,7 +159,7 @@ const VideoPage = (props: Props) => {
                     {video && (
                       <Video
                         playerId="fullscreen"
-                        myID={myID}
+                        myID={user.data?._id}
                         nickname={video.doc.author_id.nickname}
                         videoAddr={video.doc.play_addr.url_list[0]}
                         videoDesc={video.doc.desc}
@@ -161,7 +188,7 @@ const VideoPage = (props: Props) => {
                   <VideoHeaderContainer
                     statistics={statistics?.statistics}
                     authorVideoID={video.doc.author_id._id}
-                    myID={myID}
+                    myID={user.data?._id}
                     video={video.doc}
                     isLiked={isLikedVideo ? isLikedVideo?.like : false}
                   />
@@ -178,6 +205,10 @@ const VideoPage = (props: Props) => {
                       commentsCount={statistics?.statistics.comment_count}
                       videoID={videoID}
                       fromVideoPage={true}
+                      comments={comments}
+                      likedComments={likedComments}
+                      user={user.data}
+                      setComments={setComments}
                     />
                   )}
                 </div>
@@ -189,7 +220,7 @@ const VideoPage = (props: Props) => {
                   <VideoPageUserBox
                     followerCount={video.doc.author_id.follower_count}
                     followingCount={video.doc.author_id.following_count}
-                    myID={myID}
+                    myID={user.data?._id}
                     user_id={video.doc.author_id._id}
                     uid={video.doc.author_id.uid}
                     imageLink={video.doc.author_id.avatar_thumb.url_list[0]}

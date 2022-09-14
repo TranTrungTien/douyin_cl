@@ -1,11 +1,10 @@
-import { SyntheticEvent, useMemo } from "react";
+import { Dispatch, SetStateAction, SyntheticEvent } from "react";
 import Comment from "../../components/comment";
 import CommentHeader from "../../components/comment_box_header";
 import Input from "../../components/input";
-import { useFetchAppend } from "../../hooks/use_fetch_append";
 import { IComment } from "../../interfaces/comment";
 import { ILikedComment } from "../../interfaces/liked_video.interface";
-import { useAppSelector } from "../../redux/app/hooks";
+import { IUser } from "../../interfaces/user.interface";
 import { postData } from "../../services/app_services";
 import { servicesPath } from "../../services/services_path";
 import { RightBarAction } from "../video_slide";
@@ -14,38 +13,35 @@ type Props = {
   videoID: string;
   fromVideoPage?: boolean;
   commentsCount?: number;
+  comments: {
+    status: "loading" | "error" | "success";
+    list: IComment[];
+  } | null;
+  user: IUser | null;
+  likedComments: {
+    status: "loading" | "error" | "success";
+    list: ILikedComment[];
+  } | null;
   onCloseComment?: (action: RightBarAction) => void;
+  setComments: Dispatch<
+    SetStateAction<{
+      status: "loading" | "error" | "success";
+      message?: string | undefined;
+      list: IComment[];
+    } | null>
+  >;
 };
 
 const CommentContainer = ({
   onCloseComment,
+  user,
   commentsCount,
   videoID,
   fromVideoPage,
+  comments,
+  likedComments,
+  setComments,
 }: Props) => {
-  const user = useAppSelector((state) => state.user);
-  const commentParams = useMemo(() => {
-    return {
-      video_id: videoID,
-    };
-  }, [videoID]);
-  const { data: comments, setData: setComments } = useFetchAppend<IComment>(
-    servicesPath.GET_ALL_COMMENTS_OF_VIDEO,
-    commentParams,
-    undefined,
-    undefined,
-    videoID ? true : false
-  );
-
-  const { data: likedComments } = useFetchAppend<ILikedComment>(
-    servicesPath.GET_ALL_LIKED_COMMENT_OF_VIDEO_BY_AUTHOR,
-    commentParams,
-    undefined,
-    undefined,
-    user.data?.uid ? true : false,
-    true
-  );
-
   const handleSubmit = async (e: SyntheticEvent) => {
     e.preventDefault();
     const target = e.target as typeof e.target & {
@@ -66,7 +62,7 @@ const CommentContainer = ({
     ).catch(alert);
     if (commentRes && commentRes.data) {
       const newComment = commentRes.data.doc;
-      user.data && (newComment.author_id = user.data);
+      user && (newComment.author_id = user);
 
       setComments((state) => {
         if (state)
@@ -94,7 +90,7 @@ const CommentContainer = ({
           onCloseComment={onCloseComment}
           fromVideoPage={fromVideoPage}
         />
-        {user.data && (
+        {user && (
           <form
             autoComplete="off"
             className="w-full py-1"
