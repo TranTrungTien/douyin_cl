@@ -106,7 +106,7 @@ const CommentContainer = ({
           </form>
         )}
       </div>
-      <div className="w-full h-auto overflow-auto hidden-scrollbar">
+      <div className="w-full h-auto overflow-auto hidden-scrollbar min-h-[calc(100vh/2)]">
         {comments && comments.list.length
           ? comments.list.map((c, index) => {
               const isLiked = likedComments?.list.find((l) => {

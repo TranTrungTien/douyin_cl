@@ -1,7 +1,8 @@
 import { Request, Response } from "express";
 import { IUser } from "../interface/user.interface";
 import UserModel from "../models/user.model";
-import bcrypt from "bcrypt";
+// Disabled because installed error
+// import bcrypt from "bcrypt";
 import { v4 } from "uuid";
 import jwt from "jsonwebtoken";
 import NodeMailer from "nodemailer";
@@ -10,26 +11,27 @@ import LoginHelper from "../utils/login-helper";
 const loginHelper = new LoginHelper();
 
 function createUser(req: Request, res: Response) {
-  const { password, ...user } = req.body.user as IUser;
-  bcrypt
-    .hash(password, 15)
-    .then((hashedPassword) => {
-      const model = new UserModel({
-        ...user,
-        password: hashedPassword,
-        uid: v4() + v4() + v4(),
-      });
-      model
-        .save()
-        .then((doc) => {
-          console.log({ doc });
-          res.status(201).send({ message: "Successfully", doc });
-        })
-        .catch((err) => {
-          throw err;
-        });
-    })
-    .catch((err) => res.status(500).send({ message: "Error", err }));
+  // Disabled because installed error
+  // const { password, ...user } = req.body.user as IUser;
+  // bcrypt
+  //   .hash(password, 15)
+  //   .then((hashedPassword) => {
+  //     const model = new UserModel({
+  //       ...user,
+  //       password: hashedPassword,
+  //       uid: v4() + v4() + v4(),
+  //     });
+  //     model
+  //       .save()
+  //       .then((doc) => {
+  //         console.log({ doc });
+  //         res.status(201).send({ message: "Successfully", doc });
+  //       })
+  //       .catch((err) => {
+  //         throw err;
+  //       });
+  //   })
+  //   .catch((err) => res.status(500).send({ message: "Error", err }));
 }
 function updateUser(req: Request, res: Response) {
   const user = req.body.user as IUser;

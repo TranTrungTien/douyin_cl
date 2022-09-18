@@ -16,6 +16,7 @@ import ErrorBoundary from "../../utils/error-boundaries";
 import RightContainer from "../right_container";
 
 type Props = {
+  index?: number;
   avatarThumb: string;
   nickname: string;
   allowedPlay: boolean;
@@ -39,6 +40,7 @@ const VideoSlide = ({
   video,
   allowedPlay,
   playerId,
+  index,
   searchPageData,
   className = "w-full h-full",
   onStart,
@@ -46,7 +48,7 @@ const VideoSlide = ({
   console.log("video slide rerender");
   const myID = useAppSelector((state) => state.user.data?._id);
   const dispatch = useAppDispatch();
-  const [isPlay, setIsPlay] = useState(true);
+  const [isPlay, setIsPlay] = useState(false);
   const swiper = useSwiper();
   const swiperSlide = useSwiperSlide();
   const [openRightBar, setOpenRightBar] = useState<RightBarAction>({
@@ -54,12 +56,12 @@ const VideoSlide = ({
     comment: false,
     user: false,
   });
-  useEffect(() => {
-    setIsPlay((_) => allowedPlay);
-  }, [allowedPlay]);
   const { isActive, isVisible, isNext, isPrev } = searchPageData
     ? searchPageData
     : swiperSlide;
+  useEffect(() => {
+    allowedPlay && setIsPlay((_) => isActive);
+  }, [isActive, allowedPlay]);
   const handleOpenRightBar = (action: RightBarAction) => {
     if (action.isOpen === openRightBar.isOpen) return;
     setOpenRightBar((pre) => {
@@ -100,7 +102,7 @@ const VideoSlide = ({
       else setIsPlay((prev) => !prev);
     }
   };
-  console.log({ isActive, isVisible, isPrev, isNext });
+  console.log({ index, isActive, isVisible, isPrev, isNext });
 
   const isFollow = useAppSelector((state) =>
     isFollowUser(state, myID, video.author_id._id)
@@ -115,52 +117,50 @@ const VideoSlide = ({
     >
       <section
         onClick={handlePlayOrPause}
+        id="video_lazyload_root"
         className="w-full h-full min-h-full flex-1 relative grid place-content-center overflow-hidden rounded-md z-20 bg-transparent"
       >
         <BackgroundVideo coverImage={video.origin_cover.url_list[0]} />
-        {isVisible && (
-          <Suspense fallback={<Loading />}>
-            <ErrorBoundary
-              fallback={
-                <Modal root="video_lazyload_root">
-                  <div className="w-96 h-96 rounded bg-dark_blue text-center text-white flex justify-center items-center">
-                    <h1>Opps we ran into some problems</h1>
-                  </div>
-                </Modal>
-              }
-            >
-              {isActive && (
-                <Video
-                  playerId={playerId}
-                  statistics={statistics}
-                  myID={myID}
-                  isFollow={isFollow}
-                  authorVideoID={video.author_id._id}
-                  authorUid={video.author_id.uid}
-                  nickname={video.author_id.nickname}
-                  videoAddr={video.play_addr.url_list[0]}
-                  videoDesc={video.desc}
-                  videoDuration={video.duration}
-                  videoID={video._id}
-                  videoIdf={video.id_f}
-                  avatarThumb={avatarThumb}
-                  fromVideoPage={false}
-                  allowedPlay={allowedPlay}
-                  isPlay={isPlay}
-                  isActive={isActive}
-                  onChangeVideo={handleChangeVideo}
-                  onOpenRightBar={handleOpenRightBar}
-                  fromSearchPage={searchPageData ? true : false}
-                  videoSize={{
-                    width: video.width,
-                    height: video.height,
-                  }}
-                  onOpenVideoDetail={handleOpenVideoDetail}
-                />
-              )}
-            </ErrorBoundary>
-          </Suspense>
-        )}
+        <Suspense fallback={<Loading />}>
+          <ErrorBoundary
+            fallback={
+              <Modal root="video_lazyload_root">
+                <div className="w-96 h-96 rounded bg-dark_blue text-center text-white flex justify-center items-center">
+                  <h1>Opps we ran into some problems</h1>
+                </div>
+              </Modal>
+            }
+          >
+            <Video
+              index={index}
+              playerId={playerId}
+              statistics={statistics}
+              myID={myID}
+              isFollow={isFollow}
+              authorVideoID={video.author_id._id}
+              authorUid={video.author_id.uid}
+              nickname={video.author_id.nickname}
+              videoAddr={video.play_addr.url_list[0]}
+              videoDesc={video.desc}
+              videoDuration={video.duration}
+              videoID={video._id}
+              videoIdf={video.id_f}
+              avatarThumb={avatarThumb}
+              fromVideoPage={false}
+              allowedPlay={allowedPlay}
+              isPlay={isPlay}
+              isActive={isActive}
+              onChangeVideo={handleChangeVideo}
+              onOpenRightBar={handleOpenRightBar}
+              fromSearchPage={searchPageData ? true : false}
+              videoSize={{
+                width: video.width,
+                height: video.height,
+              }}
+              onOpenVideoDetail={handleOpenVideoDetail}
+            />
+          </ErrorBoundary>
+        </Suspense>
       </section>
       <RightContainer
         isOpenBox={openRightBar.isOpen}

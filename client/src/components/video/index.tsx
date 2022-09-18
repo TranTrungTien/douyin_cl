@@ -18,6 +18,7 @@ import Plus from "../plus";
 import ProgressBar from "../progress_bar";
 
 type Props = {
+  index?: number;
   authorUid?: string;
   authorVideoID?: string;
   isFollow?: boolean;
@@ -104,15 +105,13 @@ const Video = ({
       videoRef.current &&
       videoRef.current.paused
     ) {
-      videoRef.current.play();
-    } else if (
-      !isPlay &&
-      isActive &&
-      allowedPlay &&
-      videoRef.current &&
-      !videoRef.current.paused
-    ) {
-      videoRef.current?.pause();
+      console.log("play ...");
+      videoRef.current.play().catch((error) => {
+        console.log("play error : ", error);
+      });
+    } else if (!isPlay && allowedPlay && videoRef.current) {
+      console.log("pause ...");
+      videoRef.current.pause();
     }
   }, [isPlay, isActive, allowedPlay]);
   useEffect(() => {
@@ -195,8 +194,8 @@ const Video = ({
           minWidth: videoSize.width > videoSize.height ? "100%" : "auto",
         }}
         className="z-[22] min-h-full h-full object-contain object-center rounded-md absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 hover:cursor-pointer"
-        loop={isActive && true}
-        autoPlay={isActive && allowedPlay}
+        loop={isActive && allowedPlay && isPlay}
+        autoPlay={isActive && allowedPlay && isPlay}
         onTimeUpdate={handleTimeUpdate}
       ></video>
       {/* Pause when clicking */}
