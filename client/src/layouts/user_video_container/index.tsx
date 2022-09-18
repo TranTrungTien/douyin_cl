@@ -109,7 +109,7 @@ const UserVideoContainer = ({
   console.log({ ownVideos });
 
   return (
-    <div className="extra-desktop:px-12 over-desktop:px-16 py-8 space-y-6  min-h-[calc(100vh*0.85)]">
+    <div className="extra-desktop:px-12 over-desktop:px-16 py-8 space-y-6">
       <header className="laptop:px-3 desktop:px-5 extra-desktop:px-0 flex justify-start items-center space-x-10 leading-[26px] font-medium text-[18px] opacity-90">
         <Button
           text=""
@@ -154,7 +154,7 @@ const UserVideoContainer = ({
         </Button>
       </header>
       <div className="laptop:max-w-[620px] laptop:min-w-[620px] desktop:max-w-[680px] desktop:min-w-[680px] extra-desktop:max-w-[776px] extra-desktop:min-w-[776px]">
-        <VideoContainer className="relative grid laptop:gap-x-5 desktop:gap-x-3 laptop:gap-y-5 desktop:gap-y-3 laptop:px-10 desktop:px-5 extra-desktop:px-0 laptop:grid-cols-2 desktop:grid-cols-3">
+        <VideoContainer className="min-h-[calc(100vh*0.3)] relative grid laptop:gap-x-5 desktop:gap-x-3 laptop:gap-y-5 desktop:gap-y-3 laptop:px-10 desktop:px-5 extra-desktop:px-0 laptop:grid-cols-2 desktop:grid-cols-3">
           {viewOpt.viewOwn
             ? ownVideos?.status === "error" && (
                 <Modal>

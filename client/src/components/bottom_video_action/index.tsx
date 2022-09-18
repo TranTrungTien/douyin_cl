@@ -7,6 +7,7 @@ import {
   useState,
 } from "react";
 import { Link } from "react-router-dom";
+import { sliderDraggableVertical } from "../../utils/slider_draggable";
 import { timeFormat } from "../../utils/time";
 import Button from "../button";
 import "./style.css";
@@ -66,7 +67,19 @@ const BottomVideoAction = forwardRef<HTMLSpanElement, Props>(
           "0px";
       }
     }, []);
-
+    useEffect(() => {
+      volumeBarRef.current &&
+        volumeRef.current &&
+        sliderDraggableVertical(
+          volumeRef.current,
+          volumeBarRef.current,
+          (volume) => {
+            onChangeVolume(
+              1 - volume > 1 ? 1 : 1 - volume < 0 ? 0 : 1 - volume
+            );
+          }
+        );
+    }, [onChangeVolume]);
     // set turn on or off volume
     const handleTurnOnOffVolume = (
       e: MouseEvent<HTMLButtonElement> & { target: HTMLElement }
@@ -97,7 +110,7 @@ const BottomVideoAction = forwardRef<HTMLSpanElement, Props>(
         volumeRef.current.style.height =
           (volumeBarRef.current.clientHeight / 100) * ((1 - volume) * 100) +
             "px" ?? "0px";
-        onChangeVolume(1 - volume);
+        onChangeVolume(1 - volume > 1 ? 1 : 1 - volume < 0 ? 0 : 1 - volume);
       }
     };
 

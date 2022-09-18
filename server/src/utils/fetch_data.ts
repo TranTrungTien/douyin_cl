@@ -18,7 +18,7 @@ const findData = () => {
       });
   });
   const userPs = new Promise<string[]>((resolve, reject) => {
-    UserModel.find({}, (err, list) => {
+    UserModel.find({}).exec((err, list) => {
       if (err) console;
       else {
         const userIDs = list.map((video) => video._id.toString());
@@ -27,7 +27,7 @@ const findData = () => {
     });
   });
   const likedPs = new Promise<IYourVideoLiked[]>((resolve, reject) => {
-    LikedModel.find({}, (err, list) => {
+    LikedModel.find({}).exec((err, list) => {
       if (err) console;
       else {
         resolve(list);
@@ -35,7 +35,7 @@ const findData = () => {
     });
   });
   const commentPs = new Promise<IComment[]>((resolve, reject) => {
-    CommentModel.find({}, (err, list) => {
+    CommentModel.find({}).exec((err, list) => {
       if (err) console;
       else {
         resolve(list);

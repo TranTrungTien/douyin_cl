@@ -38,6 +38,19 @@ const RightContainer = ({
   videoID,
 }: Props) => {
   const [cursor, setCursor] = useState(0);
+  // const isReOpen = useRef({
+  //   isReOpenUser: false,
+  //   isReOpenComment: false,
+  // });
+
+  // useEffect(() => {
+  //   isOpenUser &&
+  //     !isReOpen.current.isReOpenUser &&
+  //     (isReOpen.current.isReOpenUser = true);
+  //   isOpenComment &&
+  //     !isReOpen.current.isReOpenComment &&
+  //     (isReOpen.current.isReOpenComment = true);
+  // }, [isOpenUser, isOpenComment]);
   const ownVideosParams = useMemo(() => {
     return {
       author_id: authorVideoID,

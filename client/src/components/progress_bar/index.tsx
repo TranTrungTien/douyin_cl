@@ -1,4 +1,5 @@
-import { forwardRef, MouseEvent } from "react";
+import { forwardRef, MouseEvent, useEffect } from "react";
+import { sliderDraggableHorizontal } from "../../utils/slider_draggable";
 type Props = {
   onChangeVideoTime?: (position: number) => void;
 };
@@ -6,6 +7,17 @@ const ProgressBar = forwardRef(
   ({ onChangeVideoTime }: Props, progressContainerRef) => {
     const progressWrapper = progressContainerRef as any;
     const { progressBarRef, progressRef } = progressWrapper?.current;
+    useEffect(() => {
+      progressBarRef.current &&
+        progressRef.current &&
+        sliderDraggableHorizontal(
+          progressRef.current,
+          progressBarRef.current,
+          (timeSeek) => {
+            onChangeVideoTime && onChangeVideoTime(timeSeek);
+          }
+        );
+    }, [progressBarRef, progressRef, onChangeVideoTime]);
     const handleChangeVideoTime = (
       e: MouseEvent<HTMLDivElement> & { target: HTMLElement }
     ) => {

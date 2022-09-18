@@ -53,7 +53,7 @@ const UserContainer = ({
         onScroll={onScroll}
         className="h-[calc(100%-70px)] w-full overflow-x-hidden overflow-y-auto hidden-scrollbar"
       >
-        <VideoContainer className="relative grid laptop:grid-cols-2 desktop:grid-cols-3 laptop:px-3 py-2 laptop:gap-y-2 desktop:gap-y-3 laptop:gap-x-2 desktop:gap-x-3">
+        <VideoContainer className="relative grid laptop:grid-cols-2 desktop:grid-cols-3 laptop:px-3 py-2 laptop:gap-y-2 desktop:gap-y-3 laptop:gap-x-2 desktop:gap-x-3 min-h-[calc(100vh/2)]">
           {videosData &&
             videosData.list.map((video) => {
               return (

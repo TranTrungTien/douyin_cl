@@ -7,6 +7,8 @@ type Props = {
   children: ReactNode | ReactNode[];
 };
 const Modal = ({ root, children, className }: Props) => {
+  console.log({ root });
+
   return createPortal(
     <div
       id="modal"
