@@ -8,6 +8,7 @@ import { setIsLogin } from "../../redux/slice/login_slice";
 import { postData } from "../../services/app_services";
 import { servicesPath } from "../../services/services_path";
 import { toggleFullScreen } from "../../utils/fullscreen";
+import { isCustomEvent } from "../../utils/is_custom_event";
 import { timeFormat } from "../../utils/time";
 import AvatarCardButton from "../avatar_card_button";
 import BottomVideoAction from "../bottom_video_action";
@@ -64,6 +65,7 @@ const Video = ({
   isLiked,
   isActive,
   statistics,
+  index,
   avatarThumb,
   fromSearchPage,
   playerId,
@@ -115,8 +117,16 @@ const Video = ({
     }
   }, [isPlay, isActive, allowedPlay]);
   useEffect(() => {
+    const handleVolumeChange = (e: Event) => {
+      if (!isCustomEvent(e)) {
+        throw new Error("not a custom event");
+      }
+      videoRef.current && (videoRef.current.volume = e.detail.volume);
+    };
+    window.addEventListener("c-volume", handleVolumeChange);
     videoRef.current &&
       (videoRef.current.volume = Number(localStorage.getItem("volume")) ?? 0);
+    return () => window.removeEventListener("c-volume", handleVolumeChange);
   }, []);
   const handleTimeUpdate = () => {
     if (videoRef.current && progressBarRef.current && progressRef.current) {
@@ -155,9 +165,16 @@ const Video = ({
       videoRef.current.currentTime = changedTime;
     }
   };
-  const handleChangeVolume = (volume: number) => {
-    videoRef.current && (videoRef.current.volume = volume);
+  const handleChangeVolume = (volume: number, heightUI: number) => {
     localStorage.setItem("volume", JSON.stringify(volume));
+    window.dispatchEvent(
+      new CustomEvent<{ volume: number; heightUI: number }>("c-volume", {
+        detail: {
+          volume,
+          heightUI,
+        },
+      })
+    );
   };
 
   const handleToggleFullscreenMode = () => {
@@ -179,6 +196,8 @@ const Video = ({
       dispatch(setIsLogin(true));
     }
   };
+  console.log({ isActive, allowedPlay, isPlay });
+
   return (
     <>
       {/* Video */}
@@ -232,6 +251,7 @@ const Video = ({
         allowedPlay={allowedPlay}
         ref={timeCounterRef}
         isPlay={isPlay}
+        index={index}
         onOpenVideoDetail={onOpenVideoDetail}
         progressBar={
           <ProgressBar

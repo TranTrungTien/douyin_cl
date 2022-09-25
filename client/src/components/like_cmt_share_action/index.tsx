@@ -36,8 +36,6 @@ const LikeCmtShare = ({
   widthSvg = "36",
   heightSvg = "36",
 }: Props) => {
-  console.log("render");
-
   const [videoData, setVideoData] = useState({
     isLiked,
     ...statistics,

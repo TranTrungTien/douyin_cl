@@ -4,7 +4,6 @@ import rootSaga from "../saga";
 import userReducer from "../slice/user_slice";
 import followingReducer from "../slice/following_slice";
 import loginReducer from "../slice/login_slice";
-import currentViewReducer from "../slice/current_view_slice";
 
 const sagaMiddleware = createSagaMiddleware();
 
@@ -13,7 +12,6 @@ export const store = configureStore({
     user: userReducer,
     following: followingReducer,
     login: loginReducer,
-    currentView: currentViewReducer,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({

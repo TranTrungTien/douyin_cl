@@ -7,6 +7,7 @@ import {
   useState,
 } from "react";
 import { Link } from "react-router-dom";
+import { isCustomEvent } from "../../utils/is_custom_event";
 import { sliderDraggableVertical } from "../../utils/slider_draggable";
 import { timeFormat } from "../../utils/time";
 import Button from "../button";
@@ -23,9 +24,10 @@ type Props = {
   isPlay?: boolean;
   allowedPlay?: boolean;
   fromSearchPage?: boolean;
+  index?: number;
   progressBar: JSX.Element;
   onTurnOnOffVolume?: (action: boolean) => void;
-  onChangeVolume: (volume: number) => void;
+  onChangeVolume: (volume: number, heightUI: number) => void;
   onToggleFullscreenMode: () => void;
   onOpenVideoDetail?: (url: string) => void;
 };
@@ -44,6 +46,7 @@ const BottomVideoAction = forwardRef<HTMLSpanElement, Props>(
       progressBar,
       nickname,
       fromSearchPage,
+      index,
       onTurnOnOffVolume,
       onChangeVolume,
       onToggleFullscreenMode,
@@ -58,6 +61,19 @@ const BottomVideoAction = forwardRef<HTMLSpanElement, Props>(
     const [autoNext, setAutoNext] = useState(false);
     // set volume of video for the time
     useEffect(() => {
+      const handleVolumeChange = (e: Event) => {
+        if (!isCustomEvent(e)) {
+          throw new Error("not a custom event");
+        } else {
+          const { heightUI } = e.detail as { heightUI: number };
+          volumeRef.current &&
+            volumeBarRef.current &&
+            volumeRef.current.style.setProperty(
+              "height",
+              heightUI + "px" ?? "0px"
+            );
+        }
+      };
       if (volumeRef.current) {
         volumeRef.current.style.height =
           (volumeBarRef.current &&
@@ -66,16 +82,20 @@ const BottomVideoAction = forwardRef<HTMLSpanElement, Props>(
               "px") ??
           "0px";
       }
+      window.addEventListener("c-volume", handleVolumeChange);
+      return () => window.removeEventListener("c-volume", handleVolumeChange);
     }, []);
+    // Wrong page Y in Fullscreen mode
     useEffect(() => {
       volumeBarRef.current &&
         volumeRef.current &&
         sliderDraggableVertical(
           volumeRef.current,
           volumeBarRef.current,
-          (volume) => {
+          (volume, height) => {
             onChangeVolume(
-              1 - volume > 1 ? 1 : 1 - volume < 0 ? 0 : 1 - volume
+              1 - volume > 1 ? 1 : 1 - volume < 0 ? 0 : 1 - volume,
+              height
             );
           }
         );
@@ -107,10 +127,12 @@ const BottomVideoAction = forwardRef<HTMLSpanElement, Props>(
         const bounding = e.currentTarget.getBoundingClientRect();
         const position = e.clientY - bounding.y;
         const volume = (position / bounding.height) * 1;
-        volumeRef.current.style.height =
-          (volumeBarRef.current.clientHeight / 100) * ((1 - volume) * 100) +
-            "px" ?? "0px";
-        onChangeVolume(1 - volume > 1 ? 1 : 1 - volume < 0 ? 0 : 1 - volume);
+        const height =
+          (volumeBarRef.current.clientHeight / 100) * ((1 - volume) * 100);
+        onChangeVolume(
+          1 - volume > 1 ? 1 : 1 - volume < 0 ? 0 : 1 - volume,
+          height
+        );
       }
     };
 

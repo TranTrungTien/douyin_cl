@@ -30,7 +30,7 @@ const VideoPageUserBox = ({
   myID,
 }: Props) => {
   const isFollowing = useAppSelector((state) =>
-    isFollowUser(state, myID, user_id)
+    isFollowUser(state, myID, user_id, myID !== user_id)
   );
   const dispatch = useAppDispatch();
   const handleFollow = async () => {
@@ -87,7 +87,7 @@ const VideoPageUserBox = ({
           </div>
         </div>
       </div>
-      {!isFollowing && (
+      {!isFollowing && user_id !== myID && (
         <Button
           onClick={handleFollow}
           text="关注"

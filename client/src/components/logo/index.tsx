@@ -6,7 +6,9 @@ type Props = {
 
 const Logo = ({ py = "py-3" }: Props) => {
   return (
-    <div className={`flex justify-center items-center ${py} cursor-pointer`}>
+    <div
+      className={`flex justify-center items-center ${py} cursor-pointer text-black`}
+    >
       <Link to="/">
         <img
           className="block w-auto h-auto object-cover object-center"

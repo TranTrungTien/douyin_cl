@@ -1,4 +1,4 @@
-import { FormEvent, forwardRef } from "react";
+import { FormEvent, forwardRef, HTMLAttributes, ReactNode } from "react";
 
 type Props = {
   name?: string;
@@ -8,8 +8,9 @@ type Props = {
   id?: string;
   value?: string;
   autoComplete?: "on" | "off";
+  children?: ReactNode;
   onChange?: (event: FormEvent<HTMLInputElement>) => void;
-};
+} & HTMLAttributes<HTMLInputElement>;
 const Input = forwardRef<HTMLInputElement, Props>(
   (
     {
@@ -21,6 +22,7 @@ const Input = forwardRef<HTMLInputElement, Props>(
       placeholder,
       value,
       onChange,
+      children,
       ...props
     }: Props,
     ref
@@ -39,6 +41,7 @@ const Input = forwardRef<HTMLInputElement, Props>(
           id={id}
           placeholder={placeholder}
         />
+        {children}
       </div>
     );
   }

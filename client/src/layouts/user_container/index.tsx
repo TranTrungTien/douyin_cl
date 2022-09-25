@@ -51,14 +51,14 @@ const UserContainer = ({
       />
       <div
         onScroll={onScroll}
-        className="h-[calc(100%-70px)] w-full overflow-x-hidden overflow-y-auto hidden-scrollbar"
+        className="h-[calc(100%-70px)] relative w-full overflow-x-hidden overflow-y-auto hidden-scrollbar"
       >
         <VideoContainer className="relative grid laptop:grid-cols-2 desktop:grid-cols-3 laptop:px-3 py-2 laptop:gap-y-2 desktop:gap-y-3 laptop:gap-x-2 desktop:gap-x-3 min-h-[calc(100vh/2)]">
           {videosData &&
-            videosData.list.map((video) => {
+            videosData.list.map((video, index) => {
               return (
                 <Link
-                  key={video.video.id_f}
+                  key={index}
                   className="inline-block overflow-hidden self-center h-full"
                   target="_blank"
                   to={`/video/${video.video._id}/${video.video.id_f}`}
@@ -76,7 +76,7 @@ const UserContainer = ({
               );
             })}
           <div className="absolute bottom-0 left-0 right-0 z-10">
-            <div className="w-full h-14 relative">
+            <div className="w-full h-20 relative">
               {videosData?.status === "loading" && <Loading />}
             </div>
           </div>

@@ -1,4 +1,11 @@
-import { MouseEvent, Suspense, useEffect, useMemo, useState } from "react";
+import {
+  MouseEvent,
+  Suspense,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 import { useParams } from "react-router-dom";
 import {
   BackgroundVideo,
@@ -21,7 +28,6 @@ import {
   VideoHeaderContainer,
 } from "../../layouts";
 import ErrorBoundary from "../../utils/error-boundaries";
-
 import VideoPageUserBox from "../../components/video_page_user_box";
 import { useFetch } from "../../hooks/use_fetch";
 import { IVideo } from "../../interfaces/video.interface";
@@ -36,7 +42,6 @@ type Props = {};
 
 const VideoPage = (props: Props) => {
   const user = useAppSelector((state) => state.user);
-  const videoInfo = useAppSelector((state) => state.currentView.video);
   const [isPlay, setIsPlay] = useState(true);
   const { video_id: videoID, video_idf: videoIdf } = useParams();
   useEffect(() => {
@@ -53,14 +58,12 @@ const VideoPage = (props: Props) => {
       video_id: videoID,
     };
   }, [videoID]);
-  const videoResponse = useFetch<{ message: string; doc: IVideo }>(
+  const video = useFetch<{ message: string; doc: IVideo }>(
     servicesPath.GET_METADATA,
     videoParams,
     false,
-    videoID && !videoInfo ? true : false
+    videoID ? true : false
   );
-
-  const video = videoInfo ? videoInfo : videoResponse;
 
   const isLikedVideo = useFetch<{ message: string; like?: boolean }>(
     servicesPath.CHECK_LIKED,
@@ -101,12 +104,20 @@ const VideoPage = (props: Props) => {
     };
   }, [videoID]);
 
+  const prevVideoID = useRef(videoID);
+
   const { data: comments, setData: setComments } = useFetchAppend<IComment>(
     servicesPath.GET_ALL_COMMENTS_OF_VIDEO,
     commentParams,
     undefined,
     undefined,
-    videoID ? true : false
+    videoID ? true : false,
+    false,
+    undefined,
+    "json",
+    "application/json",
+    !videoID,
+    prevVideoID.current !== videoID
   );
   const { data: likedComments } = useFetchAppend<ILikedComment>(
     servicesPath.GET_ALL_LIKED_COMMENT_OF_VIDEO_BY_AUTHOR,
@@ -114,7 +125,11 @@ const VideoPage = (props: Props) => {
     undefined,
     undefined,
     user.data?.uid ? true : false,
-    true
+    true,
+    undefined,
+    "json",
+    "application/json",
+    !videoID
   );
   return (
     <section className="w-full h-screen">

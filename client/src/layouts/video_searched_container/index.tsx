@@ -8,6 +8,7 @@ import { ISearchPapeData } from "../../pages/search_page";
 import { getDayFromVideoUploaded } from "../../utils/time";
 
 type Props = {
+  index?: number;
   avatarThumb: string;
   nickname: string;
   className?: string;
@@ -16,6 +17,7 @@ type Props = {
 };
 
 const VideoSearchedContainer = ({
+  index,
   avatarThumb,
   statistics,
   nickname,
@@ -61,9 +63,10 @@ const VideoSearchedContainer = ({
       <div className={className}>
         <div ref={onScreenRef} id={playerId} className="w-full h-full">
           <VideoSlide
+            index={index}
             playerId={playerId}
             searchPageData={onScreen}
-            allowedPlay={onScreen.isActive ? true : false}
+            allowedPlay={true}
             statistics={statistics}
             avatarThumb={avatarThumb}
             nickname={nickname}

@@ -1,12 +1,12 @@
 import { MouseEvent, useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
-import { useAppDispatch, useAppSelector } from "../../redux/app/hooks";
-import { setIsLogin } from "../../redux/slice/login_slice";
-import CoOperateIcon from "../../assets/icons/co_operate_icon";
-import ClientIcon from "../../assets/icons/client_icon";
+import { Link } from "react-router-dom";
 import BellIcon from "../../assets/icons/bell_icon";
+import ClientIcon from "../../assets/icons/client_icon";
+import CoOperateIcon from "../../assets/icons/co_operate_icon";
 import MessageIcon from "../../assets/icons/message_icon";
 import UploadIcon from "../../assets/icons/upload_icon";
+import { useAppDispatch, useAppSelector } from "../../redux/app/hooks";
+import { setIsLogin } from "../../redux/slice/login_slice";
 import AvatarCardLink from "../avatar_card_link";
 import BasicInfo from "../basic_info";
 import Button from "../button";
@@ -18,7 +18,6 @@ type Props = {};
 const Nav = (props: Props) => {
   const user = useAppSelector((state) => state.user);
   const login = useAppSelector((state) => state.login);
-  const navigate = useNavigate();
   const dispatch = useAppDispatch();
   const [emailVerified, setEmailVerified] = useState<{
     emailVerified: string;
@@ -30,8 +29,9 @@ const Nav = (props: Props) => {
 
   const handleLoginChecking = (e: MouseEvent<HTMLAnchorElement>) => {
     e.preventDefault();
-    if (user.data) navigate("/upload");
-    else dispatch(setIsLogin(true));
+    if (user.data) {
+      window.open("/upload", "_blank");
+    } else dispatch(setIsLogin(true));
   };
 
   return (

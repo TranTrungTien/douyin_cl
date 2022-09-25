@@ -39,6 +39,7 @@ const SearchedVideoContainer = ({ keyWord }: Props) => {
               <>
                 <RelatedSearch />
                 <VideoSearchedContainer
+                  index={index}
                   key={v._id}
                   statistics={stat}
                   avatarThumb={v.author_id.avatar_thumb.url_list[0]}
@@ -51,6 +52,7 @@ const SearchedVideoContainer = ({ keyWord }: Props) => {
           }
           return (
             <VideoSearchedContainer
+              index={index}
               key={v._id}
               statistics={stat}
               avatarThumb={v.author_id.avatar_thumb.url_list[0]}

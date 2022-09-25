@@ -32,7 +32,7 @@ const UserInfoContainer = ({
   const myID = useAppSelector((state) => state.user.data?._id);
   const dispatch = useAppDispatch();
   const isFollow = useAppSelector((state) =>
-    isFollowUser(state, myID, authorPageID)
+    isFollowUser(state, myID, authorPageID, myID !== authorPageID)
   );
 
   const [isFollowing, setIsFollowing] = useState(isFollow ? true : false);

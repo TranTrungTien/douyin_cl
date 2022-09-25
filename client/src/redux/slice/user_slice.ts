@@ -3,11 +3,11 @@ import { IUser } from "../../interfaces/user.interface";
 
 type IStatus = "idle" | "loading" | "complete";
 
-type IInitialState = {
+export interface IInitialState {
   status: IStatus;
   data: IUser | null;
   error: SerializedError | null;
-};
+}
 
 const initialState: IInitialState = {
   status: "idle",
@@ -39,11 +39,10 @@ const userSlice = createSlice({
     },
     getUserInfoFailed: (state: IInitialState, action: any) => {
       const status: IStatus = "complete";
-
       return {
         status: status,
         data: null,
-        error: action.error,
+        error: action.e,
       };
     },
   },

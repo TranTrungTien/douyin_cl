@@ -3,7 +3,7 @@ import { metaPath } from "../const/path";
 import Recommendation, { RecommendationUtils } from "./recommendation";
 
 const rawData =
-  fs.readFileSync(`${metaPath}/video_id_desc.json`, {
+  fs.readFileSync(`${metaPath}/rbc_data.json`, {
     encoding: "utf8",
   }) + "]";
 const data = JSON.parse(rawData) as {

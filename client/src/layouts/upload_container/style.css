@@ -10,4 +10,12 @@
 
 .copyright-input:checked +.copyright-circle{
     left: calc(100% - 22px);
+    background-color: purple;
+}
+.truncate-text{
+    display: -webkit-box;
+    max-width: 200px;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
 }

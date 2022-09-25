@@ -4,7 +4,6 @@ import { fork } from "child_process";
 import path from "path";
 import { HMMModel, IDF, JiebaDict, StopWords, UserDict } from "jieba-zh-tw";
 import createJieba from "js-jieba";
-import { BestMatch } from "string-similarity";
 import { IVideo } from "../interface/video.interface";
 import { IYourVideoLiked } from "../interface/liked.interface";
 
@@ -164,7 +163,7 @@ export class RecommendationUtils {
   }
   public static getRecommendedBasedOnVideoIndexes(index: number) {
     if (this.cosineMatrix) {
-      const cosineSimMap = RecommendationUtils.cosineMatrix[index].map(
+      const cosineSimMap = RecommendationUtils.cosineMatrix[index]?.map(
         (value, index) => {
           return value
             ? {
@@ -195,7 +194,7 @@ export class RecommendationUtils {
     console.log("training ...");
 
     return new Promise((resolve, reject) => {
-      const childProcess = fork(path.join(__dirname, "train.data.ts"));
+      const childProcess = fork(path.join(__dirname, "rbc_training.ts"));
       childProcess.on("close", (c) => {
         console.log({ c });
       });
@@ -211,7 +210,7 @@ export class RecommendationUtils {
   }
   public static getSearchRecommended = (text: string, limit: string) => {
     return new Promise<string[]>((resolve, reject) => {
-      const childProcess = fork(path.join(__dirname, "search.ts"));
+      const childProcess = fork(path.join(__dirname, "search_training.ts"));
       childProcess.send({ text, limit });
       childProcess.on("close", (c) => {
         console.log({ c });

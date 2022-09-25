@@ -6,7 +6,7 @@ import UserModel from "../models/user.model";
 import { v4 } from "uuid";
 import jwt from "jsonwebtoken";
 import NodeMailer from "nodemailer";
-import LoginHelper from "../utils/login-helper";
+import LoginHelper from "../utils/login_helper";
 
 const loginHelper = new LoginHelper();
 

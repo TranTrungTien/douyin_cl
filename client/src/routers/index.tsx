@@ -7,8 +7,9 @@ import ProtectedRoute from "./protected_route";
 import { routesPath } from "./route";
 
 const Routers = () => {
+  console.log("Routers render");
   const dispatch = useAppDispatch();
-  const user = useAppSelector((state) => state.user.data);
+  const user = useAppSelector((state) => state.user);
   useEffect(() => {
     const fetchFollowing = () => {
       dispatch(getAllFollowingRequested());
@@ -16,12 +17,13 @@ const Routers = () => {
     const fetchUser = () => {
       dispatch(getUserInfoRequested());
     };
-    if (user) {
+    if (user.data) {
       fetchFollowing();
     } else {
       fetchUser();
     }
-  }, [dispatch, user]);
+  }, [dispatch, user.data]);
+
   return (
     <Router>
       <Routes>
@@ -31,12 +33,10 @@ const Routers = () => {
               <Route
                 path={route.path}
                 key={index}
-                element={
-                  <ProtectedRoute isAuth={user ? true : false} redirectTo="/">
-                    <Route index element={<route.element />} />
-                  </ProtectedRoute>
-                }
-              />
+                element={<ProtectedRoute isAuth={user} redirectTo="/" />}
+              >
+                <Route index element={<route.element />} />
+              </Route>
             );
           } else
             return (

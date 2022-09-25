@@ -1,6 +1,6 @@
 import React from "react";
-import { Logo, Nav, Search } from "../components";
-import { HeaderContainer } from "../layouts";
+import { Logo, Nav, Search } from "../../components";
+import { HeaderContainer } from "../../layouts";
 
 const ErrorPage = () => {
   return (

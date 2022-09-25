@@ -25,7 +25,7 @@ const SearchPage = () => {
       style={{ overflow: "overlay" }}
       className="w-full h-full overflow-y-auto custom-scrollbar"
     >
-      <HeaderContainer id="app_header" className="py-[5px]">
+      <HeaderContainer id="app_header" className="py-[5px] z-30">
         <div className="flex justify-start items-center">
           <Logo py="py-1" />
           <Search value={keyWord ? keyWord : undefined} className="ml-[74px]" />

@@ -7,8 +7,6 @@ type Props = {
   children: ReactNode | ReactNode[];
 };
 const Modal = ({ root, children, className }: Props) => {
-  console.log({ root });
-
   return createPortal(
     <div
       id="modal"
@@ -16,7 +14,7 @@ const Modal = ({ root, children, className }: Props) => {
     >
       <div className="relative w-full h-full">
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 flex justify-center items-center">
-          {children}
+          {Array.isArray(children) ? children.map((child) => child) : children}
         </div>
       </div>
     </div>,

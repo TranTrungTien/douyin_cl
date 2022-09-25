@@ -1,17 +1,14 @@
 import { spawn } from "child_process";
 import { Request, Response } from "express";
 import * as fs from "fs";
-import path from "path";
 import { metaPath } from "../const/path";
-import LikedModel from "../models/liked.model";
+import { IVideo } from "../interface/video.interface";
+import IHadSeenModel from "../models/had_seen_video.model";
 import StatisticsModel from "../models/statistics.model";
 import VideoModel from "../models/video.model";
-import IHadSeenModel from "../models/had_seen_video.model";
 import { dayOfTwoDate } from "../utils/day_of_two_date";
+import { getFeatureAsMatrix } from "../utils/mf_data";
 import { RecommendationUtils } from "../utils/recommendation";
-import { getFeatureAsMatrix } from "../utils/fetch_data";
-import { IVideo } from "../interface/video.interface";
-
 async function getRecommendationDef(req: Request, res: Response) {
   VideoModel.find(
     {
@@ -73,7 +70,7 @@ function getRecommendationFromVideo(req: Request, res: Response) {
   const videoId = req.query.videoId as string;
   const limit = parseInt(req.query.limit as string) || 15;
   const data = JSON.parse(
-    fs.readFileSync(metaPath + "/video_id_desc.json", "utf8") + "]"
+    fs.readFileSync(metaPath + "/rbc_data.json", "utf8") + "]"
   ) as {
     video_id: string;
     desc: string;
@@ -187,7 +184,7 @@ async function training(req: Request, res: Response) {
   const { matrix, list, userIndex, likedList } = await getFeatureAsMatrix(
     userID
   );
-  const python = spawn("python", [
+  const python = spawn("python3", [
     "src/python/mf.py",
     JSON.stringify(matrix),
     userIndex.toString(),

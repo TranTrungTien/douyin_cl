@@ -1,18 +1,21 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 import SwiperCore, { Virtual } from "swiper";
-import "swiper/css";
-import "swiper/css/bundle";
-import "swiper/css/virtual";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { VideoSlide } from "..";
 import { Button, Loading } from "../../components";
 import Modal from "../../components/modal";
+import { IDs } from "../../constants/id";
 import { useFetchAppend } from "../../hooks/use_fetch_append";
 import { IStatistics } from "../../interfaces/statistic";
 import { IVideo } from "../../interfaces/video.interface";
 import { useAppSelector } from "../../redux/app/hooks";
 import { getData } from "../../services/app_services";
 import { servicesPath } from "../../services/services_path";
+
+import "swiper/css";
+import "swiper/css/bundle";
+import "swiper/css/virtual";
+
 SwiperCore.use([Virtual]);
 const TRAINING_DELAY = 30000;
 
@@ -53,14 +56,12 @@ const SwiperWrapper = () => {
       w?: number;
     }[]
   ) => {
-    localStorage.removeItem("had_seen");
-    const hadSeenVideos: { [key: number]: string } = {};
-    list.forEach((v, index) => {
-      hadSeenVideos[index] = v.video?._id || "";
-    });
-    console.log(hadSeenVideos);
-
-    localStorage.setItem("had_seen", JSON.stringify(hadSeenVideos));
+    // localStorage.removeItem("had_seen");
+    // const hadSeenVideos: { [key: number]: string } = {};
+    // list.forEach((v, index) => {
+    //   hadSeenVideos[index] = v.video?._id || "";
+    // });
+    // localStorage.setItem("had_seen", JSON.stringify(hadSeenVideos));
   };
   const responseHandler = useCallback(handleResponse, []);
   const { data: recommendedForUser } = useFetchAppend<{
@@ -128,7 +129,7 @@ const SwiperWrapper = () => {
   };
   return (
     <Swiper
-      id="fullscreen"
+      id={IDs.SWIPER_ROOT}
       allowTouchMove={true}
       direction="vertical"
       slidesPerView={1}
@@ -167,7 +168,7 @@ const SwiperWrapper = () => {
               >
                 <VideoSlide
                   index={index}
-                  playerId={"fullscreen"}
+                  playerId={IDs.SWIPER_ROOT}
                   statistics={video.statistics}
                   avatarThumb={video.video.author_id.avatar_thumb.url_list[0]}
                   nickname={video.video.author_id.nickname}
