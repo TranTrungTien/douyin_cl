@@ -1,5 +1,6 @@
 import {
   memo,
+  MouseEvent,
   SyntheticEvent,
   useCallback,
   useEffect,
@@ -175,7 +176,8 @@ const Comment = ({
       }
     } else dispatch(setIsLogin(true));
   };
-  const handleShowReply = () => {
+  const handleShowReply = (e: MouseEvent<HTMLButtonElement>) => {
+    e.stopPropagation();
     setShowReply((prev) => {
       return {
         ...prev,

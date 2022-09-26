@@ -21,6 +21,7 @@ const Heart = ({
   onClick,
 }: Props) => {
   const handleLiked = (event: MouseEvent<HTMLButtonElement>) => {
+    event.stopPropagation();
     onClick && onClick();
   };
   return (

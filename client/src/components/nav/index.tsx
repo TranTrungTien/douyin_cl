@@ -1,5 +1,5 @@
 import { MouseEvent, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import BellIcon from "../../assets/icons/bell_icon";
 import ClientIcon from "../../assets/icons/client_icon";
 import CoOperateIcon from "../../assets/icons/co_operate_icon";
@@ -7,7 +7,9 @@ import MessageIcon from "../../assets/icons/message_icon";
 import UploadIcon from "../../assets/icons/upload_icon";
 import { useAppDispatch, useAppSelector } from "../../redux/app/hooks";
 import { setIsLogin } from "../../redux/slice/login_slice";
-import AvatarCardLink from "../avatar_card_link";
+import { deleteData } from "../../services/app_services";
+import { servicesPath } from "../../services/services_path";
+import AvatarCardButton from "../avatar_card_button";
 import BasicInfo from "../basic_info";
 import Button from "../button";
 import Login from "../login";
@@ -18,6 +20,8 @@ type Props = {};
 const Nav = (props: Props) => {
   const user = useAppSelector((state) => state.user);
   const login = useAppSelector((state) => state.login);
+  const navigate = useNavigate();
+  const [isShowOption, setIsShowOption] = useState(false);
   const dispatch = useAppDispatch();
   const [emailVerified, setEmailVerified] = useState<{
     emailVerified: string;
@@ -32,6 +36,15 @@ const Nav = (props: Props) => {
     if (user.data) {
       window.open("/upload", "_blank");
     } else dispatch(setIsLogin(true));
+  };
+
+  const handleClick = () => {
+    setIsShowOption(!isShowOption);
+  };
+
+  const handleLogout = async () => {
+    const data = await deleteData(servicesPath.LOGOUT, undefined);
+    data.data && navigate(0);
   };
 
   return (
@@ -118,29 +131,38 @@ const Nav = (props: Props) => {
         </div>
       </li>
       {user.data && (
-        <li className="opacity-80 hover:opacity-100 cursor-pointer ml-8">
-          <AvatarCardLink
-            target="_blank"
-            href={`/user/${user.data.uid}`}
+        <li className="opacity-80 hover:opacity-100 cursor-pointer ml-8 relative">
+          <AvatarCardButton
+            className="rounded-full overflow-hidden"
+            onClick={handleClick}
             firstNickNameCharacter={user.data.nickname[0]}
             hint={user.data.nickname}
+            width="w-[42px]"
+            height="w-[42px]"
             image={user.data.avatar_thumb.url_list[0]}
             title={user.data.nickname}
           />
+          {isShowOption && (
+            <div className="absolute top-full right-0">
+              <div className=" py-2 rounded-md bg-darkslategray min-w-[150px] w-max">
+                <Link to={`/user/${user.data.uid}`}>
+                  <div className="py-3 px-3 w-full hover:bg-darkslategray3 hover:opacity-100">
+                    <span className="font-semibold text-white opacity-80">
+                      你的个人资料
+                    </span>
+                  </div>
+                </Link>
+                <Button
+                  text="登出"
+                  className="py-3 w-full px-3 hover:bg-darkslategray3 hover:opacity-100 text-left"
+                  classNameInnerText="font-semibold text-white opacity-80"
+                  onClick={handleLogout}
+                />
+              </div>
+            </div>
+          )}
         </li>
       )}
-      {/* <li className="ml-8 relative">
-        <Link target="_blank" onClick={handleLoginChecking} to={"/upload"}>
-          <div className="absolute top-0 z-[-1] -left-px w-[3px] h-full bg-bright_blue"></div>
-          <div className="laptop:w-[100px] desktop:w-[104px] laptop:h-[36px] desktop:h-[38px] bg-light_blue flex justify-center item-center border-2 border-white w-[104px] h-[38px] rounded-[5px] before:absolute before:top-0 before:z-[-1] before:-right-[3px] before:w-full before:rounded-[5px]  before:h-full before:bg-fresh_red after:absolute after:top-0 after:z-[-1] after:-left-[3px] after:w-full after:rounded-[5px] after:h-full after:bg-bright_blue">
-            <span className="laptop:leading-8 desktop:leading-9 text-lg mr-2">
-              +
-            </span>
-            <span className="laptop:leading-8 desktop:leading-9">发布视频</span>
-          </div>
-          <div className="absolute top-0 z-[-1] -right-px w-[3px] h-full bg-fresh_red"></div>
-        </Link>
-      </li> */}
       {!user.data && (
         <li className="ml-8">
           <Button

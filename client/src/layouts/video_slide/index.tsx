@@ -6,11 +6,7 @@ import Modal from "../../components/modal";
 import { IStatistics } from "../../interfaces/statistic";
 import { IVideo } from "../../interfaces/video.interface";
 import { ISearchPapeData } from "../../pages/search_page";
-import {
-  isFollowUser,
-  useAppDispatch,
-  useAppSelector,
-} from "../../redux/app/hooks";
+import { isFollowUser, useAppSelector } from "../../redux/app/hooks";
 import ErrorBoundary from "../../utils/error-boundaries";
 import RightContainer from "../right_container";
 

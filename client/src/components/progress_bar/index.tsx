@@ -22,6 +22,7 @@ const ProgressBar = forwardRef(
     const handleChangeVideoTime = (
       e: MouseEvent<HTMLDivElement> & { target: HTMLElement }
     ) => {
+      e.stopPropagation();
       const width =
         e.pageX - progressBarRef.current.getBoundingClientRect().left;
       onChangeVideoTime && onChangeVideoTime(width);

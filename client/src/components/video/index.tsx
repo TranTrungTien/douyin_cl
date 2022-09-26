@@ -1,4 +1,4 @@
-import { useEffect, useRef } from "react";
+import { MouseEvent, useEffect, useRef } from "react";
 import { useFetchSuspense } from "../../hooks/use_fetch_suspense";
 import { IStatistics } from "../../interfaces/statistic";
 import RightVideoAction from "../../layouts/right_video_action_container";
@@ -182,7 +182,8 @@ const Video = ({
     toggleFullScreen(player);
   };
 
-  const handleFollow = async () => {
+  const handleFollow = async (e: MouseEvent<HTMLButtonElement>) => {
+    e.stopPropagation();
     if (myID && authorVideoID) {
       const followRes = await postData<any>(
         servicesPath.FOLLOW_USER,

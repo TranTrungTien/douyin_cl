@@ -71,7 +71,7 @@ const SubRegisterOrLogin = ({ onVerifyEmail }: Props) => {
               name="email"
               id="email"
               placeholder="输入电子邮件"
-              className="inline-block w-full outline-none bg-transparent border-none rounded-sm font-light text-[11px] text-black px-4 py-2"
+              className="inline-block w-full outline-none bg-transparent border-none rounded-sm font-light text-sm text-black px-4 py-2"
             />
           </div>
         </div>
@@ -83,7 +83,7 @@ const SubRegisterOrLogin = ({ onVerifyEmail }: Props) => {
               name="code"
               id="code"
               placeholder="输入验证码"
-              className="inline-block w-full outline-none bg-transparent border-none rounded-sm font-light text-[11px] text-black px-4 py-2"
+              className="inline-block w-full outline-none bg-transparent border-none rounded-sm font-light text-sm text-black px-4 py-2"
             />
           </div>
           <div className="w-16 h-full">

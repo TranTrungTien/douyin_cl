@@ -147,6 +147,16 @@ function loginWithoutPassword(req: Request, res: Response) {
     return res.status(400).send({ message: "Invalid email or secret code" });
   }
 }
+
+function logout(req: Request, res: Response) {
+  return res
+    .status(200)
+    .cookie("token", "", {
+      expires: new Date(Date.now() + 3600000),
+      httpOnly: true,
+    })
+    .send({ message: "Successfully" });
+}
 async function mailSender(req: Request, res: Response) {
   const email = req.body.email as string;
   const user = await UserModel.findOne({ email: email });
@@ -223,6 +233,7 @@ const UserController = {
   mailSender,
   verifyCode,
   loginWithoutPassword,
+  logout,
 };
 
 export default UserController;

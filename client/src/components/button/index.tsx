@@ -5,6 +5,7 @@ type Props = {
   text: string;
   type?: "button" | "submit" | "reset" | undefined;
   className?: string;
+  classNameInnerText?: string;
   icon?: ReactNode;
   children?: ReactNode;
   onClick?: (e: MouseEvent<HTMLButtonElement>) => void;
@@ -16,6 +17,7 @@ const Button = ({
   icon,
   className = "text-white",
   type = "button",
+  classNameInnerText,
   children,
   onClick,
   ...props
@@ -31,7 +33,7 @@ const Button = ({
       {(icon || text) && (
         <div className={`${icon && "flex justify-center items-center"}`}>
           {icon}
-          <span> {text}</span>
+          <span className={classNameInnerText}>{text}</span>
         </div>
       )}
       {children}

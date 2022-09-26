@@ -20,7 +20,7 @@ const SidebarContainer = (props: Props) => {
           <ul>
             {sidebarAction.map((action, index) => {
               return (
-                <NavLink to={action.path} key={index}>
+                <NavLink target={action.target} to={action.path} key={index}>
                   <li className="flex desktop:justify-start laptop:items-center desktop:items-center leading-9 cursor-pointer opacity-60 hover:opacity-100 desktop:m-3 laptop:m-0 laptop:flex-col desktop:flex-row laptop:space-x-0 desktop:space-x-1  laptop:ml-0 desktop:mx-8 mb-0">
                     <div className="w-36px h-36px">
                       <img

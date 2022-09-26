@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { MouseEvent, useEffect, useState } from "react";
 import { RightBarAction } from "../../layouts/video_slide";
 import { useAppDispatch } from "../../redux/app/hooks";
 import { setIsLogin } from "../../redux/slice/login_slice";
@@ -49,7 +49,11 @@ const LikeCmtShare = ({
       };
     });
   }, [isLiked, statistics]);
-
+  const handleOpenRightBar = (e: MouseEvent<HTMLButtonElement>) => {
+    e.stopPropagation();
+    if (!onOpenRightBar) return;
+    onOpenRightBar({ comment: true, isOpen: true, user: false });
+  };
   const dispatch = useAppDispatch();
 
   const handleLikeVideo = async () => {
@@ -93,7 +97,8 @@ const LikeCmtShare = ({
       dispatch(setIsLogin(true));
     }
   };
-  const handleOpenOptions = () => {
+  const handleOpenOptions = (e: MouseEvent<HTMLButtonElement>) => {
+    e.stopPropagation();
     console.log("click");
   };
   return (
@@ -120,10 +125,7 @@ const LikeCmtShare = ({
         text=""
         title="评论"
         className={`${classNameInner} icon_animation text-white opacity-80 hover:opacity-100`}
-        onClick={() => {
-          if (!onOpenRightBar) return;
-          onOpenRightBar({ comment: true, isOpen: true, user: false });
-        }}
+        onClick={handleOpenRightBar}
         icon={<CommentIcon heightSvg={36} widthSvg={36} />}
       >
         <span className="font-medium text-[15px] leading-[23px]">

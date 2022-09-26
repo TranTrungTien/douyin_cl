@@ -104,6 +104,7 @@ const BottomVideoAction = forwardRef<HTMLSpanElement, Props>(
     const handleTurnOnOffVolume = (
       e: MouseEvent<HTMLButtonElement> & { target: HTMLElement }
     ) => {
+      e.stopPropagation();
       if (e.target.dataset.canChangeVolume === "unavailable") return;
       if (!isTurnOffVolume && volumeRef.current) {
         volumeRef.current.style.height = "0px";
@@ -136,7 +137,10 @@ const BottomVideoAction = forwardRef<HTMLSpanElement, Props>(
       }
     };
 
-    const handleChangeMode = () => setAutoNext(!autoNext);
+    const handleChangeMode = (e: MouseEvent<HTMLButtonElement>) => {
+      e.stopPropagation();
+      setAutoNext(!autoNext);
+    };
     const videoUrlDetail = `/video/${videoID}/${videoIdf}`;
     const handleOpenVideoDetail: MouseEventHandler<HTMLAnchorElement> = (e) => {
       e.preventDefault();
