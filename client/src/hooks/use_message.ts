@@ -36,7 +36,7 @@ export function MessageTransfer() {
       }
     };
     if (!messageIntervalIDRef.current) {
-      messageIntervalIDRef.current = setInterval(clearMessage, 5000);
+      messageIntervalIDRef.current = setInterval(clearMessage, 4000);
     }
   };
   return {

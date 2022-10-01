@@ -36,7 +36,6 @@ const VideoPageUserBox = ({
   const message = MessageTransfer();
   const dispatch = useAppDispatch();
   const handleFollow = async () => {
-    message.sendMessage("Testing ...");
     if (myID) {
       if (isFollowing) {
         const delFollowingRes = await deleteData(servicesPath.DEL_FOLLOWING, {
