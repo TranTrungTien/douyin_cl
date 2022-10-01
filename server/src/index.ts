@@ -52,7 +52,9 @@ DBConnect()
         app.use("/api/v1/following", FollowingRouter);
 
         app.get("/", (req: Request, res: Response) => {
-          res.send("welcome to my app");
+          setTimeout(() => {
+            res.send("Just For Test !!!!");
+          }, 6000);
         });
       })
       .catch((_) => {

@@ -47,7 +47,6 @@ const Nav = (props: Props) => {
     const data = await deleteData(servicesPath.LOGOUT, undefined);
     data.data && navigate(0);
   };
-
   return (
     <ul className="flex justify-between items-center">
       <li className="opacity-80 hover:opacity-100 cursor-pointer desktop:flex laptop:hidden  desktop:flex-col desktop:justify-center desktop:items-center">
@@ -169,7 +168,6 @@ const Nav = (props: Props) => {
           <Button
             onClick={() => {
               dispatch(setIsLogin(true));
-              // message.sendMessage("Error had occurred !!!", "warning");
             }}
             text="登录"
             className="laptop:w-[90px] desktop:w-[104px] laptop:h-[36px] desktop:h-[38px] px-4 font-medium leading-[23px] border border-fresh_red flex justify-center items-center text-white bg-fresh_red rounded-[5px]"

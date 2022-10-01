@@ -3,6 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { Button, SelectFile } from "../../components";
 import CircleLoading from "../../components/circle_loading";
 import Input from "../../components/input";
+import { controller } from "../../config/axios-config";
 import { useOnClickOutside } from "../../hooks/use_click_outside";
 import { MessageTransfer } from "../../hooks/use_message";
 import { useAppSelector } from "../../redux/app/hooks";
@@ -155,11 +156,19 @@ const UploadContainer = () => {
         "json",
         "multipart/form-data"
       ).catch((err) => {
-        console.error(err);
+        setUploadStatus((prev) => ({
+          ...prev,
+          loading: false,
+          isEnded: true,
+        }));
+        const isCanceled = err?.code === "ERR_CANCELED";
         message.sendMessage(
-          "Can not upload video ! Something went wrong",
-          "danger"
+          isCanceled
+            ? "You've canceled upload video !!!"
+            : "Can not upload video ! Something went wrong",
+          isCanceled ? "warning" : "danger"
         );
+        isCanceled && navigate(0);
       });
       if (fileRes && fileRes.data) {
         const caption = textInputRef.current && textInputRef.current.innerText;
@@ -204,6 +213,10 @@ const UploadContainer = () => {
         navigate(`/user/${user.uid}`);
       }
     }
+  };
+
+  const handleCanceled = () => {
+    if (uploadStatus.loading && !uploadStatus.isEnded) controller.abort();
   };
   return (
     <main className="py-4 h-[1000px] xl:w-[1100px] m-auto">
@@ -460,7 +473,7 @@ const UploadContainer = () => {
                 <div className="w-[168px]">
                   <Button
                     text="Discard"
-                    onClick={() => navigate(-1)}
+                    onClick={handleCanceled}
                     className="h-11 min-w-[72px] border border-[rgb(242,242,242)] w-full px-5 font-semibold rounded-sm"
                   />
                 </div>
