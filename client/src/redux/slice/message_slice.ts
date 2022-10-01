@@ -24,7 +24,7 @@ const messageSlice = createSlice({
       state.push(action.payload);
     },
     setShow(state: IMessages[], action: PayloadAction<string>) {
-      const newState = state.map(
+      state.map(
         (item) => item.uid === action.payload && (item.isVisible = false)
       );
     },
