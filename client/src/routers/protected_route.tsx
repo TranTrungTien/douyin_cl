@@ -1,17 +1,18 @@
-import React, { ReactNode, useEffect } from "react";
+import { ReactNode, useEffect } from "react";
 import { Outlet, useNavigate } from "react-router-dom";
 import { Loading } from "../components";
+import { IInitialState } from "../redux/slice/user_slice";
 
 type Props = {
-  isAuth: boolean;
+  isAuth: IInitialState;
   redirectTo: string;
   children?: ReactNode[] | ReactNode;
 };
 
-const ProtectedRoute = ({ isAuth, redirectTo, children }: Props) => {
+const ProtectedRoute = ({ isAuth, redirectTo }: Props) => {
   const navigate = useNavigate();
   useEffect(() => {
-    if (!isAuth) {
+    if (!isAuth.data && isAuth.error) {
       navigate(redirectTo, {
         replace: true,
       });
@@ -19,16 +20,10 @@ const ProtectedRoute = ({ isAuth, redirectTo, children }: Props) => {
   }, [isAuth, navigate, redirectTo]);
   return (
     <>
-      {isAuth ? (
-        children ? (
-          Array.isArray(children) ? (
-            <Outlet />
-          ) : (
-            children
-          )
-        ) : null
-      ) : (
+      {isAuth.status === "idle" || isAuth.status === "loading" ? (
         <Loading />
+      ) : (
+        <Outlet />
       )}
     </>
   );

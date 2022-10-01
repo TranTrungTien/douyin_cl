@@ -1,9 +1,19 @@
-import { memo, SyntheticEvent, useEffect, useMemo, useState } from "react";
+import {
+  memo,
+  MouseEvent,
+  SyntheticEvent,
+  useCallback,
+  useEffect,
+  useMemo,
+  useState,
+} from "react";
 import SmallHeartIcon from "../../assets/icons/small_heart_icon";
 import { useFetchAppend } from "../../hooks/use_fetch_append";
 import { IComment } from "../../interfaces/comment";
 import { ILikedComment } from "../../interfaces/liked_video.interface";
-import { useAppSelector } from "../../redux/app/hooks";
+import ReplyCommentContainer from "../../layouts/reply_comment_container";
+import { useAppDispatch, useAppSelector } from "../../redux/app/hooks";
+import { setIsLogin } from "../../redux/slice/login_slice";
 import { deleteData, postData } from "../../services/app_services";
 import { servicesPath } from "../../services/services_path";
 import { convertDateToTime } from "../../utils/time";
@@ -11,6 +21,7 @@ import AvatarCardLink from "../avatar_card_link";
 import Button from "../button";
 import Heart from "../heart";
 import Input from "../input";
+import Loading from "../loading";
 
 type Props = {
   nickname?: string;
@@ -61,11 +72,14 @@ const Comment = ({
           };
         });
   }, [isLiked]);
-
+  const dispatch = useAppDispatch();
   const [isReply, setIsReply] = useState(false);
   const user = useAppSelector((state) => state.user);
   const [showReply, setShowReply] = useState({
     isShow: false,
+    allowFetching: false,
+    isStarted: false,
+    isEnded: false,
     cursor: 0,
   });
 
@@ -76,6 +90,9 @@ const Comment = ({
       cursor: 0,
     };
   }, [videoID, commentID]);
+  const handleStopFetchReplyComment = useCallback(() => {
+    setShowReply((prev) => ({ ...prev, isStarted: false, isEnded: true }));
+  }, []);
   const { data: replyComments, setData: setReplyComments } =
     useFetchAppend<IComment>(
       servicesPath.GET_REPLY_OF_COMMENT,
@@ -85,9 +102,11 @@ const Comment = ({
       typeof replyCount === "number" &&
         replyCount > 0 &&
         videoID &&
-        showReply.isShow
+        showReply.allowFetching
         ? true
-        : false
+        : false,
+      false,
+      handleStopFetchReplyComment
     );
   const likedCommentInCommentsParams = useMemo(() => {
     return {
@@ -155,20 +174,23 @@ const Comment = ({
             };
         });
       }
-    }
+    } else dispatch(setIsLogin(true));
   };
-  const handleShowReply = () => {
-    setShowReply((preState) => {
+  const handleShowReply = (e: MouseEvent<HTMLButtonElement>) => {
+    e.stopPropagation();
+    setShowReply((prev) => {
       return {
-        ...preState,
-        isShow: !preState.isShow,
+        ...prev,
+        isStarted: prev.allowFetching ? false : true,
+        isEnded: false,
+        allowFetching: true,
+        isShow: !prev.isShow,
       };
     });
   };
+
   const handleLikeComment = async () => {
-    console.log({ videoData });
     if (user.data) {
-      console.log({ replyCommentID });
       if (!videoData.isLiked) {
         setVideoData((prev) => {
           return {
@@ -204,7 +226,12 @@ const Comment = ({
         ).catch(console.error);
         deleteRes && deleteRes.data && console.log("del comment successfully");
       }
-    }
+    } else dispatch(setIsLogin(true));
+  };
+
+  const handleReplyComment = () => {
+    if (user.data) setIsReply(!isReply);
+    else dispatch(setIsLogin(true));
   };
 
   return (
@@ -244,7 +271,7 @@ const Comment = ({
             />
             <Button
               text=""
-              onClick={() => setIsReply(!isReply)}
+              onClick={handleReplyComment}
               className="flex justify-start items-center space-x-px hover:text-fresh_red"
               icon={
                 <svg
@@ -282,7 +309,7 @@ const Comment = ({
             <Button
               text=""
               onClick={handleShowReply}
-              className="flex justify-start items-center space-x-1 text-inherit font-normal opacity-50 text-xs leading-5"
+              className="flex justify-start items-center space-x-1 text-inherit font-normal opacity-50 text-xs leading-5 relative"
               icon={
                 <svg
                   width="13"
@@ -306,33 +333,17 @@ const Comment = ({
                 </span>
                 <span>条回复</span>
               </div>
+              {showReply.isStarted && !showReply.isEnded && <Loading />}
             </Button>
           )}
-          {replyComments &&
-            showReply.isShow &&
-            replyComments.list.map((c, index) => {
-              console.log({ c });
-              const isLiked = likedCommentInComments?.list.find((l) => {
-                return l.comment_id._id === c._id;
-              });
-              return (
-                <Comment
-                  replyCommentID={c.reply_comment_id?._id}
-                  isLiked={isLiked ? true : false}
-                  commentID={c._id}
-                  videoID={videoID}
-                  nickname={c.author_id.nickname}
-                  image={c.author_id.avatar_thumb.url_list[0]}
-                  key={c._id}
-                  className={!true ? `px-3` : "px-0"}
-                  uid={c.author_id.uid}
-                  datePosted={c.createdAt}
-                  content={c.text}
-                  likedCount={c.like_count}
-                  replyCount={c.reply_count}
-                />
-              );
-            })}
+          {replyComments && showReply.isShow && (
+            <ReplyCommentContainer
+              likedCommentInComments={likedCommentInComments?.list}
+              replyComments={replyComments.list}
+              videoID={videoID}
+              isShow={showReply.isShow}
+            />
+          )}
         </div>
       </div>
     </div>

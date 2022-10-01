@@ -1,6 +1,7 @@
-import { ReactNode } from "react";
+import { MouseEvent, ReactNode } from "react";
 import { RightBarAction } from "../../layouts/video_slide";
 import { servicesPath } from "../../services/services_path";
+import Button from "../button";
 
 type Props = {
   children?: ReactNode[] | ReactNode;
@@ -13,6 +14,7 @@ type Props = {
   className?: string;
   firstNickNameCharacter: string;
   onOpenRightBar?: (action: RightBarAction) => void;
+  onClick?: (e: MouseEvent<HTMLButtonElement>) => void;
 };
 //
 const AvatarCardButton = ({
@@ -26,18 +28,22 @@ const AvatarCardButton = ({
   borderRadius = "rounded-full",
   className,
   onOpenRightBar,
+  onClick,
 }: Props) => {
-  const handleOpenRightBar = () => {
+  const handleClick = (e: MouseEvent<HTMLButtonElement>) => {
+    e.stopPropagation();
     onOpenRightBar &&
       onOpenRightBar({ comment: false, isOpen: true, user: true });
+    onClick && onClick(e);
   };
   return (
     <div className={`${width} ${height} ${borderRadius} ${className} relative`}>
-      <button
+      <Button
+        text=""
         type="button"
         title={title}
         className={`${width} ${height} ${borderRadius}`}
-        onClick={handleOpenRightBar}
+        onClick={handleClick}
       >
         {image ? (
           <img
@@ -57,7 +63,7 @@ const AvatarCardButton = ({
             </span>
           </div>
         )}
-      </button>
+      </Button>
       {Array.isArray(children) ? children.map((child) => child) : children}
     </div>
   );

@@ -1,10 +1,14 @@
 import { MouseEvent, ReactNode, SyntheticEvent, useRef, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { Button, SelectFile } from "../../components";
-import { servicesPath } from "../../services/services_path";
-import { postData } from "../../services/app_services";
-import "./style.css";
+import CircleLoading from "../../components/circle_loading";
 import Input from "../../components/input";
+import { useOnClickOutside } from "../../hooks/use_click_outside";
+import { MessageTransfer } from "../../hooks/use_message";
+import { useAppSelector } from "../../redux/app/hooks";
+import { postData } from "../../services/app_services";
+import { servicesPath } from "../../services/services_path";
+import "./style.css";
 
 type IInputOpts = {
   cmt: {
@@ -22,6 +26,9 @@ type IInputOpts = {
 };
 
 const UploadContainer = () => {
+  const message = MessageTransfer();
+  const user = useAppSelector((state) => state.user.data);
+  const navigate = useNavigate();
   const textInputRef = useRef<HTMLDivElement>(null);
   const [file, setFile] = useState<{ videoMetaData: any; video: File } | null>(
     null
@@ -31,6 +38,19 @@ const UploadContainer = () => {
     isOpen: false,
     select: "Public",
   });
+  const [uploadStatus, setUploadStatus] = useState({
+    loading: false,
+    isStarted: false,
+    isEnded: false,
+  });
+  const [countRemainder, setCountRemainder] = useState(150);
+  const openOptionRef = useRef<HTMLDivElement | null>(null);
+  useOnClickOutside(openOptionRef, () =>
+    setOpenOption((prev) =>
+      prev.isOpen ? { ...prev, isOpen: !prev.isOpen } : prev
+    )
+  );
+
   const handleChangeFile = (file: File | undefined) => {
     if (!file) return;
     else {
@@ -106,50 +126,83 @@ const UploadContainer = () => {
 
   const handleSubmit = async (e: SyntheticEvent) => {
     e.preventDefault();
-    if (!file || !videoCover) return;
+    if (!user) {
+      navigate("/");
+    } else {
+      if (!file || !videoCover) return;
+      if (uploadStatus.loading && !uploadStatus.isEnded) {
+        message.sendMessage("Please wait...", "danger");
+        return;
+      }
+      setUploadStatus((prev) => ({ ...prev, isStarted: true, loading: true }));
+      message.sendMessage(
+        "We are processing your video! please wait...",
+        "primary"
+      );
 
-    const target = e.target as typeof e.target & IInputOpts;
-    const formData = new FormData();
-    formData.append(videoCover.name, videoCover, videoCover.name);
-    formData.append(
-      file.videoMetaData.name,
-      file.video,
-      file.videoMetaData.name
-    );
-    const fileRes = await postData<{ id_f: string }>(
-      servicesPath.POST_FORMDATA,
-      formData,
-      true,
-      "json",
-      "multipart/form-data"
-    ).catch(console.error);
-    if (fileRes && fileRes.data) {
-      const caption = textInputRef.current && textInputRef.current.innerText;
-      const whoCanView = openOption.select;
-      const copyrightCheck = target.copyrightCheck.checked;
+      const target = e.target as typeof e.target & IInputOpts;
+      const formData = new FormData();
+      formData.append(videoCover.name, videoCover, videoCover.name);
+      formData.append(
+        file.videoMetaData.name,
+        file.video,
+        file.videoMetaData.name
+      );
+      const fileRes = await postData<{ id_f: string }>(
+        servicesPath.POST_FORMDATA,
+        formData,
+        true,
+        "json",
+        "multipart/form-data"
+      ).catch((err) => {
+        console.error(err);
+        message.sendMessage(
+          "Can not upload video ! Something went wrong",
+          "danger"
+        );
+      });
+      if (fileRes && fileRes.data) {
+        const caption = textInputRef.current && textInputRef.current.innerText;
+        const whoCanView = openOption.select;
+        const copyrightCheck = target.copyrightCheck.checked;
 
-      const allowUserDo = {
-        cmt: target.cmt.checked,
-        duet: target.duet.checked,
-        stich: target.stich.checked,
-      };
-      const video_id_f = fileRes.data.id_f;
-      const videoMetaData = file.videoMetaData;
-      const metaRes = await postData(
-        servicesPath.POST_METADATA,
-        {
-          video_id_f,
-          cover_id_f: video_id_f + "_cover.png",
-          music_id_f: video_id_f + "_music.mp3",
-          caption,
-          whoCanView,
-          allowUserDo,
-          copyrightCheck,
-          videoMetaData,
-        },
-        true
-      ).catch(console.error);
-      metaRes && metaRes.data && console.log("upload metadata done");
+        const allowUserDo = {
+          cmt: target.cmt.checked,
+          duet: target.duet.checked,
+          stich: target.stich.checked,
+        };
+        const video_id_f = fileRes.data.id_f;
+        const videoMetaData = file.videoMetaData;
+        const metaRes = await postData(
+          servicesPath.POST_METADATA,
+          {
+            video_id_f,
+            cover_id_f: video_id_f + "_cover",
+            music_id_f: video_id_f + "_music",
+            caption,
+            whoCanView,
+            allowUserDo,
+            copyrightCheck,
+            videoMetaData,
+          },
+          true
+        ).catch(() => {
+          setUploadStatus((prev) => ({
+            ...prev,
+            loading: false,
+            isEnded: true,
+          }));
+          message.sendMessage(
+            "Can not upload video ! Something went wrong",
+            "danger"
+          );
+        });
+        metaRes &&
+          metaRes.data &&
+          message.sendMessage("Upload video Successfully!", "success");
+        setUploadStatus((prev) => ({ ...prev, loading: false, isEnded: true }));
+        navigate(`/user/${user.uid}`);
+      }
     }
   };
   return (
@@ -168,12 +221,17 @@ const UploadContainer = () => {
                     Caption
                   </h4>
                   <div className="flex justify-center items-center font-normal text-sm text-[rgb(22,24,35)] opacity-50 leading-normal">
-                    <span>0</span>/<span>150</span>
+                    <span>{countRemainder}</span>/<span>150</span>
                   </div>
                 </div>
                 <div className="w-full min-h-full rounded border-[rgba(22,24,35,0.12)] border p-[0px_80px_0px_16px]">
                   <div
                     ref={textInputRef}
+                    onInput={(e) =>
+                      setCountRemainder(
+                        150 - (e.currentTarget.textContent?.length || 0)
+                      )
+                    }
                     className="py-3 outline-none border-none leading-[18px] font-normal text-[15px] select-text whitespace-pre-wrap break-words"
                     contentEditable
                   ></div>
@@ -201,6 +259,7 @@ const UploadContainer = () => {
                 </h4>
                 <div className="w-[300px] h-[36px] rounded border border-[rgba(22,24,35,0.12)] relative cursor-pointer">
                   <div
+                    ref={openOptionRef}
                     onClick={handleChangeOption}
                     className="relative flex justify-start items-center p-[5px_12px_7px_12px]"
                   >
@@ -268,27 +327,29 @@ const UploadContainer = () => {
                     >
                       <div className="">
                         <Input
+                          defaultChecked={true}
                           className="hidden appearance-none cmt-input"
                           name="cmt"
                           id="cmt"
                           type="checkbox"
-                        />
-                        <div className="relative w-4 h-4 rounded-sm border border-[rgba(24,25,35,0.12)] cmt-box">
-                          <div className=" absolute top-0 left-0 w-full h-full grid  place-content text-white">
-                            <svg
-                              width="14"
-                              height="14"
-                              viewBox="-1.2 -3 12.3 14"
-                              fill="none"
-                              xmlns="http://www.w3.org/2000/svg"
-                            >
-                              <path
-                                d="M3.88632 5.95189L8.77465 0.915431C8.96697 0.717276 9.28352 0.712552 9.48168 0.904878L9.67738 1.09483C9.87553 1.28715 9.88026 1.6037 9.68793 1.80185L4.34296 7.3088C4.093 7.56633 3.67963 7.56633 3.42967 7.3088L0.948335 4.75227C0.756009 4.55411 0.760734 4.23757 0.958888 4.04524L1.15459 3.85529C1.35275 3.66297 1.66929 3.66769 1.86162 3.86584L3.88632 5.95189Z"
-                                fill="currentColor"
-                              ></path>
-                            </svg>
+                        >
+                          <div className="relative w-4 h-4 rounded-sm border border-[rgba(24,25,35,0.12)] cmt-box">
+                            <div className=" absolute top-0 left-0 w-full h-full grid  place-content text-white">
+                              <svg
+                                width="14"
+                                height="14"
+                                viewBox="-1.2 -3 12.3 14"
+                                fill="none"
+                                xmlns="http://www.w3.org/2000/svg"
+                              >
+                                <path
+                                  d="M3.88632 5.95189L8.77465 0.915431C8.96697 0.717276 9.28352 0.712552 9.48168 0.904878L9.67738 1.09483C9.87553 1.28715 9.88026 1.6037 9.68793 1.80185L4.34296 7.3088C4.093 7.56633 3.67963 7.56633 3.42967 7.3088L0.948335 4.75227C0.756009 4.55411 0.760734 4.23757 0.958888 4.04524L1.15459 3.85529C1.35275 3.66297 1.66929 3.66769 1.86162 3.86584L3.88632 5.95189Z"
+                                  fill="currentColor"
+                                ></path>
+                              </svg>
+                            </div>
                           </div>
-                        </div>
+                        </Input>
                       </div>
                       <span>Comment</span>
                     </label>
@@ -304,23 +365,25 @@ const UploadContainer = () => {
                           name="duet"
                           id="duet"
                           type="checkbox"
-                        />
-                        <div className="relative w-4 h-4 rounded-sm border border-[rgba(24,25,35,0.12)] duet-box">
-                          <div className=" absolute top-0 left-0 w-full h-full grid place-content-center text-white">
-                            <svg
-                              width="14"
-                              height="14"
-                              viewBox="-1.2 -3 12.3 14"
-                              fill="none"
-                              xmlns="http://www.w3.org/2000/svg"
-                            >
-                              <path
-                                d="M3.88632 5.95189L8.77465 0.915431C8.96697 0.717276 9.28352 0.712552 9.48168 0.904878L9.67738 1.09483C9.87553 1.28715 9.88026 1.6037 9.68793 1.80185L4.34296 7.3088C4.093 7.56633 3.67963 7.56633 3.42967 7.3088L0.948335 4.75227C0.756009 4.55411 0.760734 4.23757 0.958888 4.04524L1.15459 3.85529C1.35275 3.66297 1.66929 3.66769 1.86162 3.86584L3.88632 5.95189Z"
-                                fill="currentColor"
-                              ></path>
-                            </svg>
+                          defaultChecked={true}
+                        >
+                          <div className="relative w-4 h-4 rounded-sm border border-[rgba(24,25,35,0.12)] duet-box">
+                            <div className=" absolute top-0 left-0 w-full h-full grid place-content-center text-white">
+                              <svg
+                                width="14"
+                                height="14"
+                                viewBox="-1.2 -3 12.3 14"
+                                fill="none"
+                                xmlns="http://www.w3.org/2000/svg"
+                              >
+                                <path
+                                  d="M3.88632 5.95189L8.77465 0.915431C8.96697 0.717276 9.28352 0.712552 9.48168 0.904878L9.67738 1.09483C9.87553 1.28715 9.88026 1.6037 9.68793 1.80185L4.34296 7.3088C4.093 7.56633 3.67963 7.56633 3.42967 7.3088L0.948335 4.75227C0.756009 4.55411 0.760734 4.23757 0.958888 4.04524L1.15459 3.85529C1.35275 3.66297 1.66929 3.66769 1.86162 3.86584L3.88632 5.95189Z"
+                                  fill="currentColor"
+                                ></path>
+                              </svg>
+                            </div>
                           </div>
-                        </div>
+                        </Input>
                       </div>
                       <span>Duet</span>
                     </label>
@@ -336,23 +399,25 @@ const UploadContainer = () => {
                           name="stich"
                           id="stich"
                           type="checkbox"
-                        />
-                        <div className="relative w-4 h-4 rounded-sm border stich-box border-[rgba(24,25,35,0.12)]">
-                          <div className=" absolute top-0 left-0 w-full h-full grid place-content-center text-white">
-                            <svg
-                              width="14"
-                              height="14"
-                              viewBox="-1.2 -3 12.3 14"
-                              fill="none"
-                              xmlns="http://www.w3.org/2000/svg"
-                            >
-                              <path
-                                d="M3.88632 5.95189L8.77465 0.915431C8.96697 0.717276 9.28352 0.712552 9.48168 0.904878L9.67738 1.09483C9.87553 1.28715 9.88026 1.6037 9.68793 1.80185L4.34296 7.3088C4.093 7.56633 3.67963 7.56633 3.42967 7.3088L0.948335 4.75227C0.756009 4.55411 0.760734 4.23757 0.958888 4.04524L1.15459 3.85529C1.35275 3.66297 1.66929 3.66769 1.86162 3.86584L3.88632 5.95189Z"
-                                fill="currentColor"
-                              ></path>
-                            </svg>
+                          defaultChecked={true}
+                        >
+                          <div className="relative w-4 h-4 rounded-sm border stich-box border-[rgba(24,25,35,0.12)]">
+                            <div className=" absolute top-0 left-0 w-full h-full grid place-content-center text-white">
+                              <svg
+                                width="14"
+                                height="14"
+                                viewBox="-1.2 -3 12.3 14"
+                                fill="none"
+                                xmlns="http://www.w3.org/2000/svg"
+                              >
+                                <path
+                                  d="M3.88632 5.95189L8.77465 0.915431C8.96697 0.717276 9.28352 0.712552 9.48168 0.904878L9.67738 1.09483C9.87553 1.28715 9.88026 1.6037 9.68793 1.80185L4.34296 7.3088C4.093 7.56633 3.67963 7.56633 3.42967 7.3088L0.948335 4.75227C0.756009 4.55411 0.760734 4.23757 0.958888 4.04524L1.15459 3.85529C1.35275 3.66297 1.66929 3.66769 1.86162 3.86584L3.88632 5.95189Z"
+                                  fill="currentColor"
+                                ></path>
+                              </svg>
+                            </div>
                           </div>
-                        </div>
+                        </Input>
                       </div>
                       <span>Stich</span>
                     </label>
@@ -372,8 +437,10 @@ const UploadContainer = () => {
                     className="appearance-none hidden copyright-input"
                     id="copyright-check"
                     name="copyrightCheck"
-                  />
-                  <span className="absolute h-5 w-5 rounded-full bg-white top-[2px] left-[2px] copyright-circle transition-all"></span>
+                    defaultChecked={true}
+                  >
+                    <span className="absolute h-5 w-5 rounded-full bg-white top-[2px] left-[2px] copyright-circle transition-all"></span>
+                  </Input>
                 </label>
               </div>
               <div>
@@ -393,6 +460,7 @@ const UploadContainer = () => {
                 <div className="w-[168px]">
                   <Button
                     text="Discard"
+                    onClick={() => navigate(-1)}
                     className="h-11 min-w-[72px] border border-[rgb(242,242,242)] w-full px-5 font-semibold rounded-sm"
                   />
                 </div>
@@ -400,8 +468,16 @@ const UploadContainer = () => {
                   <Button
                     text="Post"
                     type="submit"
-                    className="min-w-[72px] rounded-sm h-11 bg-[rgb(242,242,242)] font-semibold w-full px-5 border-[rgb(242,242,242)] cursor-not-allowed"
-                  />
+                    className={`flex justify-center gap-x-3 items-center min-w-[72px] rounded-sm h-11 font-semibold w-full px-5 border-[rgb(242,242,242)] ${
+                      file
+                        ? "cursor-pointer bg-[rgb(196,194,194)] "
+                        : "cursor-not-allowed bg-[rgb(242,242,242)] "
+                    }`}
+                  >
+                    {uploadStatus.isStarted && uploadStatus.loading && (
+                      <CircleLoading />
+                    )}
+                  </Button>
                 </div>
               </div>
             </div>

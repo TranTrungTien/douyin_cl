@@ -119,6 +119,39 @@ const UserPage = (props: Props) => {
         });
     }
   };
+  const handleChangeViewPoint = (viewOwnVideo: boolean) => {
+    if (viewOwnVideo && !cursorState.viewOwn.isCurrent) {
+      setCursorState((prev) => {
+        return {
+          ...prev,
+          viewOwn: {
+            ...prev.viewOwn,
+            isCurrent: true,
+          },
+          viewLiked: {
+            ...prev.viewLiked,
+            isCurrent: false,
+          },
+        };
+      });
+    } else {
+      setCursorState((prev) => {
+        return {
+          ...prev,
+          viewLiked: {
+            ...prev.viewLiked,
+            isCurrent: true,
+          },
+          viewOwn: {
+            ...prev.viewOwn,
+            isCurrent: false,
+          },
+        };
+      });
+    }
+  };
+  console.log({ cursorState });
+
   return (
     <section className="w-full flex flex-col justify-start items-start h-screen">
       <div
@@ -149,6 +182,7 @@ const UserPage = (props: Props) => {
           <SideContainer className="over-desktop:w-[900px] text-white shadow-[-18px_0px_80px_#000] h-max pb-16 ">
             {user && (
               <UserVideoContainer
+                onChangeViewPoint={handleChangeViewPoint}
                 viewLikedAllowed={user.show_favorite_list}
                 onStopFetchingMoreVideo={handleStopFetchingMoreVideo}
                 cursor={cursorState}

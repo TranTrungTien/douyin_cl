@@ -14,7 +14,7 @@ import LikedModel from "../models/liked.model";
 import MusicModel from "../models/music.model";
 import StatisticsModel from "../models/statistics.model";
 import VideoModel from "../models/video.model";
-import { convertMp4ToMp3 } from "../utils/convertMp4ToMp3";
+import { convertMp4ToMp3 } from "../utils/convert_mp4_to_mp3";
 
 function uploadFile(req: Request, res: Response) {
   let hasFinished = false;
@@ -128,9 +128,12 @@ function uploadMetaData(req: Request, res: Response) {
       });
       video
         .save()
-        .then((doc) => {
+        .then(async (doc) => {
+          await new StatisticsModel({
+            video_id: doc._id,
+          }).save();
           fs.appendFileSync(
-            `${metaPath}/video_id_desc.json`,
+            `${metaPath}/rbc_data.json`,
             "," + JSON.stringify({ video_id: video_id_f, desc: caption }),
             { encoding: "utf-8" }
           );
@@ -245,10 +248,11 @@ function getAllLikedVideoByUser(req: Request, res: Response) {
   const limit = parseInt(req.query.limit as string) || 15;
   LikedModel.find(
     { author_id: author_id },
-    { createdAt: 0, updatedAt: 0, __v: 0 },
+    { updatedAt: 0, __v: 0 },
     {
       skip: Number(cursor) * limit,
       limit: limit,
+      sort: { createdAt: -1 },
     }
   )
     .populate("author_id")

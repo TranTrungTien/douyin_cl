@@ -6,7 +6,7 @@ import UserModel from "../models/user.model";
 import { v4 } from "uuid";
 import jwt from "jsonwebtoken";
 import NodeMailer from "nodemailer";
-import LoginHelper from "../utils/login-helper";
+import LoginHelper from "../utils/login_helper";
 
 const loginHelper = new LoginHelper();
 
@@ -147,10 +147,21 @@ function loginWithoutPassword(req: Request, res: Response) {
     return res.status(400).send({ message: "Invalid email or secret code" });
   }
 }
+
+function logout(req: Request, res: Response) {
+  return res
+    .status(200)
+    .cookie("token", "", {
+      expires: new Date(Date.now() + 3600000),
+      httpOnly: true,
+    })
+    .send({ message: "Successfully" });
+}
 async function mailSender(req: Request, res: Response) {
   const email = req.body.email as string;
   const user = await UserModel.findOne({ email: email });
   const code = v4();
+  loginHelper.removeCode({ code, email });
   loginHelper.addNewCode({ code, email });
   // const transporter = NodeMailer.createTransport({
   //   service: "gmail",
@@ -223,6 +234,7 @@ const UserController = {
   mailSender,
   verifyCode,
   loginWithoutPassword,
+  logout,
 };
 
 export default UserController;

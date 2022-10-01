@@ -1,3 +1,4 @@
+import { MouseEvent } from "react";
 import { RightBarAction } from "../../layouts/video_slide";
 import Button from "../button";
 
@@ -12,7 +13,8 @@ const CommentBoxHeader = ({
   onCloseComment,
   fromVideoPage,
 }: Props) => {
-  const handleCloseComment = () => {
+  const handleCloseComment = (e: MouseEvent<HTMLButtonElement>) => {
+    e.stopPropagation();
     onCloseComment &&
       onCloseComment({ comment: false, isOpen: false, user: false });
   };

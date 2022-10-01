@@ -1,17 +1,22 @@
+import { MouseEvent } from "react";
 import Button from "../button";
 
 type Props = {
   onChangeVideo?: (isNextAction: boolean) => void;
 };
 const NextVideoButton = ({ onChangeVideo }: Props) => {
-  const handleChangeVideo = (isNextAction: boolean) => {
+  const handleChangeVideo = (
+    e: MouseEvent<HTMLButtonElement>,
+    isNextAction: boolean
+  ) => {
+    e.stopPropagation();
     onChangeVideo && onChangeVideo(isNextAction);
   };
   return (
     <div className="flex flex-col justify-center items-start bg-gray_button opacity-30 rounded-full max-w-max hover:opacity-70">
       <Button
         text=""
-        onClick={() => handleChangeVideo(false)}
+        onClick={(e) => handleChangeVideo(e, false)}
         className="inline-block px-[6px] py-2 hover:opacity-100"
         icon={
           <svg
@@ -27,7 +32,7 @@ const NextVideoButton = ({ onChangeVideo }: Props) => {
       />
       <Button
         text=""
-        onClick={() => handleChangeVideo(true)}
+        onClick={(e) => handleChangeVideo(e, true)}
         className="inline-block px-[6px] py-2 hover:opacity-100"
         icon={
           <svg

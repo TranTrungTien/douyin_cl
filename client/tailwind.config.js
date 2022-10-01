@@ -54,11 +54,26 @@ module.exports = {
       },
       animation: {
         scaleUpAndDown: "scaleUpDown 0.3s linear",
+        message_item_animated: "translateMessage 2s ease-in-out",
       },
       keyframes: {
         scaleUpDown: {
           "0%, 100%": { transform: "scale(1)" },
           "50%": { transform: "scale(1.09)" },
+        },
+        translateMessage: {
+          "0%": {
+            transform: "translateX(0%)",
+          },
+          "30%": {
+            transform: "translateX(-110%)",
+          },
+          "70%": {
+            transform: "translateX(-110%)",
+          },
+          "100%": {
+            transform: "translateX(0%)",
+          },
         },
       },
     },

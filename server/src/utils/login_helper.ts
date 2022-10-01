@@ -37,6 +37,11 @@ class LoginHelper {
   addNewCode(code: ICode): void {
     this._code.push(code);
   }
+  removeCode(code: ICode): void {
+    this._code = this._code.filter(
+      (c) => c.code !== code.code && c.email !== code.email
+    );
+  }
   addNewExistedEmail(email: IExistedEmail): void {
     this._existedEmail.push(email);
   }

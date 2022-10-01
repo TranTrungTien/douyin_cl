@@ -13,7 +13,8 @@ const ProgressBar = forwardRef(
         sliderDraggableHorizontal(
           progressRef.current,
           progressBarRef.current,
-          (timeSeek) => {
+          (timeSeek, width) => {
+            console.log({ timeSeek });
             onChangeVideoTime && onChangeVideoTime(timeSeek);
           }
         );
@@ -21,8 +22,10 @@ const ProgressBar = forwardRef(
     const handleChangeVideoTime = (
       e: MouseEvent<HTMLDivElement> & { target: HTMLElement }
     ) => {
-      onChangeVideoTime &&
-        onChangeVideoTime(e.clientX - e.target.getBoundingClientRect().x);
+      e.stopPropagation();
+      const width =
+        e.pageX - progressBarRef.current.getBoundingClientRect().left;
+      onChangeVideoTime && onChangeVideoTime(width);
     };
     return (
       <div className="w-full h-2 flex justify-start items-center cursor-pointer group">

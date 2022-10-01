@@ -20,6 +20,7 @@ type Props = {
   cursor: ICursorState;
   authorID: string;
   viewLikedAllowed: boolean;
+  onChangeViewPoint: (viewOwnVideo: boolean) => void;
   onStopFetchingMoreVideo: () => void;
 };
 
@@ -27,6 +28,7 @@ const UserVideoContainer = ({
   authorID,
   cursor,
   viewLikedAllowed,
+  onChangeViewPoint,
   onStopFetchingMoreVideo,
 }: Props) => {
   const currentCursorPosition = useRef({
@@ -98,15 +100,16 @@ const UserVideoContainer = ({
   const handleChangeViewOpt = (viewOwn: boolean) => {
     if (viewOwn && !viewOpt.viewOwn) {
       setViewOpt({ viewOwn: true, viewLiked: false });
+      onChangeViewPoint(true);
     } else if (
       !viewOwn &&
       viewOpt.viewOwn &&
       (viewLikedAllowed || authorID === myID)
     ) {
+      onChangeViewPoint(false);
       setViewOpt({ viewOwn: false, viewLiked: true });
     }
   };
-  console.log({ ownVideos });
 
   return (
     <div className="extra-desktop:px-12 over-desktop:px-16 py-8 space-y-6">
@@ -156,7 +159,8 @@ const UserVideoContainer = ({
       <div className="laptop:max-w-[620px] laptop:min-w-[620px] desktop:max-w-[680px] desktop:min-w-[680px] extra-desktop:max-w-[776px] extra-desktop:min-w-[776px]">
         <VideoContainer className="min-h-[calc(100vh*0.3)] relative grid laptop:gap-x-5 desktop:gap-x-3 laptop:gap-y-5 desktop:gap-y-3 laptop:px-10 desktop:px-5 extra-desktop:px-0 laptop:grid-cols-2 desktop:grid-cols-3">
           {viewOpt.viewOwn
-            ? ownVideos?.status === "error" && (
+            ? ownVideos?.status === "error" &&
+              ownVideos?.statusCode !== 404 && (
                 <Modal>
                   <div className="w-96 h-96 rounded bg-white text-center text-black">
                     <h1>OWn Videos Opps we ran into some problems</h1>
@@ -171,7 +175,8 @@ const UserVideoContainer = ({
                   </div>
                 </Modal>
               )
-            : likedVideos?.status === "error" && (
+            : likedVideos?.status === "error" &&
+              likedVideos.statusCode !== 404 && (
                 <Modal>
                   <div className="w-96 h-96 rounded bg-white text-center text-black">
                     <h1> Liked Videos Opps we ran into some problems</h1>

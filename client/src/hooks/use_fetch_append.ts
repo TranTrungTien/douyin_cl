@@ -1,3 +1,4 @@
+import { AxiosError } from "axios";
 import { useEffect, useState } from "react";
 import { getData, ResponseType } from "../services/app_services";
 
@@ -11,10 +12,12 @@ export function useFetchAppend<T1>(
   responseDataHandler?: (responseData: T1[]) => void,
   responseType: ResponseType = "json",
   contentType: string = "application/json",
-  reFetchTrigger?: boolean
+  reFetchTrigger?: boolean,
+  refreshState: boolean = false
 ) {
   const [data, setData] = useState<{
     status: "loading" | "success" | "error";
+    statusCode?: number;
     message?: string;
     list: T1[];
   } | null>(null);
@@ -24,12 +27,13 @@ export function useFetchAppend<T1>(
         message: string;
         list: T1[];
       }>(url, params, withCredentials, responseType, contentType).catch(
-        (err) => {
+        (err: AxiosError) => {
           setData((prev) => {
             return {
-              list: [],
+              list: prev?.list || [],
               status: "error",
-              message: "Something went wrong",
+              statusCode: err.response?.status,
+              message: err.response?.statusText,
             };
           });
           errorHandler && errorHandler();
@@ -59,7 +63,7 @@ export function useFetchAppend<T1>(
       setData((prev) => {
         return {
           ...prev,
-          list: prev ? [...prev.list] : [],
+          list: !refreshState ? (prev ? [...prev.list] : []) : [],
           status: "loading",
         };
       });
@@ -77,6 +81,7 @@ export function useFetchAppend<T1>(
     responseType,
     contentType,
     reFetchTrigger,
+    refreshState,
   ]);
   return { data, setData };
 }

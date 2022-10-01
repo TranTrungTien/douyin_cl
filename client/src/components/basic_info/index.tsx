@@ -42,26 +42,53 @@ const BasicInfo = ({ emailVerified, code }: Props) => {
     }
   };
   return (
-    <div className="w-96 h-96 bg-white">
+    <div className="w-[30vw] min-h-[550px] bg-white p-10 rounded shadow-lg">
+      <h3 className="font-semibold text-3xl leading-[65px]">Who You Are ?</h3>
       <form onSubmit={onSubmit} className="flex flex-col">
-        <label htmlFor="nickname">NickName</label>
-        <input />
+        <label
+          className="font-semibold text-black opacity-80 mb-2"
+          htmlFor="nickname"
+        >
+          NickName
+        </label>
         <Input
+          className="bg-transparent rounded text-sm text-black opacity-80 mb-5 hover:border-red_hover focus:shadow-md focus:outline-none shadow-red-700"
           type="text"
           id="nickname"
           name="nickname"
           placeholder="nick name"
         />
-        <label htmlFor="email">Email</label>
-        <Input type="email" id="email" name="email" placeholder="email" />
-        <label htmlFor="password">Password</label>
+        <label
+          className="font-semibold text-black opacity-80 mb-2"
+          htmlFor="email"
+        >
+          Email
+        </label>
         <Input
+          className="bg-transparent rounded text-sm text-black opacity-80 mb-5 hover:border-red_hover focus:shadow-md focus:outline-none shadow-red-700"
+          type="email"
+          id="email"
+          name="email"
+          placeholder="email"
+        />
+        <label
+          className="font-semibold text-black opacity-80 mb-2"
+          htmlFor="password"
+        >
+          Password
+        </label>
+        <Input
+          className="bg-transparent rounded text-sm text-black opacity-80 mb-5 hover:border-red_hover focus:shadow-md focus:outline-none shadow-red-700"
           type="password"
           id="password"
           name="password"
           placeholder="password"
         />
-        <Button text="Submit" type="submit" />
+        <Button
+          text="Submit"
+          type="submit"
+          className="text-white font-semibold bg-fresh_red rounded w-full py-4 mt-3"
+        />
       </form>
     </div>
   );

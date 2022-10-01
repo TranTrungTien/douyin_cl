@@ -18,7 +18,7 @@ const SearchFilterHeader = () => {
   return (
     <div
       ref={searchFilteredRef}
-      className="sticky top-14 z-10 bg-light_blue pt-6 pb-2"
+      className="sticky top-14 z-30 bg-light_blue pt-6 pb-2"
     >
       <div className="flex justify-between items-center">
         <div className="space-x-16">

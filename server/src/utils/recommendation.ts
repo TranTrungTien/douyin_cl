@@ -4,7 +4,6 @@ import { fork } from "child_process";
 import path from "path";
 import { HMMModel, IDF, JiebaDict, StopWords, UserDict } from "jieba-zh-tw";
 import createJieba from "js-jieba";
-import { BestMatch } from "string-similarity";
 import { IVideo } from "../interface/video.interface";
 import { IYourVideoLiked } from "../interface/liked.interface";
 
@@ -138,12 +137,14 @@ interface ITrainingData {
     likedList: IYourVideoLiked[];
   };
 }
+
+// Bug??? Need to run training again when upload video
 export class RecommendationUtils {
   private static index = 0;
   private static cosineMatrix: number[][] = [];
   private static trainingData: ITrainingData | null = null;
   private static _sortCosine(cosineSimMap: { id: number; value: number }[]) {
-    cosineSimMap.sort((x, y) => {
+    cosineSimMap?.sort((x, y) => {
       if (x.value > y.value) return -1;
       else if (x.value < y.value) return 1;
       else return 0;
@@ -164,7 +165,7 @@ export class RecommendationUtils {
   }
   public static getRecommendedBasedOnVideoIndexes(index: number) {
     if (this.cosineMatrix) {
-      const cosineSimMap = RecommendationUtils.cosineMatrix[index].map(
+      const cosineSimMap = RecommendationUtils.cosineMatrix[index]?.map(
         (value, index) => {
           return value
             ? {
@@ -179,14 +180,14 @@ export class RecommendationUtils {
       );
       this._sortCosine(cosineSimMap);
       const recommendedIndexes = cosineSimMap
-        .filter((cosineS) => {
+        ?.filter((cosineS) => {
           return cosineS.value > 0.1;
         })
-        .map((value) => {
+        ?.map((value) => {
           return value.id;
         });
-      recommendedIndexes.splice(0, 1);
-      return recommendedIndexes;
+      recommendedIndexes?.splice(0, 1);
+      return recommendedIndexes ? recommendedIndexes : undefined;
     } else {
       return undefined;
     }
@@ -195,7 +196,7 @@ export class RecommendationUtils {
     console.log("training ...");
 
     return new Promise((resolve, reject) => {
-      const childProcess = fork(path.join(__dirname, "train.data.ts"));
+      const childProcess = fork(path.join(__dirname, "rbc_training.ts"));
       childProcess.on("close", (c) => {
         console.log({ c });
       });
@@ -211,7 +212,7 @@ export class RecommendationUtils {
   }
   public static getSearchRecommended = (text: string, limit: string) => {
     return new Promise<string[]>((resolve, reject) => {
-      const childProcess = fork(path.join(__dirname, "search.ts"));
+      const childProcess = fork(path.join(__dirname, "search_training.ts"));
       childProcess.send({ text, limit });
       childProcess.on("close", (c) => {
         console.log({ c });

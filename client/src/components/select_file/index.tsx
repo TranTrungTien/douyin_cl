@@ -12,7 +12,7 @@ const SelectFile = ({ fileName, onChangeFile }: Props) => {
     onChangeFile(file);
   };
   return (
-    <section className="w-[260px] h-[458px] rounded-lg border-[2px] border-dashed flex jöustify-center items-center border-[rgba(22,24,35,0.2)]">
+    <section className="w-[260px] h-[458px] rounded-lg border-[2px] border-dashed flex justify-center items-center border-[rgba(22,24,35,0.2)]">
       <div className="flex justify-center flex-col items-center px-[35px]">
         <label
           htmlFor="file_upload"
@@ -49,7 +49,7 @@ const SelectFile = ({ fileName, onChangeFile }: Props) => {
             className="h-[36px] rounded-sm font-semibold mt-[32px] text-white w-[186px]"
           />
         </label>
-        {fileName && <p>{fileName}</p>}
+        {fileName && <p className="truncate-text">{fileName}</p>}
       </div>
     </section>
   );

@@ -1,4 +1,5 @@
 import { Dispatch, SetStateAction, SyntheticEvent } from "react";
+import { Loading } from "../../components";
 import Comment from "../../components/comment";
 import CommentHeader from "../../components/comment_box_header";
 import Input from "../../components/input";
@@ -97,6 +98,7 @@ const CommentContainer = ({
             onSubmit={handleSubmit}
           >
             <Input
+              className="bg-transparent text-white"
               placeholder="评论 ..."
               autoComplete="off"
               id="comment"
@@ -106,7 +108,7 @@ const CommentContainer = ({
           </form>
         )}
       </div>
-      <div className="w-full h-auto overflow-auto hidden-scrollbar min-h-[calc(100vh/2)]">
+      <div className="w-full h-auto overflow-auto hidden-scrollbar min-h-[calc(100vh/2)] relative">
         {comments && comments.list.length
           ? comments.list.map((c, index) => {
               const isLiked = likedComments?.list.find((l) => {
@@ -130,6 +132,8 @@ const CommentContainer = ({
               );
             })
           : null}
+        {!comments && <Loading />}
+        {comments && comments.status === "loading" && <Loading />}
       </div>
     </>
   );

@@ -1,4 +1,5 @@
 import { Link } from "react-router-dom";
+import { MessageTransfer } from "../../hooks/use_message";
 import {
   isFollowUser,
   useAppDispatch,
@@ -30,10 +31,12 @@ const VideoPageUserBox = ({
   myID,
 }: Props) => {
   const isFollowing = useAppSelector((state) =>
-    isFollowUser(state, myID, user_id)
+    isFollowUser(state, myID, user_id, myID !== user_id)
   );
+  const message = MessageTransfer();
   const dispatch = useAppDispatch();
   const handleFollow = async () => {
+    message.sendMessage("Testing ...");
     if (myID) {
       if (isFollowing) {
         const delFollowingRes = await deleteData(servicesPath.DEL_FOLLOWING, {
@@ -87,7 +90,7 @@ const VideoPageUserBox = ({
           </div>
         </div>
       </div>
-      {!isFollowing && (
+      {!isFollowing && user_id !== myID && (
         <Button
           onClick={handleFollow}
           text="关注"

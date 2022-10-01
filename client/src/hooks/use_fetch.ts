@@ -7,7 +7,8 @@ export function useFetch<T>(
   withCredentials: boolean = false,
   conditionQuery: boolean = false,
   responseType: "text" | "json" | "blob" | "arraybuffer" = "json",
-  headerContentType = "application/json"
+  headerContentType = "application/json",
+  fetchingTriggers: boolean = false
 ) {
   const [data, setData] = useState<T | null>(null);
   useEffect(() => {
@@ -32,6 +33,7 @@ export function useFetch<T>(
     params,
     responseType,
     conditionQuery,
+    fetchingTriggers,
   ]);
   return data;
 }

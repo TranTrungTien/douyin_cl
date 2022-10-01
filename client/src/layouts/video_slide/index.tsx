@@ -6,12 +6,7 @@ import Modal from "../../components/modal";
 import { IStatistics } from "../../interfaces/statistic";
 import { IVideo } from "../../interfaces/video.interface";
 import { ISearchPapeData } from "../../pages/search_page";
-import {
-  isFollowUser,
-  useAppDispatch,
-  useAppSelector,
-} from "../../redux/app/hooks";
-import { setVideo } from "../../redux/slice/current_view_slice";
+import { isFollowUser, useAppSelector } from "../../redux/app/hooks";
 import ErrorBoundary from "../../utils/error-boundaries";
 import RightContainer from "../right_container";
 
@@ -47,7 +42,6 @@ const VideoSlide = ({
 }: Props) => {
   console.log("video slide rerender");
   const myID = useAppSelector((state) => state.user.data?._id);
-  const dispatch = useAppDispatch();
   const [isPlay, setIsPlay] = useState(false);
   const swiper = useSwiper();
   const swiperSlide = useSwiperSlide();
@@ -64,7 +58,7 @@ const VideoSlide = ({
   }, [isActive, allowedPlay]);
   const handleOpenRightBar = (action: RightBarAction) => {
     if (action.isOpen === openRightBar.isOpen) return;
-    setOpenRightBar((pre) => {
+    setOpenRightBar((_) => {
       const newState = {
         isOpen: action.isOpen,
         comment: action.comment,
@@ -105,10 +99,9 @@ const VideoSlide = ({
   console.log({ index, isActive, isVisible, isPrev, isNext });
 
   const isFollow = useAppSelector((state) =>
-    isFollowUser(state, myID, video.author_id._id)
+    isFollowUser(state, myID, video.author_id._id, myID !== video.author_id._id)
   ) as boolean | undefined;
   const handleOpenVideoDetail = (url: string) => {
-    dispatch(setVideo({ doc: video, statistics: statistics }));
     window.open(url, "_blank");
   };
   return (
@@ -171,7 +164,7 @@ const VideoSlide = ({
         onCloseContainer={handleOpenRightBar}
         videoID={video._id}
         isFollow={isFollow ? true : false}
-        isOpenComment={openRightBar.user ? false : true}
+        isOpenComment={openRightBar.comment ? true : false}
         isOpenUser={openRightBar.user ? true : false}
         myID={myID ? myID : ""}
       />
