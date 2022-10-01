@@ -15,6 +15,7 @@ import MusicModel from "../models/music.model";
 import StatisticsModel from "../models/statistics.model";
 import VideoModel from "../models/video.model";
 import { convertMp4ToMp3 } from "../utils/convert_mp4_to_mp3";
+import { RecommendationUtils } from "../utils/recommendation";
 
 function uploadFile(req: Request, res: Response) {
   let hasFinished = false;
@@ -137,6 +138,8 @@ function uploadMetaData(req: Request, res: Response) {
             "," + JSON.stringify({ video_id: video_id_f, desc: caption }),
             { encoding: "utf-8" }
           );
+          await RecommendationUtils.trainRecommendedBasedOnVideo();
+          console.log("training again done ....");
           return res.status(201).send({ message: "Successfully", doc });
         })
         .catch((err) => res.status(500).send({ message: "Successfully", err }));

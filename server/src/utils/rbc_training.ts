@@ -1,6 +1,6 @@
 import * as fs from "fs";
 import { metaPath } from "../const/path";
-import Recommendation, { RecommendationUtils } from "./recommendation";
+import Recommendation from "./recommendation";
 
 const rawData =
   fs.readFileSync(`${metaPath}/rbc_data.json`, {
