@@ -18,6 +18,7 @@ import Modal from "../modal";
 type Props = {};
 
 const Nav = (props: Props) => {
+  // const message = MessageTransfer();
   const user = useAppSelector((state) => state.user);
   const login = useAppSelector((state) => state.login);
   const navigate = useNavigate();
@@ -168,6 +169,7 @@ const Nav = (props: Props) => {
           <Button
             onClick={() => {
               dispatch(setIsLogin(true));
+              // message.sendMessage("Error had occurred !!!", "warning");
             }}
             text="登录"
             className="laptop:w-[90px] desktop:w-[104px] laptop:h-[36px] desktop:h-[38px] px-4 font-medium leading-[23px] border border-fresh_red flex justify-center items-center text-white bg-fresh_red rounded-[5px]"
