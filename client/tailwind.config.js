@@ -61,7 +61,18 @@ module.exports = {
           "0%, 100%": { transform: "scale(1)" },
           "50%": { transform: "scale(1.09)" },
         },
-        translateMessage: {
+        translateForward: {
+          "0%": {
+            transform: "translateX(0%)",
+          },
+          "10%": {
+            transform: "translateX(-110%)",
+          },
+          "100%": {
+            transform: "translateX(-110%)",
+          },
+        },
+        translateForwardAndBack: {
           "0%": {
             transform: "translateX(0%)",
           },

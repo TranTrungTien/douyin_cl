@@ -19,3 +19,6 @@ export const isFollowUser = (
   state.following.list?.some(
     (follow) => follow.follow === follow_id && follow.author_id === author_id
   );
+
+export const ableToDelete = (state: RootState): boolean =>
+  state.message.every((item) => item.forever || item.visibility === false);
