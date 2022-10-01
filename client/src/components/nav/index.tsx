@@ -5,6 +5,7 @@ import ClientIcon from "../../assets/icons/client_icon";
 import CoOperateIcon from "../../assets/icons/co_operate_icon";
 import MessageIcon from "../../assets/icons/message_icon";
 import UploadIcon from "../../assets/icons/upload_icon";
+import { MessageTransfer } from "../../hooks/use_message";
 import { useAppDispatch, useAppSelector } from "../../redux/app/hooks";
 import { setIsLogin } from "../../redux/slice/login_slice";
 import { deleteData } from "../../services/app_services";
@@ -14,11 +15,12 @@ import BasicInfo from "../basic_info";
 import Button from "../button";
 import Login from "../login";
 import Modal from "../modal";
-
+let id = 0;
+let toggle = false;
 type Props = {};
 
 const Nav = (props: Props) => {
-  // const message = MessageTransfer();
+  const message = MessageTransfer();
   const user = useAppSelector((state) => state.user);
   const login = useAppSelector((state) => state.login);
   const navigate = useNavigate();

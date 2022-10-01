@@ -1,19 +1,32 @@
 import { ReactNode } from "react";
 import { createPortal } from "react-dom";
+import CloseIcon from "../../assets/icons/close_icon";
 import DangerIcon from "../../assets/icons/danger_icon";
 import SuccessIcon from "../../assets/icons/success_icon";
 import WarningIcon from "../../assets/icons/warning_icon";
-import { IMessages } from "../../redux/slice/message_slice";
+import { Button } from "../../components";
+import { useAppDispatch } from "../../redux/app/hooks";
+import {
+  deleteVisibilityForeverMessage,
+  IMessages,
+} from "../../redux/slice/message_slice";
 
 type IFilter = {
   bgColor: string;
-  icon: ReactNode | null;
+  prefixIcon: ReactNode | null;
+  suffixIcon: ReactNode | null;
 };
 
 type Props = {
   messages: IMessages[] | null;
 };
 const MessageContainer = ({ messages }: Props) => {
+  const dispatch = useAppDispatch();
+  const handleCloseMessage = (uid: string) => {
+    dispatch(deleteVisibilityForeverMessage(uid));
+  };
+  console.log({ messages });
+
   return createPortal(
     <div
       id="message"
@@ -24,51 +37,66 @@ const MessageContainer = ({ messages }: Props) => {
           messages.map((item, index) => {
             let filter: IFilter = {
               bgColor: "var(--text)",
-              icon: null,
+              prefixIcon: null,
+              suffixIcon: null,
             };
             switch (item.type) {
               case "success":
                 filter = {
                   bgColor: "var(--success)",
-                  icon: <SuccessIcon />,
+                  prefixIcon: <SuccessIcon />,
+                  suffixIcon: item.forever ? <CloseIcon /> : null,
                 };
                 break;
               case "danger":
                 filter = {
                   bgColor: "var(--danger)",
-                  icon: <DangerIcon />,
+                  prefixIcon: <DangerIcon />,
+                  suffixIcon: item.forever ? <CloseIcon /> : null,
                 };
                 break;
               case "warning":
                 filter = {
                   bgColor: "var(--warning)",
-                  icon: <WarningIcon />,
+                  prefixIcon: <WarningIcon />,
+                  suffixIcon: item.forever ? <CloseIcon /> : null,
                 };
                 break;
               default:
                 filter = {
                   bgColor: "var(--text)",
-                  icon: null,
+                  prefixIcon: null,
+                  suffixIcon: null,
                 };
                 break;
             }
+            const animation = item.visibility
+              ? item.forever
+                ? `animate-[translateForward_3s_ease-in-out_0s_1_normal_forwards]`
+                : `animate-[translateForwardAndBack_3s_ease-in-out]`
+              : "";
             return (
               <div
                 key={index}
                 style={{
                   backgroundColor: filter.bgColor,
                 }}
-                className={`${
-                  item.isVisible
-                    ? "animate-[translateMessage_3s_ease-in-out]"
-                    : ""
-                } min-w-[220px] min-h-[45px] rounded px-2 py-1`}
+                className={`${animation} min-w-[220px] min-h-[45px] rounded px-2 py-1`}
               >
-                <div className="m-auto w-full h-full px-2 py-1 flex justify-start space-x-2">
-                  {filter.icon}
-                  <p className="text-white font-semibold leading-[40px]">
+                <div className="m-auto w-full h-full px-2 py-1 flex justify-start items-center space-x-2">
+                  {filter.prefixIcon}
+                  <p className="text-white font-semibold leading-[40px] mr-4 flex-1">
                     {item.text}
                   </p>
+                  {filter.suffixIcon && (
+                    <Button
+                      text=""
+                      className="pt-2"
+                      onClick={() => handleCloseMessage(item.uid)}
+                    >
+                      {filter.suffixIcon}
+                    </Button>
+                  )}
                 </div>
               </div>
             );

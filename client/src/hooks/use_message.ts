@@ -1,5 +1,9 @@
 import { useRef } from "react";
-import { useAppDispatch, useAppSelector } from "../redux/app/hooks";
+import {
+  ableToDelete,
+  useAppDispatch,
+  useAppSelector,
+} from "../redux/app/hooks";
 import {
   deleteMessage,
   setMessage,
@@ -8,37 +12,42 @@ import {
 import { makeID } from "../utils/uid";
 export function MessageTransfer() {
   const dispatch = useAppDispatch();
-  const isEmpty = useAppSelector((state) => state.message.length === 0);
-
+  const isDel = useAppSelector(ableToDelete);
+  const isDelRef = useRef<boolean>(isDel);
+  isDelRef.current = isDel;
   const messageIntervalIDRef = useRef<NodeJS.Timeout>();
   const sendMessage = (
     text: string,
     type: "success" | "warning" | "danger" | "primary" = "success",
-    delayHidden: number = 3000
+    forever: boolean = false,
+    seconds: number = 3
   ) => {
     // set again because inner function var will be missed updated data ....
-    const isEmptyCurrent = isEmpty;
     const uid = makeID();
     dispatch(
       setMessage({
         uid: uid,
-        isVisible: true,
+        forever: forever,
+        visibility: true,
         text: text,
+        duration: seconds,
         type: type,
       })
     );
-    setTimeout(() => dispatch(setShow(uid)), delayHidden);
-    const clearMessage = () => {
+    !forever && setTimeout(() => dispatch(setShow(uid)), seconds * 1000);
+  };
+  const clearMessage = () => {
+    console.log("re run ...");
+
+    if (isDelRef.current) {
       dispatch(deleteMessage());
-      if (isEmptyCurrent) {
-        clearInterval(messageIntervalIDRef.current);
-        messageIntervalIDRef.current = undefined;
-      }
-    };
-    if (!messageIntervalIDRef.current) {
-      messageIntervalIDRef.current = setInterval(clearMessage, 4000);
+      clearInterval(messageIntervalIDRef.current);
+      messageIntervalIDRef.current = undefined;
     }
   };
+  if (!messageIntervalIDRef.current) {
+    messageIntervalIDRef.current = setInterval(clearMessage, 4000);
+  }
   return {
     sendMessage,
   };
