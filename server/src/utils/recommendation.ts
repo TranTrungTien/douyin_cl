@@ -137,12 +137,14 @@ interface ITrainingData {
     likedList: IYourVideoLiked[];
   };
 }
+
+// Bug??? Need to run training again when upload video
 export class RecommendationUtils {
   private static index = 0;
   private static cosineMatrix: number[][] = [];
   private static trainingData: ITrainingData | null = null;
   private static _sortCosine(cosineSimMap: { id: number; value: number }[]) {
-    cosineSimMap.sort((x, y) => {
+    cosineSimMap?.sort((x, y) => {
       if (x.value > y.value) return -1;
       else if (x.value < y.value) return 1;
       else return 0;
@@ -178,14 +180,14 @@ export class RecommendationUtils {
       );
       this._sortCosine(cosineSimMap);
       const recommendedIndexes = cosineSimMap
-        .filter((cosineS) => {
+        ?.filter((cosineS) => {
           return cosineS.value > 0.1;
         })
-        .map((value) => {
+        ?.map((value) => {
           return value.id;
         });
-      recommendedIndexes.splice(0, 1);
-      return recommendedIndexes;
+      recommendedIndexes?.splice(0, 1);
+      return recommendedIndexes ? recommendedIndexes : undefined;
     } else {
       return undefined;
     }

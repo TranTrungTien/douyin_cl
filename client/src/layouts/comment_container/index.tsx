@@ -98,6 +98,7 @@ const CommentContainer = ({
             onSubmit={handleSubmit}
           >
             <Input
+              className="bg-transparent text-white"
               placeholder="评论 ..."
               autoComplete="off"
               id="comment"

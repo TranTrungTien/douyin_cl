@@ -138,7 +138,7 @@ const Nav = (props: Props) => {
             firstNickNameCharacter={user.data.nickname[0]}
             hint={user.data.nickname}
             width="w-[42px]"
-            height="w-[42px]"
+            height="h-[42px]"
             image={user.data.avatar_thumb.url_list[0]}
             title={user.data.nickname}
           />

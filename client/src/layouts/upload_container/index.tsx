@@ -1,13 +1,14 @@
 import { MouseEvent, ReactNode, SyntheticEvent, useRef, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Button, SelectFile } from "../../components";
-import { servicesPath } from "../../services/services_path";
-import { postData } from "../../services/app_services";
-import "./style.css";
+import CircleLoading from "../../components/circle_loading";
 import Input from "../../components/input";
 import { useOnClickOutside } from "../../hooks/use_click_outside";
+import { MessageTransfer } from "../../hooks/use_message";
 import { useAppSelector } from "../../redux/app/hooks";
-import CircleLoading from "../../components/circle_loading";
+import { postData } from "../../services/app_services";
+import { servicesPath } from "../../services/services_path";
+import "./style.css";
 
 type IInputOpts = {
   cmt: {
@@ -25,6 +26,7 @@ type IInputOpts = {
 };
 
 const UploadContainer = () => {
+  const message = MessageTransfer();
   const user = useAppSelector((state) => state.user.data);
   const navigate = useNavigate();
   const textInputRef = useRef<HTMLDivElement>(null);
@@ -128,7 +130,16 @@ const UploadContainer = () => {
       navigate("/");
     } else {
       if (!file || !videoCover) return;
+      if (uploadStatus.loading && !uploadStatus.isEnded) {
+        message.sendMessage("Please wait...", "danger");
+        return;
+      }
       setUploadStatus((prev) => ({ ...prev, isStarted: true, loading: true }));
+      message.sendMessage(
+        "We are processing your video! please wait...",
+        "primary"
+      );
+
       const target = e.target as typeof e.target & IInputOpts;
       const formData = new FormData();
       formData.append(videoCover.name, videoCover, videoCover.name);
@@ -143,7 +154,13 @@ const UploadContainer = () => {
         true,
         "json",
         "multipart/form-data"
-      ).catch(console.error);
+      ).catch((err) => {
+        console.error(err);
+        message.sendMessage(
+          "Can not upload video ! Something went wrong",
+          "danger"
+        );
+      });
       if (fileRes && fileRes.data) {
         const caption = textInputRef.current && textInputRef.current.innerText;
         const whoCanView = openOption.select;
@@ -170,14 +187,19 @@ const UploadContainer = () => {
           },
           true
         ).catch(() => {
-          alert("Can not upload video ! Something went wrong");
           setUploadStatus((prev) => ({
             ...prev,
             loading: false,
             isEnded: true,
           }));
+          message.sendMessage(
+            "Can not upload video ! Something went wrong",
+            "danger"
+          );
         });
-        metaRes && metaRes.data && alert("Upload video Successfully!");
+        metaRes &&
+          metaRes.data &&
+          message.sendMessage("Upload video Successfully!", "success");
         setUploadStatus((prev) => ({ ...prev, loading: false, isEnded: true }));
         navigate(`/user/${user.uid}`);
       }
@@ -438,6 +460,7 @@ const UploadContainer = () => {
                 <div className="w-[168px]">
                   <Button
                     text="Discard"
+                    onClick={() => navigate(-1)}
                     className="h-11 min-w-[72px] border border-[rgb(242,242,242)] w-full px-5 font-semibold rounded-sm"
                   />
                 </div>

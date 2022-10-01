@@ -161,6 +161,7 @@ async function mailSender(req: Request, res: Response) {
   const email = req.body.email as string;
   const user = await UserModel.findOne({ email: email });
   const code = v4();
+  loginHelper.removeCode({ code, email });
   loginHelper.addNewCode({ code, email });
   // const transporter = NodeMailer.createTransport({
   //   service: "gmail",

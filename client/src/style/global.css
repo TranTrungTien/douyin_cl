@@ -7,6 +7,17 @@
   box-sizing: border-box;
 }
 
+body{
+  overflow: hidden;
+}
+
+:root{
+  --text : #42a5f5;
+  --danger : #ef5350;
+  --warning : #ff9800;
+  --success : #4caf50;
+}
+
 video::-webkit-media-controls {
   display: none !important;
 }
