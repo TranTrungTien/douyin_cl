@@ -11,4 +11,5 @@ router.get("/play", MediaController.getVideoStream);
 router.get("/get-video-by-user", MediaController.getAllVideoByUser);
 router.get("/get-video-liked-by-user", MediaController.getAllLikedVideoByUser);
 router.get("/get-count", MediaController.getTotalDocuments);
+router.delete("/delete-video", verifyToken, MediaController.deleteVideo);
 export default router;

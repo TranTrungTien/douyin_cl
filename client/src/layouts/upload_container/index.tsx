@@ -161,6 +161,7 @@ const UploadContainer = () => {
           loading: false,
           isEnded: true,
         }));
+        console.log(err);
         const isCanceled = err?.code === "ERR_CANCELED";
         message.sendMessage(
           isCanceled
@@ -168,7 +169,7 @@ const UploadContainer = () => {
             : "Can not upload video ! Something went wrong",
           isCanceled ? "warning" : "danger"
         );
-        isCanceled && navigate(0);
+        isCanceled && window.location.reload();
       });
       if (fileRes && fileRes.data) {
         const caption = textInputRef.current && textInputRef.current.innerText;
@@ -195,16 +196,21 @@ const UploadContainer = () => {
             videoMetaData,
           },
           true
-        ).catch(() => {
+        ).catch((err) => {
           setUploadStatus((prev) => ({
             ...prev,
             loading: false,
             isEnded: true,
           }));
+          console.log(err);
+          const isCanceled = err?.code === "ERR_CANCELED";
           message.sendMessage(
-            "Can not upload video ! Something went wrong",
-            "danger"
+            isCanceled
+              ? "You've canceled upload video !!!"
+              : "Can not upload video ! Something went wrong",
+            isCanceled ? "warning" : "danger"
           );
+          isCanceled && window.location.reload();
         });
         metaRes &&
           metaRes.data &&
