@@ -19,11 +19,11 @@ export const servicesPath = {
 
   POST_METADATA: "/api/v1/media/upload-meta-data",
   POST_FORMDATA: "/api/v1/media/upload-file",
-
   GET_VIDEO_BY_USER: "/api/v1/media/get-video-by-user",
   GET_ALL_VIDEO_LIKED_BY_USER: "/api/v1/media/get-video-liked-by-user",
   GET_COUNT: "/api/v1/media/get-count",
   GET_METADATA: "/api/v1/media/get-meta-data",
+  DELETE_VIDEO: "/api/v1/media/delete-video",
 
   POST_COMMENT: "/api/v1/comment/create-comment",
   POST_lIKED_COMMENT: "/api/v1/comment/liked-comments/create-liked-comment",

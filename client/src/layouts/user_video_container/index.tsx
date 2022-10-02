@@ -14,6 +14,7 @@ import { ICursorState } from "../../pages/userpage";
 import { useAppSelector } from "../../redux/app/hooks";
 import { servicesPath } from "../../services/services_path";
 import VideoCardFooter from "../video_card_footer_container";
+import VideoCardWrapper from "../video_card_wrapper";
 import VideoContainer from "../video_container";
 
 type Props = {
@@ -193,42 +194,23 @@ const UserVideoContainer = ({
               )}
           {viewOpt.viewOwn
             ? ownVideos &&
-              ownVideos.list.map((video, index) => {
+              ownVideos.list.map((video) => {
                 return (
-                  <Link
-                    // ref={
-                    //   index === ownVideos.list.length - 1
-                    //     ? ownVideosRef
-                    //     : undefined
-                    // }
-                    target="_blank"
-                    to={`/video/${video.video._id}/${video.video.id_f}`}
+                  <VideoCardWrapper
+                    authorID={authorID}
+                    cover={video.video.origin_cover.url_list[0]}
+                    likeCount={video.statistics?.like_count || 0}
+                    myID={myID}
+                    videoId={video.video._id}
+                    videoIdf={video.video._id}
                     key={video.video._id}
-                    className="block w-full  extra-desktop:h-full"
-                  >
-                    <VideoCard
-                      className="laptop:h-[320px] desktop:h-[280px] extra-desktop:h-[328px] overflow-hidden"
-                      coverImage={video.video.origin_cover.url_list[0]}
-                    >
-                      <VideoBadge pinned={true} text="置顶" />
-                      <VideoCardFooter px="px-4" pb="pb-2">
-                        <LikeFooter
-                          likedCount={video.statistics.like_count || 0}
-                        />
-                      </VideoCardFooter>
-                    </VideoCard>
-                  </Link>
+                  />
                 );
               })
             : likedVideos &&
               likedVideos.list.map((video, index) => {
                 return (
                   <Link
-                    // ref={
-                    //   index === likedVideos.list.length - 1
-                    //     ? likedVideosRef
-                    //     : undefined
-                    // }
                     target="_blank"
                     to={`/video/${video.video.video_id._id}/${video.video.video_id.id_f}`}
                     key={video.video._id}

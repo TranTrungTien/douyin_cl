@@ -1,7 +1,7 @@
 import Busboy from "busboy";
 import { Request, Response } from "express";
 import * as fs from "fs";
-import path from "path";
+import mongoose from "mongoose";
 import { v4 } from "uuid";
 import {
   avatarPath,
@@ -10,8 +10,11 @@ import {
   musicPath,
   videoPath,
 } from "../const/path";
+import CommentModel from "../models/comment.model";
 import LikedModel from "../models/liked.model";
+import LikedCommentModel from "../models/liked_comment.model";
 import MusicModel from "../models/music.model";
+import SharedModel from "../models/shared.model";
 import StatisticsModel from "../models/statistics.model";
 import VideoModel from "../models/video.model";
 import { convertMp4ToMp3 } from "../utils/convert_mp4_to_mp3";
@@ -337,7 +340,86 @@ function getAvatarThumbnail(req: Request, res: Response) {
     res
   );
 }
+
+async function deleteVideo(req: Request, res: Response) {
+  const authorId = req.body._id as string;
+  const videoId = req.query.video_id as string;
+  const session = await mongoose.startSession();
+  session.startTransaction();
+  try {
+    const videoDoc = await VideoModel.findOneAndDelete(
+      {
+        _id: videoId,
+        author_id: authorId,
+      },
+      {
+        session,
+      }
+    );
+    if (videoDoc) {
+      await StatisticsModel.findOneAndDelete(
+        {
+          video_id: videoDoc._id,
+        },
+        {
+          session,
+        }
+      );
+      await CommentModel.deleteMany(
+        {
+          video_id: videoDoc._id,
+        },
+        {
+          session,
+        }
+      );
+      await LikedModel.deleteMany(
+        {
+          video_id: videoDoc._id,
+        },
+        {
+          session,
+        }
+      );
+      await LikedCommentModel.deleteMany(
+        {
+          video_id: videoDoc._id,
+        },
+        {
+          session,
+        }
+      );
+      await SharedModel.deleteMany(
+        {
+          video_id: videoDoc._id,
+        },
+        {
+          session,
+        }
+      );
+      fs.unlinkSync(`${videoPath}/${videoDoc.id_f}.mp4`);
+      fs.unlinkSync(`${coverPath}/${videoDoc.id_f}_cover.png`);
+      await session.commitTransaction();
+      return res.status(200).send({
+        message: "Successfully!",
+      });
+    } else {
+      return res.status(404).send({
+        message: "Video Dat Not found!",
+      });
+    }
+  } catch (error) {
+    await session.abortTransaction();
+    return res.status(500).send({
+      error,
+      message: "Something went wrong",
+    });
+  } finally {
+    session.endSession();
+  }
+}
 const MediaController = {
+  deleteVideo,
   getAvatarThumbnail,
   getAllVideoByUser,
   getAllLikedVideoByUser,

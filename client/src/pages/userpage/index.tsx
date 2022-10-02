@@ -150,7 +150,6 @@ const UserPage = (props: Props) => {
       });
     }
   };
-  console.log({ cursorState });
 
   return (
     <section className="w-full flex flex-col justify-start items-start h-screen">

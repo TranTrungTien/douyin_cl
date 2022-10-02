@@ -1,5 +1,4 @@
 import { Link } from "react-router-dom";
-import { MessageTransfer } from "../../hooks/use_message";
 import {
   isFollowUser,
   useAppDispatch,
@@ -33,7 +32,6 @@ const VideoPageUserBox = ({
   const isFollowing = useAppSelector((state) =>
     isFollowUser(state, myID, user_id, myID !== user_id)
   );
-  const message = MessageTransfer();
   const dispatch = useAppDispatch();
   const handleFollow = async () => {
     if (myID) {
