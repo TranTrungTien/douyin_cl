@@ -144,7 +144,7 @@ const Nav = (props: Props) => {
           {isShowOption && (
             <div className="absolute top-full right-0">
               <div className=" py-2 rounded-md bg-darkslategray min-w-[150px] w-max">
-                <Link to={`/user/${user.data.uid}`}>
+                <Link target="_blank" to={`/user/${user.data.uid}`}>
                   <div className="py-3 px-3 w-full hover:bg-darkslategray3 hover:opacity-100">
                     <span className="font-semibold text-white opacity-80">
                       你的个人资料

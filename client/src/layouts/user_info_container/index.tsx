@@ -34,8 +34,8 @@ const UserInfoContainer = ({
   const isFollow = useAppSelector((state) =>
     isFollowUser(state, myID, authorPageID, myID !== authorPageID)
   );
-
   const [isFollowing, setIsFollowing] = useState(isFollow ? true : false);
+
   const handleFollow = async () => {
     if (myID) {
       if (isFollowing) {

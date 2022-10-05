@@ -47,8 +47,8 @@ const UserVideoContainer = ({
 
   const count = useFetch<{
     message: string;
-    ownVideoTotal: number;
-    likedVideoTotal: number;
+    videoTotal: number;
+    likedTotal: number;
   } | null>(
     servicesPath.GET_COUNT,
     countParams,
@@ -125,7 +125,7 @@ const UserVideoContainer = ({
           } flex justify-start items-center space-x-2 text-base`}
         >
           <span>作品</span>
-          {count && <span>{count.ownVideoTotal}</span>}
+          {count && <span>{count.videoTotal}</span>}
         </Button>
         <Button
           text=""
@@ -141,7 +141,7 @@ const UserVideoContainer = ({
           } `}
         >
           <span className="">喜欢</span>
-          {count && <span>{count.likedVideoTotal}</span>}
+          {count && <span>{count.likedTotal}</span>}
           {!viewLikedAllowed && authorID !== myID && (
             <div>
               <svg
@@ -194,7 +194,7 @@ const UserVideoContainer = ({
               )}
           {viewOpt.viewOwn
             ? ownVideos &&
-              ownVideos.list.map((video) => {
+              ownVideos.list.map((video, index) => {
                 return (
                   <VideoCardWrapper
                     authorID={authorID}
@@ -203,7 +203,7 @@ const UserVideoContainer = ({
                     myID={myID}
                     videoId={video.video._id}
                     videoIdf={video.video._id}
-                    key={video.video._id}
+                    key={index}
                   />
                 );
               })

@@ -9,6 +9,7 @@ import {
 } from "react";
 import SmallHeartIcon from "../../assets/icons/small_heart_icon";
 import { useFetchAppend } from "../../hooks/use_fetch_append";
+import { MessageTransfer } from "../../hooks/use_message";
 import { IComment } from "../../interfaces/comment";
 import { ILikedComment } from "../../interfaces/liked_video.interface";
 import ReplyCommentContainer from "../../layouts/reply_comment_container";
@@ -72,6 +73,7 @@ const Comment = ({
           };
         });
   }, [isLiked]);
+  const messages = MessageTransfer();
   const dispatch = useAppDispatch();
   const [isReply, setIsReply] = useState(false);
   const user = useAppSelector((state) => state.user);
@@ -135,7 +137,7 @@ const Comment = ({
     target.reset();
 
     if (user.data) {
-      const commentRes = await postData<{ message: string; doc: IComment }>(
+      const commentRes = await postData<{ message: string; data: IComment }>(
         servicesPath.POST_COMMENT,
         {
           reply_comment_id: commentID,
@@ -143,7 +145,10 @@ const Comment = ({
           text: text,
         },
         true
-      ).catch(console.error);
+      ).catch((err) => {
+        console.error(err);
+        messages.sendMessage("Can't comment! Something went wrong", "danger");
+      });
       setVideoData((prev) => {
         return {
           ...prev,
@@ -151,7 +156,7 @@ const Comment = ({
         };
       });
       if (commentRes && commentRes.data) {
-        const newComment = commentRes.data.doc;
+        const newComment = commentRes.data.data;
         newComment.author_id = user.data;
         setShowReply((prev) => {
           return {
@@ -207,8 +212,16 @@ const Comment = ({
             reply_comment_id: replyCommentID,
           },
           true
-        ).catch(console.error);
-        likeRes && likeRes.data && console.log("liked");
+        ).catch((err) => {
+          console.error(err);
+          messages.sendMessage(
+            "Can't like comment! Something went wrong",
+            "danger"
+          );
+        });
+        likeRes &&
+          likeRes.data &&
+          messages.sendMessage("Liked comment successfully", "success");
       } else if (videoData.isLiked) {
         setVideoData((prev) => {
           return {
@@ -223,8 +236,13 @@ const Comment = ({
             video_id: videoID,
             comment_id: commentID,
           }
-        ).catch(console.error);
-        deleteRes && deleteRes.data && console.log("del comment successfully");
+        ).catch((err) => {
+          console.error(err);
+          messages.sendMessage("Can't comment! Something went wrong", "danger");
+        });
+        deleteRes &&
+          deleteRes.data &&
+          messages.sendMessage("Deleted comment successfully", "success");
       }
     } else dispatch(setIsLogin(true));
   };
@@ -296,6 +314,7 @@ const Comment = ({
           {isReply && user.data && (
             <form autoComplete="off" onSubmit={handleSubmit}>
               <Input
+                className="bg-transparent"
                 placeholder="评论 ..."
                 type="text"
                 autoComplete="off"

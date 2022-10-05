@@ -12,6 +12,7 @@ const commentSchema = new mongoose.Schema<IComment>(
       ref: "Video",
     },
     reply_comment_id: {
+      required: false,
       type: Schema.Types.ObjectId,
       ref: "Comment",
     },

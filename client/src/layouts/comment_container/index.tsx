@@ -53,7 +53,7 @@ const CommentContainer = ({
     };
     const text = target.comment.value;
     target.reset();
-    const commentRes = await postData<{ message: string; doc: IComment }>(
+    const commentRes = await postData<{ message: string; data: IComment }>(
       servicesPath.POST_COMMENT,
       {
         video_id: videoID,
@@ -62,7 +62,7 @@ const CommentContainer = ({
       true
     ).catch(alert);
     if (commentRes && commentRes.data) {
-      const newComment = commentRes.data.doc;
+      const newComment = commentRes.data.data;
       user && (newComment.author_id = user);
 
       setComments((state) => {

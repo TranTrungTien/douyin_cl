@@ -20,7 +20,7 @@ import VideoModel from "../models/video.model";
 import { convertMp4ToMp3 } from "../utils/convert_mp4_to_mp3";
 import { RecommendationUtils } from "../utils/recommendation";
 
-function uploadFile(req: Request, res: Response) {
+const uploadFile = async (req: Request, res: Response) => {
   let hasFinished = false;
   let filesCounter = 0;
   let info: { id_f: string } = { id_f: "" };
@@ -65,9 +65,9 @@ function uploadFile(req: Request, res: Response) {
     console.log("close busboy");
   });
   req.pipe(busboy);
-}
+};
 
-function uploadMetaData(req: Request, res: Response) {
+const uploadMetaData = async (req: Request, res: Response) => {
   const _id = req.body._id as string;
   const caption = req.body.caption as string;
   const video_id_f = req.body.video_id_f as string;
@@ -91,7 +91,7 @@ function uploadMetaData(req: Request, res: Response) {
   const coverUrl = `api/v1/image/cover?cover_id_f=${cover_id_f}`;
   const musicUrl = `api/v1/music/play?music_id_f=${music_id_f}`;
 
-  const music = new MusicModel({
+  const musicDoc = await new MusicModel({
     id_f: music_id_f,
     author_id: _id,
     play_addr: {
@@ -99,58 +99,44 @@ function uploadMetaData(req: Request, res: Response) {
     },
     duration: videoMetaData.duration,
     title: "",
-  });
+  }).save();
+  const videoDoc = await new VideoModel({
+    id_f: video_id_f,
+    desc: caption,
+    author_id: _id,
+    width: videoMetaData.width,
+    height: videoMetaData.height,
+    mimeType: videoMetaData.type,
+    size: videoMetaData.size,
+    duration: videoMetaData.duration,
+    allow_user_do: {
+      comment: allowUserDo.cmt,
+      duet: allowUserDo.duet,
+      stich: allowUserDo.stich,
+    },
+    who_can_view: whoCanView,
+    origin_cover: {
+      url_list: [coverUrl],
+    },
+    play_addr: {
+      url_list: [url],
+    },
+    music_id: musicDoc._id,
+  }).save();
+  await new StatisticsModel({
+    video_id: videoDoc._id,
+  }).save();
+  fs.appendFileSync(
+    `${metaPath}/rbc_data.json`,
+    "," + JSON.stringify({ video_id: video_id_f, desc: caption }),
+    { encoding: "utf-8" }
+  );
+  await RecommendationUtils.trainRecommendedBasedOnVideo();
+  console.log("training again done ....");
+  return res.status(201).send({ message: "Successfully", data: videoDoc });
+};
 
-  music.save((err, doc) => {
-    if (err)
-      return res
-        .status(500)
-        .send({ message: "  Error saving music  , error: " + err });
-    else {
-      const video = new VideoModel({
-        id_f: video_id_f,
-        desc: caption,
-        author_id: _id,
-        width: videoMetaData.width,
-        height: videoMetaData.height,
-        mimeType: videoMetaData.type,
-        size: videoMetaData.size,
-        duration: videoMetaData.duration,
-        allow_user_do: {
-          comment: allowUserDo.cmt,
-          duet: allowUserDo.duet,
-          stich: allowUserDo.stich,
-        },
-        who_can_view: whoCanView,
-        origin_cover: {
-          url_list: [coverUrl],
-        },
-        play_addr: {
-          url_list: [url],
-        },
-        music_id: doc._id,
-      });
-      video
-        .save()
-        .then(async (doc) => {
-          await new StatisticsModel({
-            video_id: doc._id,
-          }).save();
-          fs.appendFileSync(
-            `${metaPath}/rbc_data.json`,
-            "," + JSON.stringify({ video_id: video_id_f, desc: caption }),
-            { encoding: "utf-8" }
-          );
-          await RecommendationUtils.trainRecommendedBasedOnVideo();
-          console.log("training again done ....");
-          return res.status(201).send({ message: "Successfully", doc });
-        })
-        .catch((err) => res.status(500).send({ message: "Successfully", err }));
-    }
-  });
-}
-
-function getVideoStream(req: Request, res: Response) {
+const getVideoStream = async (req: Request, res: Response) => {
   const video_id_f = req.query.video_id_f as string;
   try {
     const filePath = `${videoPath}/${video_id_f}.mp4`;
@@ -160,9 +146,9 @@ function getVideoStream(req: Request, res: Response) {
   } catch (error) {
     return res.status(500).send({ message: "Something went wrong", error });
   }
-}
+};
 
-function getVideoCover(req: Request, res: Response) {
+const getVideoCover = async (req: Request, res: Response) => {
   const cover_id_f = req.query.cover_id_f as string;
   try {
     const coverP = `${coverPath}/${cover_id_f}.png`;
@@ -174,174 +160,140 @@ function getVideoCover(req: Request, res: Response) {
   } catch (error) {
     return res.status(500).send({ message: "Successfully", error });
   }
-}
+};
 
-function getVideoInfo(req: Request, res: Response) {
+const getVideoInfo = async (req: Request, res: Response) => {
   const video_id = req.query.video_id as string;
   if (!video_id) {
     return res.status(400).send("Video id is needed");
   } else {
-    VideoModel.findById(video_id, { createdAt: 0, updatedAt: 0, __v: 0 }, null)
-      .populate("author_id")
-      .exec((err, doc) => {
-        if (err)
-          return res.status(500).send({ err, message: "Something went wrong" });
-        else {
-          if (!doc)
-            return res.status(404).send({ message: "Not found video data" });
-          else return res.status(200).send({ message: "Successfully", doc });
-        }
-      });
+    try {
+      const data = await VideoModel.findById(
+        video_id,
+        { createdAt: 0, updatedAt: 0, __v: 0 },
+        null
+      )
+        .populate("author_id")
+        .exec();
+      return res.status(200).send({ message: "Successfully", data });
+    } catch (error) {
+      return res.status(500).send({ error, message: "Something went wrong" });
+    }
   }
-}
+};
 
-function getAllVideoByUser(req: Request, res: Response) {
+const getAllVideoByUser = async (req: Request, res: Response) => {
   const author_id = req.query.author_id as string;
   const cursor = req.query.cursor as string;
   const limit = parseInt(req.query.limit as string) || 15;
-
-  VideoModel.find(
-    { author_id: author_id },
-    { createdAt: 0, updatedAt: 0, __v: 0 },
-    { skip: Number(cursor) * limit, limit: limit, sort: { createdAt: -1 } },
-    (err, list) => {
-      if (err)
-        return res.status(500).send({ err, message: "Something went wrong" });
-      else {
-        if (list.length <= 0)
-          return res.status(404).send({ err, message: "No videos found" });
-        else {
-          const idList = list.map((v) => v._id);
-          StatisticsModel.find(
-            { video_id: { $in: idList } },
-            {
-              createdAt: 0,
-              updatedAt: 0,
-              __v: 0,
-            },
-            null,
-            (err, statistics) => {
-              if (err)
-                return res
-                  .status(500)
-                  .send({ message: "Something went wrong", err });
-              else {
-                const videos = list.map((v) => {
-                  const stat = statistics.find(
-                    (stat) => stat.video_id.toString() === v._id?.toString()
-                  );
-                  return {
-                    video: v,
-                    statistics: stat,
-                  };
-                });
-                return res.status(200).send({
-                  message: "Found videos Successfully",
-                  list: videos,
-                });
-              }
-            }
-          );
-        }
+  try {
+    const videoDocList = await VideoModel.find(
+      { author_id: author_id },
+      { createdAt: 0, updatedAt: 0, __v: 0 },
+      { skip: Number(cursor) * limit, limit: limit, sort: { createdAt: -1 } }
+    ).exec();
+    const idList = videoDocList.map((v) => v._id);
+    const statistics = await StatisticsModel.find(
+      { video_id: { $in: idList } },
+      {
+        createdAt: 0,
+        updatedAt: 0,
+        __v: 0,
       }
-    }
-  );
-}
-
-function getAllLikedVideoByUser(req: Request, res: Response) {
-  const author_id = req.query.author_id as string;
-  const cursor = req.query.cursor as string;
-  const limit = parseInt(req.query.limit as string) || 15;
-  LikedModel.find(
-    { author_id: author_id },
-    { updatedAt: 0, __v: 0 },
-    {
-      skip: Number(cursor) * limit,
-      limit: limit,
-      sort: { createdAt: -1 },
-    }
-  )
-    .populate("author_id")
-    .populate("video_id")
-    .exec((err, list) => {
-      if (err)
-        return res.status(500).send({ err, message: "Something went wrong" });
-      else {
-        if (list.length <= 0)
-          return res.status(404).send({ err, message: "No videos found" });
-        else {
-          const idList = list.map((v) => v.video_id._id);
-          StatisticsModel.find(
-            {
-              video_id: { $in: idList },
-            },
-            { createdAt: 0, updatedAt: 0, __v: 0 },
-            null,
-            (err, statistics) => {
-              if (err)
-                return res
-                  .status(500)
-                  .send({ err, message: "Something went wrong" });
-              else {
-                const videos = list.map((v) => {
-                  const stat = statistics.find(
-                    (stat) =>
-                      stat.video_id.toString() === v.video_id._id.toString()
-                  );
-                  return {
-                    video: v,
-                    statistics: stat,
-                  };
-                });
-                return res.status(200).send({
-                  message: "Found liked video Successfully",
-                  list: videos,
-                });
-              }
-            }
-          );
-        }
-      }
+    ).exec();
+    const videos = videoDocList.map((v) => {
+      const stat = statistics.find(
+        (stat) => stat.video_id.toString() === v._id?.toString()
+      );
+      return {
+        video: v,
+        statistics: stat,
+      };
     });
-}
+    return res.status(200).send({
+      message: "Found videos Successfully",
+      list: videos,
+    });
+  } catch (error) {
+    return res.status(500).send({
+      message: "Something went wrong",
+      error,
+    });
+  }
+};
 
-function getTotalDocuments(req: Request, res: Response) {
+const getAllLikedVideoByUser = async (req: Request, res: Response) => {
   const author_id = req.query.author_id as string;
-  VideoModel.countDocuments(
-    { author_id: author_id },
-    undefined,
-    (err, ownVideoTotal) => {
-      if (err)
-        return res.status(500).send({ err, message: "Error getting videos" });
-      else {
-        LikedModel.countDocuments(
-          { author_id: author_id },
-          undefined,
-          (err, likedVideoTotal) => {
-            if (err)
-              return res
-                .status(500)
-                .send({ err, message: "Error getting videos" });
-            else {
-              return res
-                .status(200)
-                .send({ message: "Success", ownVideoTotal, likedVideoTotal });
-            }
-          }
-        );
+  const cursor = req.query.cursor as string;
+  const limit = parseInt(req.query.limit as string) || 15;
+  try {
+    const likedDocList = await LikedModel.find(
+      { author_id: author_id },
+      { updatedAt: 0, __v: 0 },
+      {
+        skip: Number(cursor) * limit,
+        limit: limit,
+        sort: { createdAt: -1 },
       }
-    }
-  );
-}
+    )
+      .populate("author_id")
+      .populate("video_id")
+      .exec();
+    const idList = likedDocList.map((v) => v.video_id._id);
+    const statistics = await StatisticsModel.find(
+      {
+        video_id: { $in: idList },
+      },
+      { createdAt: 0, updatedAt: 0, __v: 0 }
+    ).exec();
+    const videos = likedDocList.map((v) => {
+      const stat = statistics.find(
+        (stat) => stat.video_id.toString() === v.video_id._id.toString()
+      );
+      return {
+        video: v,
+        statistics: stat,
+      };
+    });
+    return res.status(200).send({
+      message: "Found liked video Successfully",
+      list: videos,
+    });
+  } catch (error) {
+    return res.status(500).send({
+      message: "Something went wrong",
+      error,
+    });
+  }
+};
 
-function getAvatarThumbnail(req: Request, res: Response) {
+const getTotalDocuments = async (req: Request, res: Response) => {
+  const author_id = req.query.author_id as string;
+  try {
+    const videoTotal = await VideoModel.countDocuments({
+      author_id: author_id,
+    }).exec();
+    const likedTotal = await LikedModel.countDocuments({
+      author_id: author_id,
+    }).exec();
+    return res.status(200).send({ message: "Success", videoTotal, likedTotal });
+  } catch (error) {
+    return res.status(500).send({ message: "Something went wrong", error });
+  }
+};
+
+const getAvatarThumbnail = async (req: Request, res: Response) => {
   const avatar_id = req.query.avatar_id as string;
-  fs.createReadStream(avatarPath + "/avatar_thumbs/" + avatar_id + ".jpg").pipe(
-    res
-  );
-}
+  try {
+    fs.createReadStream(
+      avatarPath + "/avatar_thumbs/" + avatar_id + ".jpg"
+    ).pipe(res);
+  } catch (error) {
+    return res.status(500).send({ message: "Something went wrong", error });
+  }
+};
 
-async function deleteVideo(req: Request, res: Response) {
+const deleteVideo = async (req: Request, res: Response) => {
   const authorId = req.body._id as string;
   const videoId = req.query.video_id as string;
   const session = await mongoose.startSession();
@@ -355,7 +307,7 @@ async function deleteVideo(req: Request, res: Response) {
       {
         session,
       }
-    );
+    ).exec();
     if (videoDoc) {
       await StatisticsModel.findOneAndDelete(
         {
@@ -364,7 +316,7 @@ async function deleteVideo(req: Request, res: Response) {
         {
           session,
         }
-      );
+      ).exec();
       await CommentModel.deleteMany(
         {
           video_id: videoDoc._id,
@@ -372,7 +324,7 @@ async function deleteVideo(req: Request, res: Response) {
         {
           session,
         }
-      );
+      ).exec();
       await LikedModel.deleteMany(
         {
           video_id: videoDoc._id,
@@ -380,7 +332,7 @@ async function deleteVideo(req: Request, res: Response) {
         {
           session,
         }
-      );
+      ).exec();
       await LikedCommentModel.deleteMany(
         {
           video_id: videoDoc._id,
@@ -388,7 +340,7 @@ async function deleteVideo(req: Request, res: Response) {
         {
           session,
         }
-      );
+      ).exec();
       await SharedModel.deleteMany(
         {
           video_id: videoDoc._id,
@@ -396,7 +348,7 @@ async function deleteVideo(req: Request, res: Response) {
         {
           session,
         }
-      );
+      ).exec();
       fs.unlinkSync(`${videoPath}/${videoDoc.id_f}.mp4`);
       fs.unlinkSync(`${coverPath}/${videoDoc.id_f}_cover.png`);
       await session.commitTransaction();
@@ -417,7 +369,7 @@ async function deleteVideo(req: Request, res: Response) {
   } finally {
     session.endSession();
   }
-}
+};
 const MediaController = {
   deleteVideo,
   getAvatarThumbnail,

@@ -26,19 +26,19 @@ const BasicInfo = ({ emailVerified, code }: Props) => {
     if (!nickname || !email || !password) return;
     else {
       const user = { nickname: nickname, email: email, password: password };
-      const userDataRes = await postData<{ message: string; doc: IUser }>(
+      const userDataRes = await postData<{ message: string; data: IUser }>(
         servicesPath.CREATE_USER,
         { user }
       ).catch(console.error);
-      const emailRes = userDataRes && userDataRes.data.doc.email;
-      const passwordRes = userDataRes && userDataRes.data.doc.password;
+      const emailRes = userDataRes && userDataRes.data.data.email;
+      const passwordRes = userDataRes && userDataRes.data.data.password;
 
-      const loginRes = await postData<{ message: string; doc: IUser }>(
+      const loginRes = await postData<{ message: string; data: IUser }>(
         servicesPath.LOGIN,
         { emailRes, passwordRes, code },
         true
       ).catch(console.error);
-      loginRes && dispatch(getUserInfoSuccessfully(loginRes.data.doc));
+      loginRes && dispatch(getUserInfoSuccessfully(loginRes.data.data));
     }
   };
   return (
