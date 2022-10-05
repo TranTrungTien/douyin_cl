@@ -7,10 +7,11 @@ import { v4 } from "uuid";
 import jwt from "jsonwebtoken";
 import NodeMailer from "nodemailer";
 import LoginHelper from "../utils/login_helper";
+import mongoose from "mongoose";
 
 const loginHelper = new LoginHelper();
 
-function createUser(req: Request, res: Response) {
+const createUser = async (req: Request, res: Response) => {
   // Disabled because installed error
   // const { password, ...user } = req.body.user as IUser;
   // bcrypt
@@ -32,60 +33,72 @@ function createUser(req: Request, res: Response) {
   //       });
   //   })
   //   .catch((err) => res.status(500).send({ message: "Error", err }));
-}
-function updateUser(req: Request, res: Response) {
+};
+const updateUser = async (req: Request, res: Response) => {
   const user = req.body.user as IUser;
-  UserModel.findOneAndUpdate({ uid: user.uid }, user, null, (err, doc) => {
-    if (err) res.status(500).send({ message: "Error", err });
-    else {
-      if (!doc) return res.status(404).send({ message: "Not found" });
-      res.status(200).send({ message: "Successfully", doc });
-    }
-  });
-}
-function getOwnInfo(req: Request, res: Response) {
+  const session = await mongoose.startSession();
+  session.startTransaction();
+  try {
+    const userDoc = await UserModel.findOneAndUpdate(
+      { uid: user.uid },
+      user
+    ).exec();
+    await session.commitTransaction();
+    return res
+      .status(200)
+      .send({ message: "Updated Successfully", data: userDoc });
+  } catch (error) {
+    await session.abortTransaction();
+    return res.status(500).send({ message: "Something went wrong", error });
+  } finally {
+    session.endSession();
+  }
+};
+const getOwnInfo = async (req: Request, res: Response) => {
   const uid = req.body.uid;
-  UserModel.findOne(
-    { uid: uid },
-    { password: 0, createdAt: 0, updatedAt: 0, __v: 0 },
-    null,
-    (err, doc) => {
-      if (err) res.status(500).send({ message: "Error", err });
-      else {
-        if (!doc) return res.status(404).send({ message: "Not found" });
-        res.status(200).send({ message: "Successfully", doc });
-      }
-    }
-  );
-}
+  try {
+    const userDoc = await UserModel.findOne(
+      { uid: uid },
+      { password: 0, createdAt: 0, updatedAt: 0, __v: 0 }
+    ).exec();
+    return res.status(200).send({ message: "Successfully", data: userDoc });
+  } catch (error) {
+    return res.status(500).send({ message: "Something went wrong", error });
+  }
+};
 
-function getUserInfo(req: Request, res: Response) {
+const getUserInfo = async (req: Request, res: Response) => {
   const uid = req.query.uid;
-  UserModel.findOne(
-    { uid: uid },
-    { password: 0, createdAt: 0, updatedAt: 0, __v: 0 },
-    null,
-    (err, doc) => {
-      if (err) res.status(500).send({ message: "Error", err });
-      else {
-        if (!doc) return res.status(404).send({ message: "Not found" });
-        res.status(200).send({ message: "Successfully", doc });
-      }
-    }
-  );
-}
+  try {
+    const userDoc = await UserModel.findOne(
+      { uid: uid },
+      { password: 0, createdAt: 0, updatedAt: 0, __v: 0 }
+    ).exec();
+    return res.status(200).send({ message: "Successfully", data: userDoc });
+  } catch (error) {
+    return res.status(500).send({ message: "Something went wrong", error });
+  }
+};
 
-function deleteUser(req: Request, res: Response) {
+const deleteUser = async (req: Request, res: Response) => {
   const uid = req.params.uid;
-  UserModel.findOneAndDelete({ uid: uid }, null, (err, doc) => {
-    if (err) res.status(500).send({ message: "Error", err });
-    else {
-      if (!doc) return res.status(404).send({ message: "Not found" });
-      res.status(200).send({ message: "Successfully", doc });
-    }
-  });
-}
-function login(req: Request, res: Response) {
+  const session = await mongoose.startSession();
+  session.startTransaction();
+  try {
+    const userDoc = await UserModel.findOneAndDelete(
+      { uid: uid },
+      { session }
+    ).exec();
+    await session.commitTransaction();
+    return res.status(200).send({ message: "Successfully", data: userDoc });
+  } catch (error) {
+    await session.abortTransaction();
+    return res.status(500).send({ message: "Something went wrong", error });
+  } finally {
+    session.endSession();
+  }
+};
+const login = async (req: Request, res: Response) => {
   const email = req.body.email as string;
   const code = req.body.code as string;
   const password = req.body.password as string;
@@ -93,62 +106,66 @@ function login(req: Request, res: Response) {
     return res.status(400).send({ message: "Invalid email or password" });
   }
   loginHelper.deletePendingLogin(code, email);
-  UserModel.findOne({ email, password }, null, null, (err, doc) => {
-    if (err) return res.status(500).send(err);
-    else {
-      if (!doc) return res.status(404).send(doc);
-      else {
-        const token = jwt.sign(
-          { uid: doc.uid, _id: doc._id },
-          process.env.JWT_SECRET ?? ""
-        ) as string;
-        const date = new Date();
-        return res
-          .status(200)
-          .cookie("token", token, {
-            expires: new Date(date.getDate() + 24 * 60 * 60),
-            httpOnly: true,
-            sameSite: "none",
-            secure: false,
-          })
-          .send({ message: "Successfully", doc });
-      }
-    }
-  });
-}
 
-function loginWithoutPassword(req: Request, res: Response) {
+  try {
+    const userDoc = await UserModel.findOne({ email, password }).exec();
+    if (userDoc) {
+      const token = jwt.sign(
+        { uid: userDoc.uid, _id: userDoc._id },
+        process.env.JWT_SECRET ?? ""
+      ) as string;
+      const date = new Date();
+      return res
+        .status(200)
+        .cookie("token", token, {
+          expires: new Date(date.getDate() + 24 * 60 * 60),
+          httpOnly: true,
+          sameSite: "none",
+          secure: false,
+        })
+        .send({ message: "Successfully", data: userDoc });
+    } else {
+      return res.status(404).send({ message: "User not foudn" });
+    }
+  } catch (error) {
+    return res.status(500).send({ message: "Something went wrong", error });
+  }
+};
+
+const loginWithoutPassword = async (req: Request, res: Response) => {
   const email = req.body.email as string;
   const secretCode = req.body.secretCode as string;
   const codeVerified = loginHelper.findVerifiedCode(secretCode, email);
 
   if (codeVerified && secretCode) {
     loginHelper.deletePendingLogin(codeVerified.code, email);
-    UserModel.findOne({ email }, { password: 0 }, null, (err, doc) => {
-      if (err) return res.status(500).send(err);
-      else {
-        if (!doc) return res.status(404).send(doc);
-        else {
-          const token = jwt.sign(
-            { uid: doc.uid, _id: doc._id },
-            process.env.JWT_SECRET ?? ""
-          ) as string;
-          return res
-            .status(200)
-            .cookie("token", token, {
-              expires: new Date(Date.now() + 3600000),
-              httpOnly: true,
-            })
-            .send({ message: "Successfully", doc });
-        }
+    try {
+      const userDoc = await UserModel.findOne(
+        { email },
+        { password: 0 }
+      ).exec();
+      if (userDoc) {
+        const token = jwt.sign(
+          { uid: userDoc.uid, _id: userDoc._id },
+          process.env.JWT_SECRET ?? ""
+        ) as string;
+        return res
+          .status(200)
+          .cookie("token", token, {
+            expires: new Date(Date.now() + 3600000),
+            httpOnly: true,
+          })
+          .send({ message: "Successfully", data: userDoc });
+      } else {
+        return res.status(404).send({ message: "User not found" });
       }
-    });
-  } else if (!codeVerified && !secretCode) {
-    return res.status(400).send({ message: "Invalid email or secret code" });
+    } catch (error) {
+      return res.status(500).send({ message: "Something went wrong", error });
+    }
   }
-}
+};
 
-function logout(req: Request, res: Response) {
+const logout = async (req: Request, res: Response) => {
   return res
     .status(200)
     .cookie("token", "", {
@@ -156,8 +173,8 @@ function logout(req: Request, res: Response) {
       httpOnly: true,
     })
     .send({ message: "Successfully" });
-}
-async function mailSender(req: Request, res: Response) {
+};
+const mailSender = async (req: Request, res: Response) => {
   const email = req.body.email as string;
   const user = await UserModel.findOne({ email: email });
   const code = v4();
@@ -195,9 +212,9 @@ async function mailSender(req: Request, res: Response) {
   //   }
   // );
   return res.status(200).send({ message: "Successfully", email });
-}
+};
 
-function verifyCode(req: Request, res: Response) {
+const verifyCode = async (req: Request, res: Response) => {
   const clientCode = req.body.code as string;
   const existedEmail = req.body.existedEmail as string;
   const serverCode = loginHelper.findCode(clientCode, existedEmail);
@@ -222,7 +239,7 @@ function verifyCode(req: Request, res: Response) {
     });
   } else
     return res.status(400).send({ message: "Error Code", isVerify: false });
-}
+};
 
 const UserController = {
   createUser,

@@ -58,7 +58,7 @@ const VideoPage = (props: Props) => {
       video_id: videoID,
     };
   }, [videoID]);
-  const video = useFetch<{ message: string; doc: IVideo }>(
+  const video = useFetch<{ message: string; data: IVideo }>(
     servicesPath.GET_METADATA,
     videoParams,
     false,
@@ -75,7 +75,7 @@ const VideoPage = (props: Props) => {
     servicesPath.GET_STATISTICS_OF_VIDEO,
     videoParams,
     false,
-    video?.doc ? true : false
+    video?.data ? true : false
   );
   const handlePlayOrPause = (
     e: MouseEvent<HTMLElement> & {
@@ -158,7 +158,7 @@ const VideoPage = (props: Props) => {
               >
                 {video && (
                   <BackgroundVideo
-                    coverImage={video.doc.origin_cover.url_list[0]}
+                    coverImage={video.data.origin_cover.url_list[0]}
                   />
                 )}
                 <Suspense fallback={<Loading />}>
@@ -175,22 +175,22 @@ const VideoPage = (props: Props) => {
                       <Video
                         playerId="fullscreen"
                         myID={user.data?._id}
-                        nickname={video.doc.author_id.nickname}
-                        videoAddr={video.doc.play_addr.url_list[0]}
-                        videoDesc={video.doc.desc}
-                        videoDuration={video.doc.duration}
-                        videoID={video.doc._id}
-                        videoIdf={video.doc.id_f}
+                        nickname={video.data.author_id.nickname}
+                        videoAddr={video.data.play_addr.url_list[0]}
+                        videoDesc={video.data.desc}
+                        videoDuration={video.data.duration}
+                        videoID={video.data._id}
+                        videoIdf={video.data.id_f}
                         avatarThumb={
-                          video.doc.author_id.avatar_thumb.url_list[0]
+                          video.data.author_id.avatar_thumb.url_list[0]
                         }
                         fromVideoPage={true}
                         isActive={true}
                         isPlay={isPlay ? true : false}
                         allowedPlay={true}
                         videoSize={{
-                          width: video.doc.width,
-                          height: video.doc.height,
+                          width: video.data.width,
+                          height: video.data.height,
                         }}
                       />
                     )}
@@ -202,9 +202,9 @@ const VideoPage = (props: Props) => {
                 {video && (
                   <VideoHeaderContainer
                     statistics={statistics?.statistics}
-                    authorVideoID={video.doc.author_id._id}
+                    authorVideoID={video.data.author_id._id}
                     myID={user.data?._id}
-                    video={video.doc}
+                    video={video.data}
                     isLiked={isLikedVideo ? isLikedVideo?.like : false}
                   />
                 )}
@@ -233,13 +233,13 @@ const VideoPage = (props: Props) => {
               <RelatedContainer>
                 {video && (
                   <VideoPageUserBox
-                    followerCount={video.doc.author_id.follower_count}
-                    followingCount={video.doc.author_id.following_count}
+                    followerCount={video.data.author_id.follower_count}
+                    followingCount={video.data.author_id.following_count}
                     myID={user.data?._id}
-                    user_id={video.doc.author_id._id}
-                    uid={video.doc.author_id.uid}
-                    imageLink={video.doc.author_id.avatar_thumb.url_list[0]}
-                    nickName={video.doc.author_id.nickname}
+                    user_id={video.data.author_id._id}
+                    uid={video.data.author_id.uid}
+                    imageLink={video.data.author_id.avatar_thumb.url_list[0]}
+                    nickName={video.data.author_id.nickname}
                   />
                 )}
                 <div className="flex justify-start flex-col items-start text-white mt-10 relative min-w-full min-h-[calc(100vh/2)]">

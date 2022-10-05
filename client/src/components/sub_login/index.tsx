@@ -47,7 +47,7 @@ const SubRegisterOrLogin = ({ onVerifyEmail }: Props) => {
         setLoginStatus((prev) => {
           return {
             ...prev,
-            isLogging: false,
+            isSendingCode: false,
           };
         });
         message.sendMessage("Something went wrong", "danger");
@@ -79,7 +79,7 @@ const SubRegisterOrLogin = ({ onVerifyEmail }: Props) => {
         if (userEmail && !userExisted && !secretCode)
           onVerifyEmail(userEmail, code);
         else if (userEmail && userExisted && secretCode) {
-          const loginRes = await postData<{ message: string; doc: IUser }>(
+          const loginRes = await postData<{ message: string; data: IUser }>(
             servicesPath.LOGIN_WITHOUT_PASSWORD,
             {
               email: userEmail,
@@ -104,7 +104,7 @@ const SubRegisterOrLogin = ({ onVerifyEmail }: Props) => {
           message.sendMessage("Login Successfully");
           loginRes &&
             loginRes.data &&
-            dispatch(getUserInfoSuccessfully(loginRes.data.doc));
+            dispatch(getUserInfoSuccessfully(loginRes.data.data));
         }
       }
     }

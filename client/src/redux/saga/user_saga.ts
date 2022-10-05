@@ -9,7 +9,7 @@ import {
 } from "../slice/user_slice";
 
 const getUserInfo = async () => {
-  return getData<{ message: string; doc: IUser }>(
+  return getData<{ message: string; data: IUser }>(
     servicesPath.GET_MY_INFO,
     null,
     true
@@ -19,7 +19,7 @@ const getUserInfo = async () => {
 export function* fetchUser(): any {
   try {
     let response = yield call(() => getUserInfo());
-    yield put(getUserInfoSuccessfully(response.data.doc));
+    yield put(getUserInfoSuccessfully(response.data.data));
   } catch (e: any) {
     yield put({ type: getUserInfoFailed.type, e });
   }

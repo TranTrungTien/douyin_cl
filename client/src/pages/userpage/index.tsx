@@ -38,14 +38,14 @@ const UserPage = (props: Props) => {
     };
   }, [user_id]);
 
-  const userRes = useFetch<null | { message: string; doc: IUser }>(
+  const userRes = useFetch<null | { message: string; data: IUser }>(
     servicesPath.GET_USER_INFO,
     userInfoParams,
     false,
     me.data?.uid !== user_id ? true : false
   );
 
-  const user = me.data?.uid !== user_id ? userRes?.doc : me.data;
+  const user = me.data?.uid !== user_id ? userRes?.data : me.data;
 
   const [cursorState, setCursorState] = useState<ICursorState>({
     viewOwn: {
