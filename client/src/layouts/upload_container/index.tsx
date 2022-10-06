@@ -3,7 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { Button, SelectFile } from "../../components";
 import CircleLoading from "../../components/circle_loading";
 import Input from "../../components/input";
-import { controller } from "../../config/axios-config";
+import { controller } from "../../config/axios_config";
 import { useOnClickOutside } from "../../hooks/use_click_outside";
 import { MessageTransfer } from "../../hooks/use_message";
 import { useAppSelector } from "../../redux/app/hooks";

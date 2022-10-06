@@ -1,5 +1,5 @@
 import { AxiosResponse } from "axios";
-import Axios from "../config/axios-config";
+import Axios from "../config/axios_config";
 
 export type ResponseType = "text" | "json" | "blob" | "arraybuffer";
 

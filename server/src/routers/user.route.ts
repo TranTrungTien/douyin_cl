@@ -1,6 +1,7 @@
 import express from "express";
 import UserController from "../controllers/user.controller";
 import { verifyToken } from "../middlewares/verifytoken";
+import { verifyRefreshToken } from "../middlewares/verifyRefreshToken";
 
 const router = express.Router();
 
@@ -13,6 +14,7 @@ router.post("/login", UserController.login);
 router.post("/send-mail", UserController.mailSender);
 router.post("/verify-email", UserController.verifyCode);
 router.post("/login-without-password", UserController.loginWithoutPassword);
+router.get("/refreshToken", verifyRefreshToken, UserController.refreshToken);
 router.delete("/delete-token", UserController.logout);
 
 export default router;
