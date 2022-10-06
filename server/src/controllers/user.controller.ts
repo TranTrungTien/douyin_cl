@@ -114,16 +114,24 @@ const login = async (req: Request, res: Response) => {
         { uid: userDoc.uid, _id: userDoc._id },
         process.env.JWT_SECRET ?? ""
       ) as string;
+      const refreshToken = jwt.sign(
+        { _id: userDoc._id },
+        process.env.JWT_SECRET ?? ""
+      ) as string;
       const date = new Date();
-      return res
-        .status(200)
-        .cookie("token", token, {
-          expires: new Date(date.getDate() + 24 * 60 * 60),
-          httpOnly: true,
-          sameSite: "none",
-          secure: false,
-        })
-        .send({ message: "Successfully", data: userDoc });
+      res.cookie("token", token, {
+        expires: new Date(date.getDate() + 24 * 60 * 60),
+        httpOnly: true,
+        sameSite: "none",
+        secure: false,
+      });
+      res.cookie("refreshToken", refreshToken, {
+        expires: new Date(date.getDate() + 30 * 24 * 60 * 60),
+        httpOnly: true,
+        sameSite: "none",
+        secure: false,
+      });
+      return res.status(200).send({ message: "Successfully", data: userDoc });
     } else {
       return res.status(404).send({ message: "User not foudn" });
     }
@@ -149,13 +157,25 @@ const loginWithoutPassword = async (req: Request, res: Response) => {
           { uid: userDoc.uid, _id: userDoc._id },
           process.env.JWT_SECRET ?? ""
         ) as string;
-        return res
-          .status(200)
-          .cookie("token", token, {
-            expires: new Date(Date.now() + 3600000),
-            httpOnly: true,
-          })
-          .send({ message: "Successfully", data: userDoc });
+        const refreshToken = jwt.sign(
+          { _id: userDoc._id },
+          process.env.JWT_SECRET ?? ""
+        ) as string;
+        const date = new Date();
+        res.cookie("token", token, {
+          // expires: new Date(date.getDate() + 24 * 60 * 60),
+          expires: new Date(date.getDate() + 180), //for testing refresh token
+          httpOnly: true,
+          sameSite: "lax",
+          secure: false,
+        });
+        res.cookie("refreshToken", refreshToken, {
+          expires: new Date(date.getDate() + 30 * 24 * 60 * 60),
+          httpOnly: true,
+          sameSite: "lax",
+          secure: false,
+        });
+        return res.send({ message: "Successfully", data: userDoc });
       } else {
         return res.status(404).send({ message: "User not found" });
       }
@@ -241,6 +261,28 @@ const verifyCode = async (req: Request, res: Response) => {
     return res.status(400).send({ message: "Error Code", isVerify: false });
 };
 
+const refreshToken = async (req: Request, res: Response) => {
+  const userID = req.body._id as string;
+  try {
+    const userDoc = await UserModel.findById(userID).exec();
+    if (userDoc) {
+      const token = jwt.sign(
+        { uid: userDoc.uid, _id: userDoc._id },
+        process.env.JWT_SECRET ?? ""
+      ) as string;
+      const date = new Date();
+      res.cookie("token", token, {
+        expires: new Date(date.getDate() + 24 * 60 * 60),
+        httpOnly: true,
+        sameSite: "none",
+        secure: false,
+      });
+      return res.status(200).send({ message: "Successfully" });
+    }
+  } catch (error) {
+    return res.status(500).send({ message: "Something went wrong", error });
+  }
+};
 const UserController = {
   createUser,
   updateUser,
@@ -252,6 +294,7 @@ const UserController = {
   verifyCode,
   loginWithoutPassword,
   logout,
+  refreshToken,
 };
 
 export default UserController;

@@ -52,9 +52,7 @@ DBConnect()
         app.use("/api/v1/following", FollowingRouter);
 
         app.get("/", (req: Request, res: Response) => {
-          setTimeout(() => {
-            res.send("Just For Test !!!!");
-          }, 6000);
+          return res.status(401).send({ message: "401 error " });
         });
       })
       .catch((_) => {
