@@ -1,4 +1,4 @@
-import axios from "axios";
+import axios, { AxiosError } from "axios";
 import { servicesPath } from "../services/services_path";
 export const controller = new AbortController();
 
@@ -15,30 +15,41 @@ let refreshTokenPromise: Promise<any> | null; // this holds any in-progress toke
 // I just moved this logic into its own function
 const getRefreshToken = () =>
   axiosInitialize
-    .get("/api/v1/user/refreshToken", {
-      headers: {
-        "Content-Type": "application/json",
+    .post<{ message: string; newToken: string }>(
+      servicesPath.REFRESH_TOKEN,
+      {
+        refreshToken: localStorage.getItem("refreshToken"),
       },
-      withCredentials: true,
-    })
-    .then(() => true);
+      {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    )
+    .then((res) => res.data.newToken);
 
 axiosInitialize.interceptors.response.use(
   (response) => response,
-  (error) => {
+  (error: AxiosError) => {
     if (error.config && error.response && error.response.status === 401) {
       if (!refreshTokenPromise) {
         // check for an existing in-progress request
         // if nothing is in-progress, start a new refresh token request
-        refreshTokenPromise = getRefreshToken().then(() => {
+        refreshTokenPromise = getRefreshToken().then((token) => {
           refreshTokenPromise = null; // clear state
-          return; // resolve with the new token
+          return token; // resolve with the new token
         });
       }
 
-      return refreshTokenPromise.then(() => {
-        return axiosInitialize.request(error.config);
-      });
+      return refreshTokenPromise
+        .then((token) => {
+          // error.config // set access token here ...
+          localStorage.setItem("token", token);
+          error.config.headers &&
+            (error.config.headers.Authorization = "Bearer " + token);
+          return axiosInitialize(error.config);
+        })
+        .catch((error) => Promise.reject(error));
     }
     return Promise.reject(error);
   }

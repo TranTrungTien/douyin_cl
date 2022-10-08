@@ -204,7 +204,7 @@ const Comment = ({
             isLiked: true,
           };
         });
-        const likeRes = await postData(
+        await postData(
           servicesPath.POST_lIKED_COMMENT,
           {
             video_id: videoID,
@@ -219,9 +219,6 @@ const Comment = ({
             "danger"
           );
         });
-        likeRes &&
-          likeRes.data &&
-          messages.sendMessage("Liked comment successfully", "success");
       } else if (videoData.isLiked) {
         setVideoData((prev) => {
           return {
@@ -230,19 +227,13 @@ const Comment = ({
             isLiked: false,
           };
         });
-        const deleteRes = await deleteData<any>(
-          servicesPath.DEL_lIKED_COMMENT,
-          {
-            video_id: videoID,
-            comment_id: commentID,
-          }
-        ).catch((err) => {
+        await deleteData<any>(servicesPath.DEL_lIKED_COMMENT, {
+          video_id: videoID,
+          comment_id: commentID,
+        }).catch((err) => {
           console.error(err);
           messages.sendMessage("Can't comment! Something went wrong", "danger");
         });
-        deleteRes &&
-          deleteRes.data &&
-          messages.sendMessage("Deleted comment successfully", "success");
       }
     } else dispatch(setIsLogin(true));
   };

@@ -112,28 +112,24 @@ const login = async (req: Request, res: Response) => {
     if (userDoc) {
       const token = jwt.sign(
         { uid: userDoc.uid, _id: userDoc._id },
-        process.env.JWT_SECRET ?? ""
+        process.env.JWT_SECRET ?? "",
+        {
+          expiresIn: "1d",
+        }
       ) as string;
       const refreshToken = jwt.sign(
         { _id: userDoc._id },
-        process.env.JWT_SECRET ?? ""
+        process.env.JWT_SECRET ?? "",
+        {
+          expiresIn: "30d",
+        }
       ) as string;
-      const date = new Date();
-      res.cookie("token", token, {
-        expires: new Date(date.getDate() + 24 * 60 * 60),
-        httpOnly: true,
-        sameSite: "none",
-        secure: false,
-      });
-      res.cookie("refreshToken", refreshToken, {
-        expires: new Date(date.getDate() + 30 * 24 * 60 * 60),
-        httpOnly: true,
-        sameSite: "none",
-        secure: false,
-      });
-      return res.status(200).send({ message: "Successfully", data: userDoc });
+
+      return res
+        .status(200)
+        .send({ message: "Successfully", data: userDoc, token, refreshToken });
     } else {
-      return res.status(404).send({ message: "User not foudn" });
+      return res.status(404).send({ message: "User not found" });
     }
   } catch (error) {
     return res.status(500).send({ message: "Something went wrong", error });
@@ -155,27 +151,25 @@ const loginWithoutPassword = async (req: Request, res: Response) => {
       if (userDoc) {
         const token = jwt.sign(
           { uid: userDoc.uid, _id: userDoc._id },
-          process.env.JWT_SECRET ?? ""
+          process.env.JWT_SECRET ?? "",
+          {
+            expiresIn: "1d",
+          }
         ) as string;
         const refreshToken = jwt.sign(
           { _id: userDoc._id },
-          process.env.JWT_SECRET ?? ""
+          process.env.JWT_SECRET ?? "",
+          {
+            expiresIn: "30d",
+          }
         ) as string;
-        const date = new Date();
-        res.cookie("token", token, {
-          // expires: new Date(date.getDate() + 24 * 60 * 60),
-          expires: new Date(date.getDate() + 180), //for testing refresh token
-          httpOnly: true,
-          sameSite: "lax",
-          secure: false,
+
+        return res.status(200).send({
+          message: "Successfully",
+          data: userDoc,
+          token,
+          refreshToken,
         });
-        res.cookie("refreshToken", refreshToken, {
-          expires: new Date(date.getDate() + 30 * 24 * 60 * 60),
-          httpOnly: true,
-          sameSite: "lax",
-          secure: false,
-        });
-        return res.send({ message: "Successfully", data: userDoc });
       } else {
         return res.status(404).send({ message: "User not found" });
       }
@@ -183,16 +177,6 @@ const loginWithoutPassword = async (req: Request, res: Response) => {
       return res.status(500).send({ message: "Something went wrong", error });
     }
   }
-};
-
-const logout = async (req: Request, res: Response) => {
-  return res
-    .status(200)
-    .cookie("token", "", {
-      expires: new Date(Date.now() + 3600000),
-      httpOnly: true,
-    })
-    .send({ message: "Successfully" });
 };
 const mailSender = async (req: Request, res: Response) => {
   const email = req.body.email as string;
@@ -268,16 +252,12 @@ const refreshToken = async (req: Request, res: Response) => {
     if (userDoc) {
       const token = jwt.sign(
         { uid: userDoc.uid, _id: userDoc._id },
-        process.env.JWT_SECRET ?? ""
+        process.env.JWT_SECRET ?? "",
+        {
+          expiresIn: "1d",
+        }
       ) as string;
-      const date = new Date();
-      res.cookie("token", token, {
-        expires: new Date(date.getDate() + 24 * 60 * 60),
-        httpOnly: true,
-        sameSite: "none",
-        secure: false,
-      });
-      return res.status(200).send({ message: "Successfully" });
+      return res.status(200).send({ message: "Successfully", newToken: token });
     }
   } catch (error) {
     return res.status(500).send({ message: "Something went wrong", error });
@@ -293,7 +273,6 @@ const UserController = {
   mailSender,
   verifyCode,
   loginWithoutPassword,
-  logout,
   refreshToken,
 };
 

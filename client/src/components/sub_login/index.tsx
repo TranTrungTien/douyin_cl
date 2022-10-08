@@ -79,14 +79,15 @@ const SubRegisterOrLogin = ({ onVerifyEmail }: Props) => {
         if (userEmail && !userExisted && !secretCode)
           onVerifyEmail(userEmail, code);
         else if (userEmail && userExisted && secretCode) {
-          const loginRes = await postData<{ message: string; data: IUser }>(
-            servicesPath.LOGIN_WITHOUT_PASSWORD,
-            {
-              email: userEmail,
-              secretCode,
-            },
-            true
-          ).catch((err) => {
+          const loginRes = await postData<{
+            message: string;
+            data: IUser;
+            token: string;
+            refreshToken: string;
+          }>(servicesPath.LOGIN_WITHOUT_PASSWORD, {
+            email: userEmail,
+            secretCode,
+          }).catch(() => {
             setLoginStatus((prev) => {
               return {
                 ...prev,
@@ -102,9 +103,11 @@ const SubRegisterOrLogin = ({ onVerifyEmail }: Props) => {
             };
           });
           message.sendMessage("Login Successfully");
-          loginRes &&
-            loginRes.data &&
+          if (loginRes && loginRes.data) {
+            localStorage.setItem("token", loginRes.data.token);
+            localStorage.setItem("refreshToken", loginRes.data.refreshToken);
             dispatch(getUserInfoSuccessfully(loginRes.data.data));
+          }
         }
       }
     }
