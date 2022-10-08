@@ -7,8 +7,6 @@ import MessageIcon from "../../assets/icons/message_icon";
 import UploadIcon from "../../assets/icons/upload_icon";
 import { useAppDispatch, useAppSelector } from "../../redux/app/hooks";
 import { setIsLogin } from "../../redux/slice/login_slice";
-import { deleteData } from "../../services/app_services";
-import { servicesPath } from "../../services/services_path";
 import AvatarCardButton from "../avatar_card_button";
 import BasicInfo from "../basic_info";
 import Button from "../button";
@@ -43,8 +41,9 @@ const Nav = (props: Props) => {
   };
 
   const handleLogout = async () => {
-    const data = await deleteData(servicesPath.LOGOUT, undefined);
-    data.data && navigate(0);
+    localStorage.removeItem("token");
+    localStorage.removeItem("refreshToken");
+    navigate(0);
   };
   return (
     <ul className="flex justify-between items-center">

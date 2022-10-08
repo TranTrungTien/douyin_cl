@@ -12,6 +12,7 @@ async function axiosAction<T>(
   responseType: ResponseType = "json",
   contentType: string = "application/json"
 ) {
+  const accessToken = localStorage.getItem("token");
   return (await Axios(url, {
     data: data,
     method: method,
@@ -19,8 +20,9 @@ async function axiosAction<T>(
     responseType: responseType,
     headers: {
       "Content-Type": contentType,
+      Authorization:
+        withCredentials && accessToken ? "Bearer " + accessToken : "",
     },
-    withCredentials: withCredentials,
   }).catch((err) => {
     throw err;
   })) as AxiosResponse<T>;

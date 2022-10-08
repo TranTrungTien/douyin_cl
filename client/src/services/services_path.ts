@@ -9,7 +9,7 @@ export const servicesPath = {
   SEND_EMAIL: "/api/v1/user/send-mail",
   VERIFY_EMAIL: "/api/v1/user/verify-email",
   LOGIN_WITHOUT_PASSWORD: "/api/v1/user/login-without-password",
-  LOGOUT: "/api/v1/user/delete-token",
+  REFRESH_TOKEN: "/api/v1/user/refreshToken",
 
   GET_NEW_RECOMMENDED: "/api/v1/recommendation/new",
   GET_RECOMMENDED_BASED_ON_USER: "/api/v1/recommendation/list",

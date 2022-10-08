@@ -9,21 +9,25 @@ export const verifyToken = (
   res: Response,
   next: NextFunction
 ) => {
-  const token = req.cookies.token as string;
+  let token = req.headers["authorization"];
   console.log({ token });
-
-  if (!token) {
+  if (!token || token === "undefined" || token === "null") {
     res.status(401).send({ error: "Access Denied, Token needed" });
   } else {
-    const user = jwt.verify(token, process.env.JWT_SECRET as string) as {
-      _id: string;
-      uid: string;
-    };
-    if (user) {
-      req.body.uid = user.uid;
-      req.body._id = user._id;
-      return next();
-    } else {
+    token = token.replace(/^Bearer\s+/, "");
+    try {
+      const user = jwt.verify(token, process.env.JWT_SECRET as string) as {
+        _id: string;
+        uid: string;
+      };
+      if (user) {
+        req.body.uid = user.uid;
+        req.body._id = user._id;
+        return next();
+      } else {
+        return res.status(401).send({ error: "Access Denied, Token expired" });
+      }
+    } catch (_) {
       return res.status(401).send({ error: "Access Denied, Token expired" });
     }
   }

@@ -31,7 +31,7 @@ DBConnect()
 
         app.use(
           cors({
-            origin: true,
+            origin: "*",
             methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
             credentials: true,
           })
