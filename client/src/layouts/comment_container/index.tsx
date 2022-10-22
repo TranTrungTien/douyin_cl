@@ -110,9 +110,11 @@ const CommentContainer = ({
       </div>
       <div className="w-full h-auto overflow-auto hidden-scrollbar min-h-[calc(100vh/2)] relative">
         {comments && comments.list.length
-          ? comments.list.map((c, index) => {
+          ? comments.list.map((c) => {
               const isLiked = likedComments?.list.find((l) => {
-                return l.comment_id._id === c._id;
+                return typeof l.comment_id === "string"
+                  ? l.comment_id === c._id
+                  : l.comment_id?._id === c._id;
               });
               return (
                 <Comment

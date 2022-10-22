@@ -1,6 +1,7 @@
 import { useMemo, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import { Button, Loading } from "../../components";
+import ErrorCard from "../../components/error_card";
 import LikeFooter from "../../components/like_footer";
 import Modal from "../../components/modal";
 import VideoBadge from "../../components/video_badge";
@@ -58,10 +59,11 @@ const UserVideoContainer = ({
   const ownVideosParams = useMemo(() => {
     return {
       author_id: authorID,
+      current_user_id: myID,
       cursor: cursor.viewOwn.cursorPosition,
       limit: 20,
     };
-  }, [authorID, cursor.viewOwn.cursorPosition]);
+  }, [authorID, myID, cursor.viewOwn.cursorPosition]);
 
   const { data: ownVideos } = useFetchAppend<{
     video: IVideo;
@@ -163,33 +165,13 @@ const UserVideoContainer = ({
             ? ownVideos?.status === "error" &&
               ownVideos?.statusCode !== 404 && (
                 <Modal>
-                  <div className="w-96 h-96 rounded bg-white text-center text-black">
-                    <h1>OWn Videos Opps we ran into some problems</h1>
-                    <Button
-                      text="Refresh page"
-                      onClick={() => window.location.reload()}
-                    />
-                    <Button
-                      text="Comme back home page"
-                      onClick={() => window.location.replace("/")}
-                    />
-                  </div>
+                  <ErrorCard />
                 </Modal>
               )
             : likedVideos?.status === "error" &&
               likedVideos.statusCode !== 404 && (
                 <Modal>
-                  <div className="w-96 h-96 rounded bg-white text-center text-black">
-                    <h1> Liked Videos Opps we ran into some problems</h1>
-                    <Button
-                      text="Refresh page"
-                      onClick={() => window.location.reload()}
-                    />
-                    <Button
-                      text="Comme back home page"
-                      onClick={() => window.location.replace("/")}
-                    />
-                  </div>
+                  <ErrorCard />
                 </Modal>
               )}
           {viewOpt.viewOwn

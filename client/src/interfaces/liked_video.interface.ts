@@ -12,10 +12,10 @@ export interface IYourVideoLiked {
 
 export interface ILikedComment {
   _id?: string;
-  author_id: IUser;
-  video_id: IVideo;
-  comment_id: IComment;
-  reply_comment_id?: IComment;
+  author_id: IUser | string | undefined;
+  video_id: IVideo | string | undefined;
+  comment_id: IComment | string | undefined;
+  reply_comment_id?: IComment | string | undefined;
   createdAt?: string;
   updatedAt?: string;
 }

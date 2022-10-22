@@ -7,6 +7,7 @@ import {
   useMemo,
   useState,
 } from "react";
+import { Link } from "react-router-dom";
 import SmallHeartIcon from "../../assets/icons/small_heart_icon";
 import { useFetchAppend } from "../../hooks/use_fetch_append";
 import { MessageTransfer } from "../../hooks/use_message";
@@ -37,6 +38,7 @@ type Props = {
   commentID?: string;
   isLiked?: boolean;
   replyCommentID?: string;
+  replyNickname?: string;
 };
 
 const Comment = ({
@@ -52,6 +54,7 @@ const Comment = ({
   uid,
   isLiked,
   replyCommentID,
+  replyNickname,
 }: Props) => {
   const [videoData, setVideoData] = useState({
     isLiked,
@@ -113,9 +116,10 @@ const Comment = ({
   const likedCommentInCommentsParams = useMemo(() => {
     return {
       video_id: videoID,
+      author_id: user.data?._id,
       reply_comment_id: commentID,
     };
-  }, [videoID, commentID]);
+  }, [videoID, commentID, user.data?._id]);
   const { data: likedCommentInComments } = useFetchAppend<ILikedComment>(
     servicesPath.GET_ALL_LIKED_COMMENT_IN_OTHER_COMMENT,
     likedCommentInCommentsParams,
@@ -267,9 +271,22 @@ const Comment = ({
             </span>
           </div>
           {/* Text msg */}
-          <p className="text-sm text-inherit font-normal leading-6 opacity-90">
-            {content}
-          </p>
+          <div
+            className={`flex justify-start items-center ${
+              replyCommentID && "space-x-2"
+            }`}
+          >
+            {replyCommentID && (
+              <Link target={"_blank"} to={`/user/${uid}`}>
+                <span className="text-sm text-inherit font-normal leading-6 opacity-80 text-gray-500 hover:underline hover:text-red_hover">
+                  @{replyNickname}
+                </span>
+              </Link>
+            )}
+            <p className="text-sm text-inherit font-normal leading-6 opacity-90">
+              {content}
+            </p>
+          </div>
           {/* Action: Like, Reply */}
           <div className="text-xs font-medium leading-5 text-inherit opacity-70  flex justify-start items-center space-x-5">
             <Heart
@@ -352,6 +369,7 @@ const Comment = ({
               replyComments={replyComments.list}
               videoID={videoID}
               isShow={showReply.isShow}
+              replyNickname={nickname}
             />
           )}
         </div>
