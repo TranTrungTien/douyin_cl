@@ -2,7 +2,7 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import SwiperCore, { Virtual } from "swiper";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { VideoSlide } from "..";
-import { Button, Loading } from "../../components";
+import { Loading } from "../../components";
 import Modal from "../../components/modal";
 import { IDs } from "../../constants/id";
 import { useFetchAppend } from "../../hooks/use_fetch_append";
@@ -15,6 +15,7 @@ import { servicesPath } from "../../services/services_path";
 import "swiper/css";
 import "swiper/css/bundle";
 import "swiper/css/virtual";
+import ErrorCard from "../../components/error_card";
 
 SwiperCore.use([Virtual]);
 const TRAINING_DELAY = 30000;
@@ -78,7 +79,7 @@ const SwiperWrapper = () => {
     responseHandler
   );
   useEffect(() => {
-    let intervalId: any;
+    let intervalId: NodeJS.Timeout;
     if (myID) {
       const handleTraining = () => {
         if (!myID) {
@@ -143,17 +144,7 @@ const SwiperWrapper = () => {
         (myID && !reFetchVideoTrigger.allowedFetchVideo)) && <Loading />}
       {videos && videos.status === "error" && (
         <Modal>
-          <div className="w-96 h-96 rounded bg-white text-center text-black">
-            <h1>Opps we ran into some problems</h1>
-            <Button
-              text="Refresh page"
-              onClick={() => window.location.reload()}
-            />
-            <Button
-              text="Comme back home page"
-              onClick={() => window.location.replace("/")}
-            />
-          </div>
+          <ErrorCard />
         </Modal>
       )}
       {videos &&

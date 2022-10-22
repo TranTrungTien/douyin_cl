@@ -5,26 +5,33 @@ import { ILikedComment } from "../../interfaces/liked_video.interface";
 type Props = {
   isShow?: boolean;
   videoID: string;
+  replyNickname?: string;
   replyComments: IComment[];
   likedCommentInComments?: ILikedComment[];
 };
 const ReplyCommentContainer = ({
   isShow,
   videoID,
+  replyNickname,
   replyComments,
   likedCommentInComments,
 }: Props) => {
   return (
     <>
       {isShow
-        ? replyComments.map((c, index) => {
-            console.log({ c });
+        ? replyComments.map((c) => {
             const isLiked = likedCommentInComments?.find((l) => {
-              return l.comment_id._id === c._id;
+              return typeof l.comment_id === "string"
+                ? l.comment_id === c._id
+                : l.comment_id?._id === c._id;
             });
             return (
               <Comment
-                replyCommentID={c.reply_comment_id?._id}
+                replyCommentID={
+                  typeof c.reply_comment_id === "string"
+                    ? c.reply_comment_id
+                    : c.reply_comment_id?._id
+                }
                 isLiked={isLiked ? true : false}
                 commentID={c._id}
                 videoID={videoID}
@@ -37,6 +44,7 @@ const ReplyCommentContainer = ({
                 content={c.text}
                 likedCount={c.like_count}
                 replyCount={c.reply_count}
+                replyNickname={replyNickname}
               />
             );
           })

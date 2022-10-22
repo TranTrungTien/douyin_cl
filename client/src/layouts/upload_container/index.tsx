@@ -119,10 +119,10 @@ const UploadContainer = () => {
     const friendElem = e.target.closest("#Friend") as HTMLDivElement;
     const privateElem = e.target.closest("#Private") as HTMLDivElement;
     publicElem
-      ? setOpenOption({ ...openOption, select: publicElem.id })
+      ? setOpenOption({ select: publicElem.id, isOpen: false })
       : friendElem
-      ? setOpenOption({ ...openOption, select: friendElem.id })
-      : setOpenOption({ ...openOption, select: privateElem.id });
+      ? setOpenOption({ select: friendElem.id, isOpen: false })
+      : setOpenOption({ select: privateElem.id, isOpen: false });
   };
 
   const handleSubmit = async (e: SyntheticEvent) => {
@@ -278,7 +278,6 @@ const UploadContainer = () => {
                 </h4>
                 <div className="w-[300px] h-[36px] rounded border border-[rgba(22,24,35,0.12)] relative cursor-pointer">
                   <div
-                    ref={openOptionRef}
                     onClick={handleChangeOption}
                     className="relative flex justify-start items-center p-[5px_12px_7px_12px]"
                   >
@@ -303,6 +302,7 @@ const UploadContainer = () => {
                   </div>
                   {openOption.isOpen && (
                     <div
+                      ref={openOptionRef}
                       onClick={handleChooseSelections}
                       className="z-10 absolute left-0 top-[120%] bg-white border border-white px-1 w-[300px] rounded shadow-[0_2px_12px_rgba(0,0,0,0.1)] text-left"
                     >

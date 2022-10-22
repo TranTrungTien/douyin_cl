@@ -37,6 +37,7 @@ import { IStatistics } from "../../interfaces/statistic";
 import { useFetchAppend } from "../../hooks/use_fetch_append";
 import { ILikedComment } from "../../interfaces/liked_video.interface";
 import { IComment } from "../../interfaces/comment";
+import ErrorCard from "../../components/error_card";
 
 type Props = {};
 
@@ -165,9 +166,7 @@ const VideoPage = (props: Props) => {
                   <ErrorBoundary
                     fallback={
                       <Modal>
-                        <div className="w-96 h-96 rounded bg-white text-center text-black">
-                          <h1>Opps we ran into some problems</h1>
-                        </div>
+                        <ErrorCard />
                       </Modal>
                     }
                   >
@@ -179,7 +178,7 @@ const VideoPage = (props: Props) => {
                         videoAddr={video.data.play_addr.url_list[0]}
                         videoDesc={video.data.desc}
                         videoDuration={video.data.duration}
-                        videoID={video.data._id}
+                        videoID={video.data._id!}
                         videoIdf={video.data.id_f}
                         avatarThumb={
                           video.data.author_id.avatar_thumb.url_list[0]
@@ -215,7 +214,7 @@ const VideoPage = (props: Props) => {
                   <div className="w-full h-px bg-darkslategray flex-1"></div>
                 </div>
                 <div className="w-full mt-6">
-                  {videoID && (
+                  {videoID && video?.data.allow_user_do.comment ? (
                     <CommentContainer
                       commentsCount={statistics?.statistics.comment_count}
                       videoID={videoID}
@@ -225,6 +224,10 @@ const VideoPage = (props: Props) => {
                       user={user.data}
                       setComments={setComments}
                     />
+                  ) : (
+                    <p className="text-sm opacity-70 font-medium text-white text-center">
+                      作者关闭了对该视频的评论
+                    </p>
                   )}
                 </div>
               </div>
@@ -251,14 +254,15 @@ const VideoPage = (props: Props) => {
                       <ErrorBoundary
                         fallback={
                           <Modal>
-                            <div className="w-96 h-96 rounded bg-white text-center text-black">
-                              <h1>Opps we ran into some problems</h1>
-                            </div>
+                            <ErrorCard />
                           </Modal>
                         }
                       >
                         {videoIdf && (
-                          <RelatedVideoContainer videoIdf={videoIdf} />
+                          <RelatedVideoContainer
+                            videoIdf={videoIdf}
+                            userId={user.data?._id}
+                          />
                         )}
                       </ErrorBoundary>
                     </Suspense>

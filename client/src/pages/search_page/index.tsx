@@ -1,6 +1,7 @@
 import { Suspense } from "react";
 import { useSearchParams } from "react-router-dom";
-import { Button, Loading, Logo, Nav, Search } from "../../components";
+import { Loading, Logo, Nav, Search } from "../../components";
+import ErrorCard from "../../components/error_card";
 import Modal from "../../components/modal";
 import {
   HeaderContainer,
@@ -44,17 +45,7 @@ const SearchPage = () => {
                   <ErrorBoundary
                     fallback={
                       <Modal>
-                        <div className="w-96 h-96 rounded bg-white text-center text-black">
-                          <h1>Opps we ran into some problems</h1>
-                          <Button
-                            text="Refresh page"
-                            onClick={() => window.location.reload()}
-                          />
-                          <Button
-                            text="Comme back home page"
-                            onClick={() => window.location.replace("/")}
-                          />
-                        </div>
+                        <ErrorCard />
                       </Modal>
                     }
                   >

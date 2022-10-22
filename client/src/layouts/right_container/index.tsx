@@ -140,10 +140,11 @@ const RightContainer = ({
   const ownVideosParams = useMemo(() => {
     return {
       author_id: authorVideoID,
+      current_user_id: myID,
       cursor: cursor.video.cursor,
       limit: 15,
     };
-  }, [authorVideoID, cursor.video.cursor]);
+  }, [authorVideoID, myID, cursor.video.cursor]);
 
   const { data: ownVideos } = useFetchAppend<{
     video: IVideo;

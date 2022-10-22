@@ -3,6 +3,7 @@ import FollowingIcon from "../../assets/icons/following_icon";
 import AvatarCardButton from "../../components/avatar_card_button";
 import Button from "../../components/button";
 import VerificationMark from "../../components/verification_mark";
+import { MessageTransfer } from "../../hooks/use_message";
 import {
   isFollowUser,
   useAppDispatch,
@@ -35,12 +36,15 @@ const UserInfoContainer = ({
     isFollowUser(state, myID, authorPageID, myID !== authorPageID)
   );
   const [isFollowing, setIsFollowing] = useState(isFollow ? true : false);
-
+  const messages = MessageTransfer();
   const handleFollow = async () => {
     if (myID) {
       if (isFollowing) {
         const delFollowRes = await deleteData(servicesPath.DEL_FOLLOWING, {
           follow_id: authorPageID,
+        }).catch((err) => {
+          console.log({ err });
+          messages.sendMessage("取消关注用户失败", "danger");
         });
         if (delFollowRes && delFollowRes.data) {
           console.log("del followed");
@@ -53,7 +57,10 @@ const UserInfoContainer = ({
             follow_id: authorPageID,
           },
           true
-        ).catch(console.error);
+        ).catch((err) => {
+          console.log({ err });
+          messages.sendMessage("关注用户失败", "danger");
+        });
         if (followRes && followRes.data) {
           console.log("followed");
           setIsFollowing(true);

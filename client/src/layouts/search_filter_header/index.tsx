@@ -247,7 +247,7 @@ const SearchFilterHeader = () => {
                   clipRule="evenodd"
                   d="M12.28 13.898a.75.75 0 000-1.06l-2.828-2.83L12.28 7.18a.75.75 0 00-1.06-1.06L7.86 9.478a.75.75 0 000 1.061l3.36 3.359a.75.75 0 001.06 0z"
                   fill="#fff"
-                  fill-opacity="0.9"
+                  fillOpacity="0.9"
                 ></path>
               </svg>
             </Button>

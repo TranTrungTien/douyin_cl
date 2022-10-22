@@ -8,14 +8,16 @@ import { covertVideoTime } from "../../utils/time";
 
 type Props = {
   videoIdf: string;
+  userId?: string;
 };
-const RelatedVideoContainer = ({ videoIdf }: Props) => {
+const RelatedVideoContainer = ({ videoIdf, userId }: Props) => {
   const relatedVideoParams = useMemo(() => {
     return {
-      videoId: `${videoIdf}`,
+      video_id_f: `${videoIdf}`,
+      user_id: `${userId}`,
       limit: 15,
     };
-  }, [videoIdf]);
+  }, [videoIdf, userId]);
   const relatedVideo = useFetchSuspense<{
     message: string;
     list: IVideo[];

@@ -2,6 +2,7 @@
 import { memo, MouseEvent, Suspense, useEffect, useState } from "react";
 import { useSwiper, useSwiperSlide } from "swiper/react";
 import { BackgroundVideo, Loading, Video } from "../../components";
+import ErrorCard from "../../components/error_card";
 import Modal from "../../components/modal";
 import { IStatistics } from "../../interfaces/statistic";
 import { IVideo } from "../../interfaces/video.interface";
@@ -118,9 +119,7 @@ const VideoSlide = ({
           <ErrorBoundary
             fallback={
               <Modal root="video_lazyload_root">
-                <div className="w-96 h-96 rounded bg-dark_blue text-center text-white flex justify-center items-center">
-                  <h1>Opps we ran into some problems</h1>
-                </div>
+                <ErrorCard />
               </Modal>
             }
           >
