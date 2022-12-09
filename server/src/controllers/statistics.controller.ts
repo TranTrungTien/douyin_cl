@@ -3,11 +3,14 @@ import StatisticsModel from "../models/statistics.model";
 import { v4 } from "uuid";
 import mongoose from "mongoose";
 const create = async (req: Request, res: Response) => {
-  const video_id = req.body.video_id as string;
+  const videoId = req.body.video_id as string;
+  if (!mongoose.isValidObjectId(videoId)) {
+    return res.status(400).send({ message: "video id  is missing" });
+  }
   try {
     const statisticsDoc = await new StatisticsModel({
       id: v4(),
-      video_id: video_id,
+      video_id: videoId,
     }).save();
     return res
       .status(200)
@@ -17,10 +20,13 @@ const create = async (req: Request, res: Response) => {
   }
 };
 const getStatisticsOfVideo = async (req: Request, res: Response) => {
-  const video_id = req.query.video_id as string;
+  const videoId = req.query.video_id as string;
+  if (!mongoose.isValidObjectId(videoId)) {
+    return res.status(400).send({ message: "video id  is missing" });
+  }
   try {
     const statisticsDoc = await StatisticsModel.findOne(
-      { video_id: video_id },
+      { video_id: videoId },
       { createdAt: 0, updatedAt: 0, __v: 0 }
     ).exec();
     return res.status(200).send({
@@ -32,12 +38,15 @@ const getStatisticsOfVideo = async (req: Request, res: Response) => {
   }
 };
 const updateLikeCount = async (req: Request, res: Response) => {
-  const video_id = req.body.video_id as string;
+  const videoId = req.query.video_id as string;
+  if (!mongoose.isValidObjectId(videoId)) {
+    return res.status(400).send({ message: "video id  is missing" });
+  }
   const session = await mongoose.startSession();
   session.startTransaction();
   try {
     const staticsDoc = await StatisticsModel.findOneAndUpdate(
-      { video_id: video_id },
+      { video_id: videoId },
       { $inc: { like_count: 1 } },
       { session }
     ).exec();
@@ -53,12 +62,15 @@ const updateLikeCount = async (req: Request, res: Response) => {
   }
 };
 const updateCommentCount = async (req: Request, res: Response) => {
-  const video_id = req.body.video_id as string;
+  const videoId = req.query.video_id as string;
+  if (!mongoose.isValidObjectId(videoId)) {
+    return res.status(400).send({ message: "video id  is missing" });
+  }
   const session = await mongoose.startSession();
   session.startTransaction();
   try {
     const staticsDoc = await StatisticsModel.findOneAndUpdate(
-      { video_id: video_id },
+      { video_id: videoId },
       { $inc: { comment_count: 1 } },
       { session }
     ).exec();
@@ -74,12 +86,15 @@ const updateCommentCount = async (req: Request, res: Response) => {
   }
 };
 const updateShareCount = async (req: Request, res: Response) => {
-  const video_id = req.body.video_id as string;
+  const videoId = req.query.video_id as string;
+  if (!mongoose.isValidObjectId(videoId)) {
+    return res.status(400).send({ message: "video id  is missing" });
+  }
   const session = await mongoose.startSession();
   session.startTransaction();
   try {
     const staticsDoc = await StatisticsModel.findOneAndUpdate(
-      { video_id: video_id },
+      { video_id: videoId },
       { $inc: { share_count: 1 } },
       { session }
     ).exec();

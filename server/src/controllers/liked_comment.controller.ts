@@ -4,24 +4,32 @@ import CommentModel from "../models/comment.model";
 import LikedCommentModel from "../models/liked_comment.model";
 
 const createLikedComment = async (req: Request, res: Response) => {
-  const author_id = req.body._id as string;
-  const video_id = req.body.video_id as string;
-  const comment_id = req.body.comment_id as string;
-  const reply_comment_id = req.body.reply_comment_id as string;
-
+  const commentId = req.body.comment_id as string;
+  const videoId = req.body.video_id as string;
+  const authorId = req.body._id as string;
+  const replyCommentId = req.body.reply_comment_id as string;
+  if (
+    !mongoose.isValidObjectId(videoId) ||
+    !mongoose.isValidObjectId(authorId) ||
+    !mongoose.isValidObjectId(commentId)
+  ) {
+    return res
+      .status(400)
+      .send({ message: "video id and author id and comment id needed" });
+  }
   const session = await mongoose.startSession();
   session.startTransaction();
   try {
     const likeComment = await new LikedCommentModel({
-      reply_comment_id: reply_comment_id,
-      author_id: author_id,
-      video_id: video_id,
-      comment_id: comment_id,
+      reply_comment_id: replyCommentId,
+      author_id: authorId,
+      video_id: videoId,
+      comment_id: commentId,
     }).save();
     await CommentModel.findOneAndUpdate(
       {
-        video_id: video_id,
-        _id: comment_id,
+        video_id: videoId,
+        _id: commentId,
       },
       {
         $inc: {
@@ -43,13 +51,19 @@ const createLikedComment = async (req: Request, res: Response) => {
 };
 
 const getAllLikedCommentOfVideo = async (req: Request, res: Response) => {
-  const author_id = req.body._id as string;
-  const video_id = req.query.video_id as string;
+  const videoId = req.query.video_id as string;
+  const authorId = req.body._id as string;
+  if (
+    !mongoose.isValidObjectId(videoId) ||
+    !mongoose.isValidObjectId(authorId)
+  ) {
+    return res.status(400).send({ message: "video id and author id  needed" });
+  }
   try {
     const list = await LikedCommentModel.find(
       {
-        author_id: author_id,
-        video_id: video_id,
+        author_id: authorId,
+        video_id: videoId,
         reply_comment_id: {
           $exists: false,
         },
@@ -70,15 +84,24 @@ const getAllLikedCommentInOtherComment = async (
   req: Request,
   res: Response
 ) => {
-  const author_id = req.body._id as string;
-  const video_id = req.query.video_id as string;
-  const reply_comment_id = req.query.reply_comment_id as string;
+  const videoId = req.query.video_id as string;
+  const replyCommentId = req.query.reply_comment_id as string;
+  const authorId = req.body._id as string;
+  if (
+    !mongoose.isValidObjectId(videoId) ||
+    !mongoose.isValidObjectId(authorId) ||
+    !mongoose.isValidObjectId(replyCommentId)
+  ) {
+    return res
+      .status(400)
+      .send({ message: "video id and author id and comment id needed" });
+  }
   try {
     const list = await LikedCommentModel.find(
       {
-        author_id: author_id,
-        video_id: video_id,
-        reply_comment_id: reply_comment_id,
+        author_id: authorId,
+        video_id: videoId,
+        reply_comment_id: replyCommentId,
       },
       { createdAt: 0, updatedAt: 0, __v: 0 },
       null
@@ -93,25 +116,33 @@ const getAllLikedCommentInOtherComment = async (
 };
 
 const deleteLikedComment = async (req: Request, res: Response) => {
-  const video_id = req.query.video_id as string;
-  const comment_id = req.query.comment_id as string;
-  const author_id = req.body._id as string;
-
+  const commentId = req.query.comment_id as string;
+  const videoId = req.query.video_id as string;
+  const authorId = req.body._id as string;
+  if (
+    !mongoose.isValidObjectId(videoId) ||
+    !mongoose.isValidObjectId(authorId) ||
+    !mongoose.isValidObjectId(commentId)
+  ) {
+    return res
+      .status(400)
+      .send({ message: "video id and author id and comment id needed" });
+  }
   const session = await mongoose.startSession();
   session.startTransaction();
   try {
     const likedCommentDoc = await LikedCommentModel.findOneAndDelete(
       {
-        author_id: author_id,
-        video_id: video_id,
-        comment_id: comment_id,
+        author_id: authorId,
+        video_id: videoId,
+        comment_id: commentId,
       },
       { session }
     ).exec();
     await CommentModel.findOneAndUpdate(
       {
-        video_id: video_id,
-        _id: comment_id,
+        video_id: videoId,
+        _id: commentId,
       },
       {
         $inc: {

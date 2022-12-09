@@ -5,18 +5,23 @@ import FollowingModel from "../models/following.model";
 import UserModel from "../models/user.model";
 
 const createFollowing = async (req: Request, res: Response) => {
-  const author_id = req.body._id as string;
-  const follow_id = req.body.follow_id as string;
-
+  const authorId = req.body._id as string;
+  const followId = req.body.follow_id as string;
+  if (
+    !mongoose.isValidObjectId(authorId) ||
+    !mongoose.isValidObjectId(followId)
+  ) {
+    return res.status(400).send({ message: "author id and follow id needed" });
+  }
   const session = await mongoose.startSession();
   session.startTransaction();
   try {
     const followerDoc = await new FollowingModel({
-      author_id: author_id,
-      follow: follow_id,
+      author_id: authorId,
+      follow: followId,
     }).save();
     await UserModel.findByIdAndUpdate(
-      author_id,
+      authorId,
       {
         $inc: {
           following_count: 1,
@@ -25,7 +30,7 @@ const createFollowing = async (req: Request, res: Response) => {
       { session }
     ).exec();
     await UserModel.findByIdAndUpdate(
-      follow_id,
+      followId,
       {
         $inc: {
           follower_count: 1,
@@ -47,21 +52,26 @@ const createFollowing = async (req: Request, res: Response) => {
 };
 
 const deleteFollowing = async (req: Request, res: Response) => {
-  const author_id = req.body._id as string;
-  const follow_id = req.query.follow_id as string;
-
+  const authorId = req.body._id as string;
+  const followId = req.query.follow_id as string;
+  if (
+    !mongoose.isValidObjectId(authorId) ||
+    !mongoose.isValidObjectId(followId)
+  ) {
+    return res.status(400).send({ message: "author id and follow id needed" });
+  }
   const session = await mongoose.startSession();
   session.startTransaction();
   try {
     const followingDoc = await FollowingModel.findOneAndDelete(
       {
-        author_id: author_id,
-        follow: follow_id,
+        author_id: authorId,
+        follow: followId,
       },
       { session }
     );
     await UserModel.findByIdAndUpdate(
-      author_id,
+      authorId,
       {
         $inc: {
           following_count: -1,
@@ -70,7 +80,7 @@ const deleteFollowing = async (req: Request, res: Response) => {
       { session }
     ).exec();
     await UserModel.findByIdAndUpdate(
-      follow_id,
+      followId,
       {
         $inc: {
           follower_count: -1,
@@ -91,13 +101,19 @@ const deleteFollowing = async (req: Request, res: Response) => {
 };
 
 const checkFollowing = (req: Request, res: Response) => {
-  const author_id = req.body._id as string;
-  const follow_id = req.query.follow_id as string;
+  const authorId = req.body._id as string;
+  const followId = req.query.follow_id as string;
+  if (
+    !mongoose.isValidObjectId(authorId) ||
+    !mongoose.isValidObjectId(followId)
+  ) {
+    return res.status(400).send({ message: "author id and follow id needed" });
+  }
   try {
     const data = FollowingModel.findOne(
       {
-        author_id: author_id,
-        follow: follow_id,
+        author_id: authorId,
+        follow: followId,
       },
       { createdAt: 0, updatedAt: 0, __v: 0 }
     ).exec();
@@ -108,11 +124,14 @@ const checkFollowing = (req: Request, res: Response) => {
 };
 
 const getAllFollowing = async (req: Request, res: Response) => {
-  const author_id = req.body._id as string;
+  const authorId = req.body._id as string;
+  if (!mongoose.isValidObjectId(authorId)) {
+    return res.status(400).send({ message: "author id needed" });
+  }
   try {
     const list = await FollowingModel.find(
       {
-        author_id: author_id,
+        author_id: authorId,
       },
       { createdAt: 0, updatedAt: 0, __v: 0 }
     ).exec();
@@ -123,16 +142,23 @@ const getAllFollowing = async (req: Request, res: Response) => {
 };
 
 const block = async (req: Request, res: Response) => {
-  const follower = req.body.author_id as string;
-  const author_id = req.body.follower_id as string;
-
+  const follower = req.body.follower as string;
+  const authorId = req.body.author_id as string;
+  if (
+    !mongoose.isValidObjectId(authorId) ||
+    !mongoose.isValidObjectId(follower)
+  ) {
+    return res
+      .status(400)
+      .send({ message: "author id and follower id needed" });
+  }
   const session = await mongoose.startSession();
   session.startTransaction();
   try {
     await FollowingModel.findOneAndUpdate(
       {
         author_id: follower,
-        follow: author_id,
+        follow: authorId,
       },
       {
         isBlockedByAuthor: true,
@@ -140,7 +166,7 @@ const block = async (req: Request, res: Response) => {
       { session }
     );
     await UserModel.findByIdAndUpdate(
-      author_id,
+      authorId,
       {
         $inc: {
           follower_count: -1,

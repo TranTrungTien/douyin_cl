@@ -56,6 +56,9 @@ const updateUser = async (req: Request, res: Response) => {
 };
 const getOwnInfo = async (req: Request, res: Response) => {
   const uid = req.body.uid;
+  if (!uid) {
+    return res.status(400).send({ message: "uid is missing" });
+  }
   try {
     const userDoc = await UserModel.findOne(
       { uid: uid },
@@ -69,6 +72,9 @@ const getOwnInfo = async (req: Request, res: Response) => {
 
 const getUserInfo = async (req: Request, res: Response) => {
   const uid = req.query.uid;
+  if (!uid) {
+    return res.status(400).send({ message: "uid is missing" });
+  }
   try {
     const userDoc = await UserModel.findOne(
       { uid: uid },
@@ -81,7 +87,10 @@ const getUserInfo = async (req: Request, res: Response) => {
 };
 
 const deleteUser = async (req: Request, res: Response) => {
-  const uid = req.params.uid;
+  const uid = req.body.uid;
+  if (!uid) {
+    return res.status(400).send({ message: "uid is missing" });
+  }
   const session = await mongoose.startSession();
   session.startTransaction();
   try {
@@ -102,8 +111,10 @@ const login = async (req: Request, res: Response) => {
   const email = req.body.email as string;
   const code = req.body.code as string;
   const password = req.body.password as string;
-  if (!password && !email) {
-    return res.status(400).send({ message: "Invalid email or password" });
+  if (!password || !email || !code) {
+    return res
+      .status(400)
+      .send({ message: "email and password and code are missing" });
   }
   loginHelper.deletePendingLogin(code, email);
 
@@ -139,6 +150,9 @@ const login = async (req: Request, res: Response) => {
 const loginWithoutPassword = async (req: Request, res: Response) => {
   const email = req.body.email as string;
   const secretCode = req.body.secretCode as string;
+  if (!email || !secretCode) {
+    return res.status(400).send({ message: "Invalid secret code or email" });
+  }
   const codeVerified = loginHelper.findVerifiedCode(secretCode, email);
 
   if (codeVerified && secretCode) {
@@ -180,6 +194,9 @@ const loginWithoutPassword = async (req: Request, res: Response) => {
 };
 const mailSender = async (req: Request, res: Response) => {
   const email = req.body.email as string;
+  if (!email) {
+    return res.status(400).send({ message: "email is missing" });
+  }
   const user = await UserModel.findOne({ email: email });
   const code = v4();
   loginHelper.removeCode({ code, email });
@@ -221,6 +238,11 @@ const mailSender = async (req: Request, res: Response) => {
 const verifyCode = async (req: Request, res: Response) => {
   const clientCode = req.body.code as string;
   const existedEmail = req.body.existedEmail as string;
+  if (!clientCode || !existedEmail) {
+    return res
+      .status(400)
+      .send({ message: "clientCode and existed email are missing" });
+  }
   const serverCode = loginHelper.findCode(clientCode, existedEmail);
   const isExisted = loginHelper.findExistedEmail(existedEmail);
 
@@ -247,6 +269,9 @@ const verifyCode = async (req: Request, res: Response) => {
 
 const refreshToken = async (req: Request, res: Response) => {
   const userID = req.body._id as string;
+  if (!mongoose.isValidObjectId(userID)) {
+    return res.status(400).send({ message: "user id is missing" });
+  }
   try {
     const userDoc = await UserModel.findById(userID).exec();
     if (userDoc) {

@@ -1,4 +1,5 @@
 import Busboy from "busboy";
+import { fips } from "crypto";
 import { Request, Response } from "express";
 import * as fs from "fs";
 import mongoose from "mongoose";
@@ -10,7 +11,9 @@ import {
   musicPath,
   videoPath,
 } from "../const/path";
+import { IFollowing } from "../interface/following.inteface";
 import CommentModel from "../models/comment.model";
+import FollowingModel from "../models/following.model";
 import LikedModel from "../models/liked.model";
 import LikedCommentModel from "../models/liked_comment.model";
 import MusicModel from "../models/music.model";
@@ -68,11 +71,11 @@ const uploadFile = async (req: Request, res: Response) => {
 };
 
 const uploadMetaData = async (req: Request, res: Response) => {
-  const _id = req.body._id as string;
+  const authorId = req.body._id as string;
   const caption = req.body.caption as string;
-  const video_id_f = req.body.video_id_f as string;
-  const cover_id_f = req.body.cover_id_f as string;
-  const music_id_f = req.body.music_id_f as string;
+  const videoIdF = req.body.video_id_f as string;
+  const coverIdF = req.body.cover_id_f as string;
+  const musicIdF = req.body.music_id_f as string;
   const whoCanView = req.body.whoCanView as string;
   const allowUserDo = req.body.allowUserDo as {
     cmt: boolean;
@@ -86,14 +89,29 @@ const uploadMetaData = async (req: Request, res: Response) => {
     size: number;
     duration: number;
   };
+  if (
+    !videoIdF ||
+    !coverIdF ||
+    !musicIdF ||
+    !whoCanView ||
+    !allowUserDo ||
+    !videoMetaData
+  ) {
+    return res
+      .status(400)
+      .send({ message: "video idf cover idf music idf ... missing!" });
+  }
+  if (!mongoose.isValidObjectId(authorId)) {
+    return res.status(400).send({ message: "author id needed" });
+  }
 
-  const url = `api/v1/media/play?video_id_f=${video_id_f}&mimeType=${videoMetaData.type}&size=${videoMetaData.size}`;
-  const coverUrl = `api/v1/image/cover?cover_id_f=${cover_id_f}`;
-  const musicUrl = `api/v1/music/play?music_id_f=${music_id_f}`;
+  const url = `api/v1/media/play?video_id_f=${videoIdF}&mimeType=${videoMetaData.type}&size=${videoMetaData.size}`;
+  const coverUrl = `api/v1/image/cover?cover_id_f=${coverIdF}`;
+  const musicUrl = `api/v1/music/play?music_id_f=${musicIdF}`;
 
   const musicDoc = await new MusicModel({
-    id_f: music_id_f,
-    author_id: _id,
+    id_f: musicIdF,
+    author_id: authorId,
     play_addr: {
       url_list: [musicUrl],
     },
@@ -101,9 +119,9 @@ const uploadMetaData = async (req: Request, res: Response) => {
     title: "",
   }).save();
   const videoDoc = await new VideoModel({
-    id_f: video_id_f,
+    id_f: videoIdF,
     desc: caption,
-    author_id: _id,
+    author_id: authorId,
     width: videoMetaData.width,
     height: videoMetaData.height,
     mimeType: videoMetaData.type,
@@ -128,7 +146,7 @@ const uploadMetaData = async (req: Request, res: Response) => {
   }).save();
   fs.appendFileSync(
     `${metaPath}/rbc_data.json`,
-    "," + JSON.stringify({ video_id: video_id_f, desc: caption }),
+    "," + JSON.stringify({ video_id: videoIdF, desc: caption }),
     { encoding: "utf-8" }
   );
   await RecommendationUtils.trainRecommendedBasedOnVideo();
@@ -137,9 +155,12 @@ const uploadMetaData = async (req: Request, res: Response) => {
 };
 
 const getVideoStream = async (req: Request, res: Response) => {
-  const video_id_f = req.query.video_id_f as string;
+  const videoIdF = req.query.video_id_f as string;
+  if (!videoIdF) {
+    return res.status(400).send({ message: "video id missing" });
+  }
   try {
-    const filePath = `${videoPath}/${video_id_f}.mp4`;
+    const filePath = `${videoPath}/${videoIdF}.mp4`;
     if (fs.existsSync(filePath)) {
       fs.createReadStream(filePath).pipe(res);
     } else return res.status(404).send({ message: "Not Found" });
@@ -149,9 +170,12 @@ const getVideoStream = async (req: Request, res: Response) => {
 };
 
 const getVideoCover = async (req: Request, res: Response) => {
-  const cover_id_f = req.query.cover_id_f as string;
+  const coverIdF = req.query.cover_id_f as string;
+  if (!coverIdF) {
+    return res.status(400).send({ message: "cover id missing" });
+  }
   try {
-    const coverP = `${coverPath}/${cover_id_f}.png`;
+    const coverP = `${coverPath}/${coverIdF}.png`;
     if (fs.existsSync(coverP)) {
       fs.createReadStream(coverP).pipe(res);
     } else {
@@ -163,36 +187,76 @@ const getVideoCover = async (req: Request, res: Response) => {
 };
 
 const getVideoInfo = async (req: Request, res: Response) => {
-  const video_id = req.query.video_id as string;
-  if (!video_id) {
-    return res.status(400).send("Video id is needed");
-  } else {
-    try {
-      const data = await VideoModel.findById(
-        video_id,
-        { createdAt: 0, updatedAt: 0, __v: 0 },
-        null
-      )
-        .populate("author_id")
-        .exec();
-      return res.status(200).send({ message: "Successfully", data });
-    } catch (error) {
-      return res.status(500).send({ error, message: "Something went wrong" });
-    }
+  const videoId = req.query.video_id as string;
+  if (!mongoose.isValidObjectId(videoId)) {
+    return res.status(400).send({ message: "video id missing" });
+  }
+  try {
+    const data = await VideoModel.findById(
+      videoId,
+      { createdAt: 0, updatedAt: 0, __v: 0 },
+      null
+    )
+      .populate("author_id")
+      .exec();
+    return res.status(200).send({ message: "Successfully", data });
+  } catch (error) {
+    return res.status(500).send({ error, message: "Something went wrong" });
   }
 };
 
 const getAllVideoByUser = async (req: Request, res: Response) => {
-  const author_id = req.query.author_id as string;
+  const authorId = req.query.author_id as string;
+  const currentUserId = req.query.current_user_id as string;
   const cursor = req.query.cursor as string;
   const limit = parseInt(req.query.limit as string) || 15;
+  const isSameUser = currentUserId === authorId;
+  if (!mongoose.isValidObjectId(authorId)) {
+    return res.status(400).send({ message: "author id is missing" });
+  }
+  if (!cursor || !limit) {
+    return res.status(400).send({ message: "cursor and limit are missing" });
+  }
   try {
     const videoDocList = await VideoModel.find(
-      { author_id: author_id },
+      {
+        author_id: authorId,
+        who_can_view: {
+          $nin: isSameUser
+            ? []
+            : currentUserId
+            ? ["Private"]
+            : ["Private", "Friend"],
+        },
+      },
       { createdAt: 0, updatedAt: 0, __v: 0 },
       { skip: Number(cursor) * limit, limit: limit, sort: { createdAt: -1 } }
     ).exec();
-    const idList = videoDocList.map((v) => v._id);
+    let followData: null | IFollowing = null;
+    if (currentUserId && mongoose.isValidObjectId(currentUserId)) {
+      followData = await FollowingModel.findOne(
+        {
+          author_id: currentUserId,
+          follow: authorId,
+        },
+        {
+          __v: 0,
+          _id: 0,
+        }
+      ).exec();
+    }
+    const filterData = videoDocList.filter((v) =>
+      isSameUser
+        ? true
+        : v.who_can_view === "Public"
+        ? true
+        : v.who_can_view === "Friend" &&
+          followData &&
+          followData.follow.toString() === v.author_id._id.toString()
+        ? true
+        : false
+    );
+    const idList = filterData.map((v) => v._id);
     const statistics = await StatisticsModel.find(
       { video_id: { $in: idList } },
       {
@@ -201,7 +265,7 @@ const getAllVideoByUser = async (req: Request, res: Response) => {
         __v: 0,
       }
     ).exec();
-    const videos = videoDocList.map((v) => {
+    const videos = filterData.map((v) => {
       const stat = statistics.find(
         (stat) => stat.video_id.toString() === v._id?.toString()
       );
@@ -223,12 +287,18 @@ const getAllVideoByUser = async (req: Request, res: Response) => {
 };
 
 const getAllLikedVideoByUser = async (req: Request, res: Response) => {
-  const author_id = req.query.author_id as string;
   const cursor = req.query.cursor as string;
   const limit = parseInt(req.query.limit as string) || 15;
+  const authorId = req.query.author_id as string;
+  if (!mongoose.isValidObjectId(authorId)) {
+    return res.status(400).send({ message: "author id are missing" });
+  }
+  if (!cursor || !limit) {
+    return res.status(400).send({ message: "cursor and limit are missing" });
+  }
   try {
     const likedDocList = await LikedModel.find(
-      { author_id: author_id },
+      { author_id: authorId },
       { updatedAt: 0, __v: 0 },
       {
         skip: Number(cursor) * limit,
@@ -268,13 +338,16 @@ const getAllLikedVideoByUser = async (req: Request, res: Response) => {
 };
 
 const getTotalDocuments = async (req: Request, res: Response) => {
-  const author_id = req.query.author_id as string;
+  const authorId = req.query.author_id as string;
+  if (!mongoose.isValidObjectId(authorId)) {
+    return res.status(400).send({ message: "author id is missing" });
+  }
   try {
     const videoTotal = await VideoModel.countDocuments({
-      author_id: author_id,
+      author_id: authorId,
     }).exec();
     const likedTotal = await LikedModel.countDocuments({
-      author_id: author_id,
+      author_id: authorId,
     }).exec();
     return res.status(200).send({ message: "Success", videoTotal, likedTotal });
   } catch (error) {
@@ -283,10 +356,13 @@ const getTotalDocuments = async (req: Request, res: Response) => {
 };
 
 const getAvatarThumbnail = async (req: Request, res: Response) => {
-  const avatar_id = req.query.avatar_id as string;
+  const avatarId = req.query.avatar_id as string;
+  if (!avatarId) {
+    return res.status(400).send({ message: "avatar id is missing" });
+  }
   try {
     fs.createReadStream(
-      avatarPath + "/avatar_thumbs/" + avatar_id + ".jpg"
+      avatarPath + "/avatar_thumbs/" + avatarId + ".jpg"
     ).pipe(res);
   } catch (error) {
     return res.status(500).send({ message: "Something went wrong", error });
@@ -296,6 +372,12 @@ const getAvatarThumbnail = async (req: Request, res: Response) => {
 const deleteVideo = async (req: Request, res: Response) => {
   const authorId = req.body._id as string;
   const videoId = req.query.video_id as string;
+  if (
+    !mongoose.isValidObjectId(authorId) ||
+    !mongoose.isValidObjectId(videoId)
+  ) {
+    return res.status(400).send({ message: "author id video id are missing" });
+  }
   const session = await mongoose.startSession();
   session.startTransaction();
   try {

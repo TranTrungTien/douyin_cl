@@ -101,14 +101,15 @@ class MF():
 # Perform training and obtain the user and item matrices 
 
 if __name__ == '__main__':
-    matrix = json.loads(sys.argv[1])
+    matrixPath = sys.argv[1]
+    matrix = json.load(open(matrixPath, 'r'))
     index = int(sys.argv[2])
     R = np.array(matrix)
     mf = MF(R, K=2, alpha=0.1, beta=0.01, iterations=20)
     mf.train()
     # print(mf.P)
     # print(mf.Q)
-    matrix_string = "";
+    matrix_string = ""
     weights = mf.full_matrix()
     for item in weights[index]:
         matrix_string += str(item)

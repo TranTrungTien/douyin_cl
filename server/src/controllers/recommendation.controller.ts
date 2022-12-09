@@ -4,26 +4,26 @@ import * as fs from "fs";
 import mongoose from "mongoose";
 import { metaPath } from "../const/path";
 import { IVideo } from "../interface/video.interface";
+import FollowingModel from "../models/following.model";
 import IHadSeenModel from "../models/had_seen_video.model";
 import StatisticsModel from "../models/statistics.model";
 import VideoModel from "../models/video.model";
 import { dayOfTwoDate } from "../utils/day_of_two_date";
 import { getFeatureAsMatrix } from "../utils/mf_data";
 import { RecommendationUtils } from "../utils/recommendation";
+
 const getRecommendationDef = async (req: Request, res: Response) => {
-  const session = await mongoose.startSession();
-  session.startTransaction();
   try {
     const videoDocList = await VideoModel.find(
       {
+        who_can_view: {
+          $nin: ["Private", "Friend"],
+        },
         createdAt: {
           $gt: new Date("2020-03-01"),
         },
       },
-      { updatedAt: 0, __v: 0 },
-      {
-        session,
-      }
+      { updatedAt: 0, __v: 0 }
     )
       .populate("author_id")
       .sort({
@@ -32,10 +32,7 @@ const getRecommendationDef = async (req: Request, res: Response) => {
       .exec();
     const statistics = await StatisticsModel.find(
       {},
-      { createdAt: 0, updatedAt: 0, __v: 0 },
-      {
-        session,
-      }
+      { createdAt: 0, updatedAt: 0, __v: 0 }
     ).exec();
     const currentDate = new Date();
     const weight = videoDocList.map((v) => {
@@ -60,16 +57,17 @@ const getRecommendationDef = async (req: Request, res: Response) => {
     weight.sort((x, y) => y.w - x.w);
     res.status(200).send({ message: "Successfully", list: weight });
   } catch (error) {
-    await session.abortTransaction();
     return res.status(500).send({ message: "Something went wrong", error });
-  } finally {
-    session.endSession();
   }
 };
 
 const getRecommendationFromVideo = async (req: Request, res: Response) => {
-  const videoId = req.query.videoId as string;
+  const videoIdF = req.query.video_id_f as string;
+  const userId = req.query.user_id as string;
   const limit = parseInt(req.query.limit as string) || 15;
+  if (!videoIdF) {
+    return res.status(400).send({ message: "video id are missing" });
+  }
   const data = JSON.parse(
     fs.readFileSync(metaPath + "/rbc_data.json", "utf8") + "]"
   ) as {
@@ -78,7 +76,7 @@ const getRecommendationFromVideo = async (req: Request, res: Response) => {
   }[];
   let index = 0;
   for (let i = 0; i < data.length; i++) {
-    if (data[i].video_id === videoId) {
+    if (data[i].video_id === videoIdF) {
       index = i;
       break;
     }
@@ -89,13 +87,36 @@ const getRecommendationFromVideo = async (req: Request, res: Response) => {
     return data[idx].video_id;
   });
   const videoDocList = await VideoModel.find(
-    { id_f: { $in: videoIdList } },
+    {
+      id_f: { $in: videoIdList },
+      who_can_view: {
+        $nin: userId ? ["Private"] : ["Friend", "Public"],
+      },
+    },
     { createdAt: 0, updatedAt: 0, __v: 0 },
     { limit: limit }
   )
     .populate("author_id")
     .exec();
-  const idList = videoDocList.map((x) => x._id);
+  const followList = mongoose.isValidObjectId(userId)
+    ? await FollowingModel.find({
+        author_id: userId,
+      }).exec()
+    : null;
+
+  const idList = videoDocList
+    .filter((v) =>
+      !followList
+        ? true
+        : v.who_can_view === "Public"
+        ? true
+        : followList.some(
+            (f) => f.follow.toString() === v.author_id._id.toString()
+          )
+        ? true
+        : false
+    )
+    .map((v) => v._id);
   const statistics = await StatisticsModel.find(
     {
       video_id: { $in: idList },
@@ -115,10 +136,11 @@ const getRecommendationFromVideo = async (req: Request, res: Response) => {
 
 const getSearchRecommended = async (req: Request, res: Response) => {
   const text = req.query.text as string;
+  const userId = req.query.user_id as string;
   const limit = req.query.limit as string;
-
-  const session = await mongoose.startSession();
-  session.startTransaction();
+  if (!mongoose.isValidObjectId(userId)) {
+    return res.status(400).send({ message: "user id is missing" });
+  }
   try {
     const videoIdfs = await RecommendationUtils.getSearchRecommended(
       text,
@@ -129,66 +151,88 @@ const getSearchRecommended = async (req: Request, res: Response) => {
         id_f: {
           $in: videoIdfs,
         },
+        who_can_view: {
+          $nin: userId ? ["Private"] : ["Private", "Friend"],
+        },
       },
-      { updatedAt: 0, __v: 0 },
-      { session }
+      { updatedAt: 0, __v: 0 }
     )
       .populate("author_id")
       .exec();
-    const ids = videoDocList.map((v) => v._id);
-    const statisticsDoc = await StatisticsModel.find(
-      {
-        video_id: {
-          $in: ids,
-        },
+    const followList = await FollowingModel.find({
+      author_id: userId,
+    }).exec();
+
+    const ids = videoDocList
+      .filter((v) =>
+        !followList.length
+          ? true
+          : v.who_can_view === "Public"
+          ? true
+          : followList.some(
+              (f) => f.follow.toString() === v.author_id._id.toString()
+            )
+          ? true
+          : false
+      )
+      .map((v) => v._id);
+    const statisticsDoc = await StatisticsModel.find({
+      video_id: {
+        $in: ids,
       },
-      { session }
-    ).exec();
+    }).exec();
     return res.status(200).send({
       message: "Successfully",
       list: videoDocList,
       statistics: statisticsDoc,
     });
   } catch (error) {
-    await session.abortTransaction();
     return res.status(500).send({ message: "Something went wrong", error });
-  } finally {
-    session.endSession();
   }
 };
 
 const training = async (req: Request, res: Response) => {
   const userID = req.body._id as string;
-  if (!userID)
-    return res.status(404).send({ message: "user id needed", list: [] });
-  const { matrix, list, userIndex, likedList } = await getFeatureAsMatrix(
-    userID
-  );
-  const python = spawn("python3", [
-    "src/python/mf.py",
-    JSON.stringify(matrix),
-    userIndex.toString(),
-  ]);
-  let output = "";
+  if (!mongoose.isValidObjectId(userID)) {
+    return res.status(400).send({ message: "user id is missing" });
+  }
+  try {
+    const { matrix, list, userIndex, likedList } = await getFeatureAsMatrix(
+      userID
+    );
+    fs.writeFileSync(metaPath + "/matrix.json", JSON.stringify(matrix));
+    const python = spawn("python3", [
+      "src/python/mf.py",
+      metaPath + "/matrix.json",
+      userIndex.toString(),
+    ]);
+    let output = "";
 
-  python.stdout.on("data", (chunk) => {
-    output += chunk.toString();
-  });
-  python.stdout.on("error", (err) => {
-    res.status(500).send({ error: err });
-  });
-  python.stdout.on("close", () => {
-    RecommendationUtils.saveTrainingData(userID, {
-      data: output,
-      likedList,
-      list,
+    python.stdout.on("data", (chunk) => {
+      output += chunk.toString();
     });
-    res.status(200).send({ message: "Successfully" });
-  });
+    python.stdout.on("error", (err) => {
+      res.status(500).send({ error: err });
+    });
+    python.stdout.on("close", () => {
+      RecommendationUtils.saveTrainingData(userID, {
+        data: output,
+        likedList,
+        list,
+      });
+      res.status(200).send({ message: "Successfully" });
+    });
+  } catch (error) {
+    console.error(error);
+    return res.status(500).send({ message: "Something went wrong" });
+  }
 };
 
 const list = async (req: Request, res: Response) => {
   const userID = req.body._id as string;
+  if (!mongoose.isValidObjectId(userID)) {
+    return res.status(400).send({ message: "user id is missing" });
+  }
   const { limit, ...rest } = req.query;
   const hadSeenVideos = Object.values(
     rest as {
@@ -196,12 +240,19 @@ const list = async (req: Request, res: Response) => {
     }
   ).map((data) => data);
   const limitParsed = parseInt(limit as string) || 10;
-  if (!userID)
-    return res.status(404).send({ message: "user id needed", list: [] });
+  if (!userID) return res.status(404).send({ message: "user id is missing" });
 
   const session = await mongoose.startSession();
   session.startTransaction();
   try {
+    const followList = await FollowingModel.find(
+      { author_id: userID },
+      {
+        _id: 0,
+        __v: 0,
+      }
+    ).exec();
+
     const hadSeenDoc = await IHadSeenModel.findOneAndUpdate(
       {
         author_id: userID,
@@ -238,7 +289,14 @@ const list = async (req: Request, res: Response) => {
           ) ||
           hadSeenDoc?.had_seen_videos.find(
             (videoId) => videoId.toString() === item?.video?._id?.toString()
-          )
+          ) ||
+          item?.video?.who_can_view === "Private" ||
+          (item?.video?.who_can_view === "Friend" &&
+            followList.every(
+              (f) =>
+                f.author_id.toString() !== item.video.author_id._id.toString()
+            )) ||
+          userID === item?.video?.author_id?._id?.toString()
             ? false
             : true
         )
@@ -261,8 +319,7 @@ const list = async (req: Request, res: Response) => {
           updatedAt: 0,
           __v: 0,
           createdAt: 0,
-        },
-        { session }
+        }
       ).exec();
       const listStatistics = data.map((item) => {
         const stat = statistics.find(

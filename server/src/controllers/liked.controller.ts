@@ -5,15 +5,22 @@ import StatisticsModel from "../models/statistics.model";
 import UserModel from "../models/user.model";
 
 const createLiked = async (req: Request, res: Response) => {
-  const author_id = req.body._id as string;
   const authorVideoId = req.body.author_video_id as string;
-  const video_id = req.body.video_id as string;
+  const videoId = req.body.video_id as string;
+  const authorId = req.body._id as string;
+  if (
+    !mongoose.isValidObjectId(videoId) ||
+    !mongoose.isValidObjectId(authorId) ||
+    !mongoose.isValidObjectId(authorVideoId)
+  ) {
+    return res.status(400).send({ message: "video id and author id needed" });
+  }
   const session = await mongoose.startSession();
   session.startTransaction();
   try {
     const likeVideoDoc = await new LikedModel({
-      author_id: author_id,
-      video_id: video_id,
+      author_id: authorId,
+      video_id: videoId,
     }).save();
     await UserModel.findByIdAndUpdate(
       authorVideoId,
@@ -25,7 +32,7 @@ const createLiked = async (req: Request, res: Response) => {
       { session, new: true }
     ).exec();
     await StatisticsModel.findOneAndUpdate(
-      { video_id: video_id },
+      { video_id: videoId },
       {
         $inc: {
           like_count: 1,
@@ -47,14 +54,20 @@ const createLiked = async (req: Request, res: Response) => {
 };
 
 const deleteLiked = async (req: Request, res: Response) => {
-  const video_id = req.query.video_id as string;
   const authorVideoId = req.query.author_video_id as string;
+  const videoId = req.query.video_id as string;
+  if (
+    !mongoose.isValidObjectId(videoId) ||
+    !mongoose.isValidObjectId(authorVideoId)
+  ) {
+    return res.status(400).send({ message: "video id and author id needed" });
+  }
   const session = await mongoose.startSession();
   session.startTransaction();
   try {
     const likedDoc = await LikedModel.findOneAndDelete(
       {
-        video_id: video_id,
+        video_id: videoId,
       },
       { session }
     ).exec();
@@ -68,7 +81,7 @@ const deleteLiked = async (req: Request, res: Response) => {
       { session }
     ).exec();
     await StatisticsModel.findOneAndUpdate(
-      { video_id: video_id },
+      { video_id: videoId },
       { $inc: { like_count: -1 } },
       { session }
     ).exec();
@@ -85,13 +98,19 @@ const deleteLiked = async (req: Request, res: Response) => {
 };
 
 const checkLiked = async (req: Request, res: Response) => {
-  const authorID = req.body._id as string;
-  const videoID = req.query.video_id as string;
+  const videoId = req.query.video_id as string;
+  const authorId = req.body._id as string;
+  if (
+    !mongoose.isValidObjectId(videoId) ||
+    !mongoose.isValidObjectId(authorId)
+  ) {
+    return res.status(400).send({ message: "video id and author id needed" });
+  }
   try {
     const doc = await LikedModel.findOne(
       {
-        author_id: authorID,
-        video_id: videoID,
+        author_id: authorId,
+        video_id: videoId,
       },
       { createdAt: 0, updatedAt: 0, __v: 0 }
     ).exec();
