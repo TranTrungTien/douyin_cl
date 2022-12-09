@@ -83,20 +83,24 @@ export default class Recommendation {
     this._calculateCosineMatrix();
   }
   private _processData() {
-    this._data.forEach((d) => {
-      const separate = jieba
-        .cut(d)
-        .filter(
-          (value) =>
-            value !== "#" &&
-            value !== "~" &&
-            value !== " " &&
-            value !== "。" &&
-            value !== ","
-        );
-      this._metaDataDocument.push(...separate);
-      this._metaDataDocumentMatrix.push(separate);
-    });
+    try {
+      this._data.forEach((d) => {
+        const separate = jieba
+          .cut(d)
+          .filter(
+            (value) =>
+              value !== "#" &&
+              value !== "~" &&
+              value !== " " &&
+              value !== "。" &&
+              value !== ","
+          );
+        this._metaDataDocument.push(...separate);
+        this._metaDataDocumentMatrix.push(separate);
+      });
+    } catch (error) {
+      console.log("cant not cut text ...");
+    }
   }
   private _getTfidfMatrix() {
     const vocabDocument = Array.from(new Set(this._metaDataDocument));

@@ -4,13 +4,19 @@ import { v4 } from "uuid";
 import SharedModel from "../models/shared.model";
 
 const createShared = async (req: Request, res: Response) => {
-  const author_id = req.body.author_id as string;
-  const video_id = req.body.video_id as string;
+  const authorId = req.body._id as string;
+  const videoId = req.query.video_id as string;
+  if (
+    !mongoose.isValidObjectId(videoId) ||
+    !mongoose.isValidObjectId(authorId)
+  ) {
+    return res.status(400).send({ message: "video id and author id needed" });
+  }
   try {
     const sharedDoc = await new SharedModel({
       id: v4(),
-      author_id: author_id,
-      video_id: video_id,
+      author_id: authorId,
+      video_id: videoId,
     }).save();
     res.status(200).send({ message: "Successfully shared", data: sharedDoc });
   } catch (error) {
@@ -19,14 +25,20 @@ const createShared = async (req: Request, res: Response) => {
 };
 
 const deleteShared = async (req: Request, res: Response) => {
-  const author_id = req.body.author_id as string;
-  const video_id = req.body.video_id as string;
+  const authorId = req.body.author_id as string;
+  const videoId = req.body.video_id as string;
+  if (
+    !mongoose.isValidObjectId(videoId) ||
+    !mongoose.isValidObjectId(authorId)
+  ) {
+    return res.status(400).send({ message: "video id and author id needed" });
+  }
   const session = await mongoose.startSession();
   session.startTransaction();
   try {
     await SharedModel.findOneAndDelete({
-      author_id: author_id,
-      video_id: video_id,
+      author_id: authorId,
+      video_id: videoId,
     }).exec();
     await session.commitTransaction();
     res.status(200).send({ message: "Successfully Deleted" });
